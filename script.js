@@ -31,7 +31,7 @@ function createProductItemElement({ sku, name, image }) {
 // }
 
 function cartItemClickListener(event) {
-
+  event.target.remove(event);
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
