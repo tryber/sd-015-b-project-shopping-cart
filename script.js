@@ -53,10 +53,31 @@ function removeItemFromLocalStorage(evento) {
   }
 }
 
+function totalSumOfPrices(price) {
+  const total = document.querySelector('.total-price');
+  let { sum } = sessionStorage;
+  sum = parseFloat(sum);
+  sum += price;
+  sessionStorage.sum = sum;
+  total.innerHTML = `${parseFloat(sum)}`;
+}
+
 function cartItemClickListener(event) {
   const ol = createOl();
+  const str = event.target.innerHTML;
   removeItemFromLocalStorage(event.target);
   ol.removeChild(event.target);
+  // PARA DESCOBRIR COMO ACHAR O CIFRÃO ENTREI NA DOCUMENTAÇÃO 
+  // link: https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/String/search
+  const cifra = /[$]/g;
+  const locations = str.search(cifra);
+  let price = ['-'];
+  for (let i = locations + 1; i < str.length; i += 1) {
+    price.push(str[i]);
+  }
+  price = price.join('');
+  price = parseFloat(price);
+  totalSumOfPrices(price);
 }
 
 function retriveCartItems() {
@@ -77,6 +98,7 @@ function createCartItemElement({ id, name, salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   ol.appendChild(li);
   saveCartItems();
+  totalSumOfPrices(salePrice);
   return li;
 }
 
@@ -109,4 +131,5 @@ async function requireAndCreateEachProduct() {
 window.onload = () => {
   requireAndCreateEachProduct();
   retriveCartItems();
+  sessionStorage.sum = 0;
  };
