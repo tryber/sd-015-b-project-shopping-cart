@@ -1,3 +1,5 @@
+const URL_API = 'https://api.mercadolibre.com/sites/MLB';
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -11,8 +13,20 @@ function createCustomElement(element, className, innerText) {
   e.innerText = innerText;
   return e;
 }
+async function getComputer() {
+  const response = await fetch(`${URL_API}/search?q=computador`);
+  const results = await response.json(); // requisito 01 A lista de produtos que devem ser exibidos é o array results no JSON acima.
+  //console.log(results)
+  const listComp = await results.results;
+  //console.log(listComp)
+  for (const key in listComp) { // for in usa a chave do objeto como indice no percorrimento 
+    //console.log(listComp[key])
+    document.querySelector('.items').appendChild(createProductItemElement(listComp[key]));
+  }
+}
 
-function createProductItemElement({ sku, name, image }) {
+function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
+// as variáveis sku, no código fornecido, se referem aos campos id retornados pela API. o tile e thumbnail eu fiz com a ajuda dos colegas - não testado ainda.
   const section = document.createElement('section');
   section.className = 'item';
 
@@ -20,6 +34,7 @@ function createProductItemElement({ sku, name, image }) {
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
+  
   return section;
 }
 
@@ -28,7 +43,7 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
+  event.remove(); // aqui só tem que remover tudo, limpar.
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -40,3 +55,12 @@ function createCartItemElement({ sku, name, salePrice }) {
 }
 
 window.onload = () => { };
+// faz o try / catch da API - pra ver se retorna mesmo os computadores 
+window.onload = async () => {
+  try {
+    const computer = await getComputer();
+    addProdutsToScreen(computer);
+  } catch (e) {
+    console.log(e);
+  }
+};
