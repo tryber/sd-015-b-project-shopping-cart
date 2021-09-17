@@ -38,10 +38,11 @@ function getSkuFromProductItem(item) {
 function cartItemClickListener(event) {
   const indexPrice = event.target.innerText.indexOf('$');
   const lastIndex = event.target.innerText.length;
-  const price = parseFloat(event.target.innerText.slice(indexPrice + 1, lastIndex)).toFixed(2);
+  const price = Math.round(parseFloat(event
+    .target.innerText.slice(indexPrice + 1, lastIndex)) * 100) / 100;
   const totalPrice = document.querySelector('.total-price');
-  const oldPrice = parseFloat(totalPrice.innerText).toFixed(2);
-  totalPrice.innerText = (oldPrice - price).toFixed(2);
+  const oldPrice = Math.round(parseFloat(totalPrice.innerText) * 100) / 100;
+  totalPrice.innerText = oldPrice - price;
   localStorage.setItem('totalprice', totalPrice.innerText);
   event.target.remove();
   const htmlCard = cardItemsElement.innerHTML;
@@ -71,49 +72,60 @@ const getProductsArray = async (product = 'computador') => {
   } catch (error) {
     console.error(error);
   }
-  };
+};
 
-  const sumCardPrice = async (price) => {
-    const priceHTML = document.getElementById('tprice');
-    priceHTML.innerText = (parseFloat(priceHTML.innerText) + price).toFixed(2);
-  };
+const sumCardPrice = async (price) => {
+  const priceHTML = document.getElementById('tprice');
+  priceHTML.innerText = (Math
+    .round(parseFloat(priceHTML.innerText) * 100) / 100 + Math.round(price * 100) / 100);
+};
 
-  const addToCart = async (e) => {
-    if (e.target.className === 'item__add') {
-      const idProduct = e.target.parentElement.firstChild.innerText;
-      const link = `https://api.mercadolibre.com/items/${idProduct}`;
-      try {
-        const productIdObj = await fetch(link)
-          .then((binProduct) => binProduct.json())
-          .then((objProduct) => objProduct);
-        const { id, title, price } = productIdObj;
-        sumCardPrice(price);
-        const productToCard = { sku: id, name: title, salePrice: price };
-        const cardElements = createCartItemElement(productToCard);
-        cardItemsElement.appendChild(cardElements);
-        const htmlCard = cardItemsElement.innerHTML;
-        saveCardStorage(htmlCard);
-      } catch (err) { console.log(err); }
-    }
-  };
-
-  const clearCard = () => {
-    cardItemsElement.innerHTML = '';
-    document.getElementById('tprice').innerText = 0;
-    saveCardStorage('');
-  };
-
-  window.onload = () => {
-  getProductsArray();
-  if (localStorage.getItem('totalprice') === '' || !localStorage.getItem('totalprice')) {
-    localStorage.setItem('totalprice', 0);
+const addToCart = async (e) => {
+  if (e.target.className === 'item__add') {
+    const idProduct = e.target.parentElement.firstChild.innerText;
+    const link = `https://api.mercadolibre.com/items/${idProduct}`;
+    try {
+      const productIdObj = await fetch(link)
+        .then((binProduct) => binProduct.json())
+        .then((objProduct) => objProduct);
+      const { id, title, price } = productIdObj;
+      sumCardPrice(price);
+      const productToCard = { sku: id, name: title, salePrice: price };
+      const cardElements = createCartItemElement(productToCard);
+      cardItemsElement.appendChild(cardElements);
+      const htmlCard = cardItemsElement.innerHTML;
+      saveCardStorage(htmlCard);
+    } catch (err) { console.log(err); }
   }
-  document.getElementById('tprice').innerText = localStorage.getItem('totalprice');
-  cardItemsElement.innerHTML = localStorage.getItem('html');
-  const liLocalStorage = document.getElementsByClassName('cart__item');
-  for (let i = 0; i < liLocalStorage.length; i += 1) {
-    liLocalStorage[i].addEventListener('click', cartItemClickListener);
-  }
-  document.querySelector('.empty-cart').addEventListener('click', clearCard);
-  document.addEventListener('click', addToCart);
+};
+
+const loadingfc = async () => {
+  const loading = document.createElement('div');
+  loading.className = 'loading';
+  loading.innerText = 'LOADING...';
+  document.querySelector('.items').appendChild(loading);
+  try {
+    await getProductsArray().then(document.querySelector('.loading').remove());
+  } catch (err) { console.error(err); }
+};
+
+const clearCard = () => {
+  cardItemsElement.innerHTML = '';
+  document.getElementById('tprice').innerText = 0;
+  saveCardStorage('');
+};
+
+window.onload = () => {
+loadingfc();
+if (localStorage.getItem('totalprice') === '' || !localStorage.getItem('totalprice')) {
+  localStorage.setItem('totalprice', 0);
+}
+document.getElementById('tprice').innerText = localStorage.getItem('totalprice');
+cardItemsElement.innerHTML = localStorage.getItem('html');
+const liLocalStorage = document.getElementsByClassName('cart__item');
+for (let i = 0; i < liLocalStorage.length; i += 1) {
+  liLocalStorage[i].addEventListener('click', cartItemClickListener);
+}
+document.querySelector('.empty-cart').addEventListener('click', clearCard);
+document.addEventListener('click', addToCart);
 };
