@@ -51,4 +51,23 @@ async function verifyFetch(url) {
   throw new Error('Endpoint inexistente');
 }
 
-window.onload = () => {};
+async function createProductsList(url) {
+  const appendProduct = ({ id, title, thumbnail }) => {
+    const productInfo = {
+      sku: id,
+      name: title,
+      image: thumbnail,
+    };
+    const productsList = document.querySelector('.items');
+    const product = createProductItemElement(productInfo);
+    productsList.appendChild(product);
+  };
+
+  await verifyFetch(url)
+    .then((object) => object.results.forEach(appendProduct))
+    .catch((error) => error);
+}
+
+window.onload = () => {
+  createProductsList(urlApiMercadoLivre);
+};
