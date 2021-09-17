@@ -1,3 +1,6 @@
+const requisito1 = 'https://api.mercadolibre.com/sites/MLB/search?q=';
+const requisito2 = 'https://api.mercadolibre.com/items/';
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -26,9 +29,9 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
+// function getSkuFromProductItem(item) {
+//   return item.querySelector('span.item__sku').innerText;
+// }
 
 function cartItemClickListener(event) {
   // coloque seu código aqui
@@ -42,22 +45,44 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-async function getItemsFromApi(product) {
-  const apiProduct = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${product}`);
+async function getItemsFromApi(api, product) {
+  const apiProduct = await fetch(api + product);
   const response = await apiProduct.json();
 
   return (response);
 }
 
+async function sendToCart(event) {
+  const productContainer = event.target.parentNode;
+  const textId = productContainer.querySelector('.item__sku').innerText;
+  const cartContainer = document.querySelector('.cart__items');
+  const itemDetails = await getItemsFromApi(requisito2, textId);
+  const { id, title, price } = itemDetails;
+  const searchResult = { sku: id, name: title, salePrice: price };
+  const cartItem = createCartItemElement(searchResult);
+  
+  cartContainer.appendChild(cartItem);
+}
+
+function getProductsButtons() {
+  const buttons = document.querySelectorAll('.item__add');
+
+  buttons.forEach((button) => {
+    button.addEventListener('click', sendToCart);
+  });
+}
+
 async function appendListItems() {
   const container = document.querySelector('.items');
-  const response = await getItemsFromApi('computador');
+  const research = await getItemsFromApi(requisito1, 'computador');
   
-  response.results.forEach(({ id, title, thumbnail }) => {
+  research.results.forEach(({ id, title, thumbnail }) => {
     const productInfo = { sku: id, name: title, image: thumbnail };
 
     container.appendChild(createProductItemElement(productInfo));
   });
+
+  getProductsButtons();
 }
 
 window.onload = () => {
