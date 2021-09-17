@@ -55,7 +55,7 @@ const apiMercadoLivre = () => {
 
 const addItemByIdToShop = (idItem) => {
   const returnId = getSkuFromProductItem(idItem);
-  fetch(`https://api.mercadolibre.com/items/${returnId}`)
+  return fetch(`https://api.mercadolibre.com/items/${returnId}`)
     .then((response) => response.json())
     .then(({ id, title, price }) => {
       const priceItem = { sku: id, name: title, salePrice: price };
