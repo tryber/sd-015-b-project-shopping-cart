@@ -29,8 +29,7 @@ function getSkuFromProductItem(item) { // * Requisito 2
 }
 
 function cartItemClickListener(event) {
-  const cartItem = event.target.parentElement; // * Requisito 3
-  cartItem.removeChild(cartItem);
+  event.target.remove(); // * Requisito 3
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) { // * Requisito 2
