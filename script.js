@@ -30,12 +30,17 @@ function createProductItemElement({ sku, name, image }) {
 //   return item.querySelector('span.item__sku').innerText;
 // }
 
+function cartItemClickListener(event) {
+
+}
+
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.addEventListener('click', cartItemClickListener);
   return li;
-}// alterei essa função;
+}
 
 function receiveDataItem(item) {
   const itemData = createCartItemElement({
@@ -46,13 +51,13 @@ function receiveDataItem(item) {
   document.querySelector('.cart__items').appendChild(itemData);
 }
 
-function cartItemClickListener(event) {
+const addCart = (event) => {
   const itemId = event.target.parentNode.firstChild.innerText;
 
   fetch(`${site}/items/${itemId}`)
     .then((response) => response.json())
     .then((dataItem) => receiveDataItem(dataItem));
-}
+};
 
 const fetchProduct = () => fetch(`${site}/sites/MLB/search?q=computador`)
   .then((answer) => answer.json());
@@ -66,7 +71,7 @@ const addSectionProduct = (product) => {
   document.querySelector('.items').appendChild(productData);
 
   const btnsAddToCard = document.querySelectorAll('.item__add');
-  btnsAddToCard.forEach((btn) => btn.addEventListener('click', cartItemClickListener));
+  btnsAddToCard.forEach((btn) => btn.addEventListener('click', addCart));
 };
 
 window.onload = () => {
