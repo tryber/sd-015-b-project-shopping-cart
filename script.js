@@ -40,22 +40,52 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-const promisse = () => {
-  fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
+const createElement = async () => {
+  try {
+    const response = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
+    const listItems = await response.json();
+    return listItems.results.forEach(({ id, title, thumbnail }) => {
+      const resultPromisse = {
+        sku: id,
+        name: title,
+        image: thumbnail,
+      };
+      const classItems = document.querySelector('.items');
+      const Element = createProductItemElement(resultPromisse);
+      classItems.appendChild(Element);
+    });
+  } catch (error) {
+    return console.error('Deu erro na requisição de computadores');
+  }
+};
+
+const getId = async (item) => {
+  const result = getSkuFromProductItem(item);
+  fetch(`https://api.mercadolibre.com/items/${result}`)
   .then((response) => response.json())
-  .then((listItems) => listItems.results.forEach(({ id, title, thumbnail }) => {
-    const resultPromisse = {
+  .then(({ id, title, price }) => {
+    const object = {
       sku: id,
       name: title,
-      image: thumbnail,
+      salePrice: price,
     };
-    const classItems = document.querySelector('.items');
-    const createElement = createProductItemElement(resultPromisse);
-    classItems.appendChild(createElement);
-  }))
-  .catch(() => console.error('Deu erro na requisição'));
+    const olCart = document.querySelector('.cart__items');
+    const liCart = createCartItemElement(object);
+    olCart.appendChild(liCart);
+  })
+  .catch(() => console.error('Deu erro para adicionar ao carrinho'));
+};
+
+const buttonAdd = () => {
+  const items = document.querySelectorAll('.item');
+  items.forEach((item) =>
+    item.lastChild.addEventListener('click', () => getId(item)));
+};
+
+const orderFunction = () => {
+  createElement().then(() => buttonAdd());
 };
 
 window.onload = () => {
-  promisse();
+  orderFunction();
 };
