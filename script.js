@@ -5,10 +5,10 @@ function createProductImageElement(imageSource) {
   return img;
 }
 
-function cartItemClickListener(event) {
-  const cartItems = document.querySelector('.cart__items');
-  cartItems.removeChild(event.target);
-}
+
+function cartItemClickListener(event) { 
+  document.querySelector('.cart__items').removeChild(event.target);
+} 
 
 function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
@@ -86,4 +86,5 @@ window.onload = () => {
   listProducts();
   loadStorage();
   loading();
+  
 };
