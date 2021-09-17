@@ -104,6 +104,10 @@ function addToCart(event) {
     .then(({ id, title, price }) => addToCartResponse(id, title, price));
 }
 
+function emptyCart() {
+  cartItems.innerHTML = '';
+}
+
 function initialize() {
   const localStorageCart = window.localStorage.getItem('product');
   cartItems.innerHTML = localStorageCart;
@@ -113,6 +117,10 @@ function initialize() {
   .then(() => { 
     const itemAddButton = document.querySelectorAll('.item__add');
     itemAddButton.forEach((btn) => btn.addEventListener('click', addToCart));
+  })
+  .then(() => {
+    const emptyBtn = document.querySelector('.empty-cart');
+    emptyBtn.addEventListener('click', emptyCart);
   });
 }
 
