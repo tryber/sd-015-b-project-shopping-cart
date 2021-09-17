@@ -52,7 +52,7 @@ function getSkuFromProductItem(item) {
 async function cartItemClickListener(event) {
   const item = event.target.parentElement;
   const itemID = getSkuFromProductItem(item);
-  fetchProduct(itemID);
+  await fetchProduct(itemID);
 }
 
 function createProductItemElement({ sku, name, image }) {
