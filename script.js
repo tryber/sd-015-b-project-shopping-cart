@@ -46,12 +46,12 @@ const createProductList = async () => {
   const responseJson = await responseFetch.json();
   responseJson.results.forEach((element) => {
     const { id, title, thumbnail } = element;
-    const item = createProductImageElement({ sku: id, name: title, image: thumbnail });
+    const item = createProductItemElement({ sku: id, name: title, image: thumbnail });
     const itemsList = document.querySelector('.items');
     itemsList.appendChild(item);
   });
 };
 
 window.onload = async () => {
-  await createProductList();
+  await createProductList(); // * Requisito 1
 };
