@@ -38,7 +38,7 @@ function createProductItemElement({ sku, name, image }) {
 //   return li;
 // }
 
-const computersArrayPromise = new Promise((resolve, reject) => {
+const computersArrayPromise = new Promise((resolve, _) => {
   fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
     .then((result) => result.json())
     .then((resultJson) => resolve(resultJson.results));
