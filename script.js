@@ -27,6 +27,15 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
+function resetCartItems() {
+  const ol = document.createElement('ol');
+  const olForReset = document.querySelector('#cart__items');
+  const cart = document.querySelector('.cart');
+  olForReset.remove();
+  ol.classList.add('cart__items');
+  cart.append(ol);
+}
+
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
@@ -119,7 +128,7 @@ async function takeComputerID(element) {
 
 function addListenersToBtns() {
   const allItems = document.querySelectorAll('.item');
-  
+
   allItems.forEach((item) => item.lastChild.addEventListener('click', (() => {
     takeComputerID(item);
   })));
@@ -135,4 +144,6 @@ function execOrder() {
 window.onload = () => {
   if (retrieveCart) retrieveSavedCart();
   execOrder();
+  const resetBtn = document.querySelector('.empty-cart');
+  resetBtn.addEventListener('click', resetCartItems);
 };
