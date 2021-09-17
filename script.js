@@ -106,6 +106,8 @@ function addToCart(event) {
 
 function emptyCart() {
   cartItems.innerHTML = '';
+  totalValueCart.innerText = '00.00';
+  window.localStorage.setItem('product', cartItems.innerHTML);
 }
 
 function initialize() {
@@ -126,4 +128,4 @@ function initialize() {
 
 window.onload = () => { 
   initialize();
- };
+};
