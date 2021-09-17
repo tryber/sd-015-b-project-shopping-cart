@@ -32,7 +32,7 @@ function cartItemClickListener(event) {
   // coloque seu código aqui
 }
 
-// commit
+// commitas
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
