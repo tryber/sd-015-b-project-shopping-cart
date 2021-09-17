@@ -37,7 +37,7 @@ async function totalPrice() {
     const selected = computersKeys.find((computer) => li.id === computers.results[computer].id);
     resultTotalPrice.push(computers.results[selected].price);
   });
-  const priceTotal = resultTotalPrice.reduce((acc, curr) => acc + curr);
+  const priceTotal = resultTotalPrice.reduce((acc, curr) => acc + curr, 0);
   const spanTotalPrice = document.querySelector('.total-price');
   spanTotalPrice.innerHTML = priceTotal;
 }
@@ -45,6 +45,15 @@ async function totalPrice() {
 function cartItemClickListener(event) {
   event.target.remove();
   totalPrice();
+}
+
+function clearCart() {
+  const buutonClear = document.querySelector('.empty-cart');
+  const lis = document.querySelectorAll('li');
+  buutonClear.addEventListener('click', () => {
+    lis.forEach((li) => li.remove());
+    totalPrice();
+  });
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -66,6 +75,7 @@ async function searchComputer(item) {
     salePrice: infoComputer.price,
   };
   ol.appendChild(createCartItemElement(objInfoComputer));
+  clearCart();
   totalPrice();
 }
 
