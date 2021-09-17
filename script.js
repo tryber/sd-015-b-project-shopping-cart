@@ -30,6 +30,8 @@ function getSkuFromProductItem(item) {
 
 function cartItemClickListener(event) {
   // coloque seu código aqui
+  const element = event.target;
+  element.remove();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -75,7 +77,7 @@ function makeObjForCartItem(product) {
 async function getSingleProduct(id) {
   const product = await fetch(`https://api.mercadolibre.com/items/${id}`);
   const productConverted = await product.json();
-  
+
   return productConverted;
 }
 
