@@ -12,32 +12,59 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({ sku, name, image }) {
+function createProductItemElement({ id, title, thumbnail }) {
   const section = document.createElement('section');
+  const sectionMaster = document.querySelector('section.items');
   section.className = 'item';
 
-  section.appendChild(createCustomElement('span', 'item__sku', sku));
-  section.appendChild(createCustomElement('span', 'item__title', name));
-  section.appendChild(createProductImageElement(image));
+  section.appendChild(createCustomElement('span', 'item__id', id));
+  section.appendChild(createCustomElement('span', 'item__title', title));
+  section.appendChild(createProductImageElement(thumbnail));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
+  sectionMaster.append(section);
 
   return section;
 }
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
+function getIdFromProductItem(item) {
+  return item.querySelector('span.item__id').innerText;
 }
 
 function cartItemClickListener(event) {
   // coloque seu código aqui
 }
 
-function createCartItemElement({ sku, name, salePrice }) {
+function createCartItemElement({ id, name, price }) {
+  const ol = document.querySelector('ol.cart__items');
   const li = document.createElement('li');
+
   li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.innerText = `ID: ${id} | NAME: ${name} | PRICE: $${price}`;
   li.addEventListener('click', cartItemClickListener);
+  ol.appendChild(li);
   return li;
 }
 
-window.onload = () => { };
+function requestApiItem(ItemID) {
+  return fetch(`https://api.mercadolibre.com/items/${ItemID}`)
+    .then((response) => response.json().then((data) => {
+      console.log(data);
+      createCartItemElement(data);
+    }));
+}
+
+function requestApiMercado() {
+  return fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
+    .then((response) => response.json().then((data) => {
+  // console.log('dados convertidos');
+  // console.log(data.results[0]);
+  data.results.forEach((element) => createProductItemElement(element));
+  
+  return data;
+}));
+}
+
+window.onload = () => { 
+  requestApiMercado();
+  console.log(requestApiItem('MLB1607748387'));
+ };
