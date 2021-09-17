@@ -71,14 +71,12 @@ function getCartProductIdList() {
   const cartProductsLis = cartOl.querySelectorAll('li');
   const cartProductsIds = [];
   cartProductsLis.forEach((product) => {
-    const productInnerText = product.innerText;
-    const productId = productInnerText.slice(5, 18);
-    cartProductsIds.push(productId);
+    cartProductsIds.push(product.innerHTML);
   });
   return cartProductsIds;
 }
 
-function saveCart() {
+async function saveCart() {
   const cartProductsIdsList = getCartProductIdList();
   localStorage.setItem('cartProductsIds', JSON.stringify(cartProductsIdsList));
 }
@@ -103,31 +101,44 @@ async function addItemToCart(id) {
   const cartProductObj = makeObjForCartItem(productPromise);
   const cartItemElement = createCartItemElement(cartProductObj);
   cartItemsSection.appendChild(cartItemElement);
-  saveCart();
+}
+
+function creatSavedLi(innerHtml) {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = innerHtml;
+  li.addEventListener('click', cartItemClickListener);
+  return li;
+}
+function addSavedProductToCart(product) {
+  const cartItemsSection = document.querySelector('.cart__items');
+  const cartSavedLi = creatSavedLi(product);
+  cartItemsSection.appendChild(cartSavedLi);
 }
 
 function getSavedCart() {
   if (localStorage.cartProductsIds) {
     const savedCartProducts = JSON.parse(localStorage.getItem('cartProductsIds'));
     if (savedCartProducts.length > 0) {
-      savedCartProducts.forEach((product) => addItemToCart(product));
+      savedCartProducts.forEach((product) => addSavedProductToCart(product));
     }
   }
 }
 
 function creatBodyListeners() {
-  document.body.addEventListener('click', (event) => {
+  document.body.addEventListener('click', async (event) => {
     const element = event.target;
     if (element.classList.contains('item__add')) {
       const productElement = element.parentElement;
       const productId = getSkuFromProductItem(productElement);
-      addItemToCart(productId);
+      await addItemToCart(productId);
+      saveCart();
     }
   });
 }
 
-window.onload = () => {
+window.onload = async () => {
   generateProductList('computador');
   creatBodyListeners();
-  getSavedCart();
+  await getSavedCart();
 };
