@@ -20,7 +20,7 @@ function createProductItemElement({ sku, name, image }) {
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-
+  
   return section;
 }
 
@@ -29,7 +29,7 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
+  event.target.remove();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -39,9 +39,35 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
+
+const requestAndAddToCart = async (event) => {
+  try {
+    const id = event.target.parentNode.firstChild;
+    const response = await fetch(`https://api.mercadolibre.com/items/${id.innerText}`);
+    const convertedResponse = await response.json();
+    const idNameSalePrice = { 
+      sku: convertedResponse.id, 
+      name: convertedResponse.title, 
+      salePrice: convertedResponse.price, 
+    };
+    const returnedElement = createCartItemElement(idNameSalePrice);
+    const cartItems = document.querySelector('.cart__items');
+    cartItems.appendChild(returnedElement);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+function addListnerToButton() {
+  const buttons = document.querySelectorAll('.item__add');
+  buttons.forEach((button) => {
+  button.addEventListener('click', requestAndAddToCart);
+  });
+}
+
 const requestProducts = async (product) => {
   try {
-    const response = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=$${product}`);
+    const response = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${product}`);
     const productJson = await response.json();
     const finalResult = productJson.results;
 
@@ -51,6 +77,7 @@ const requestProducts = async (product) => {
       const mainSection = document.querySelector('.items');
       mainSection.appendChild(appendProducts);
     });
+    addListnerToButton();
   } catch (error) {
     console.log(error);
   }
