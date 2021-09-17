@@ -1,6 +1,16 @@
+function load() {
+  const loading = document.createElement('span');
+  loading.classList.add('loading');
+  loading.innerText = 'loading';
+  document.body.appendChild(loading);
+}
+
 async function searchMercadoLivre() {
+  load();
   const apiProducts = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
   const productsJson = await apiProducts.json();
+  const loading = document.querySelector('.loading');
+  loading.parentNode.removeChild(loading);
   return productsJson;
 }
 
@@ -25,6 +35,7 @@ function createCustomElement(element, className, innerText) {
 }
 
 function updatePrice(price, operation) {
+  // trapaça feia, pq usar o window.onload é muito chato
   const totalPrice = document.getElementsByClassName('total-price')[0];
   let total = 0;
   if (totalPrice.innerText) {
@@ -41,9 +52,9 @@ function updatePrice(price, operation) {
 }
 
 // para que serve isso?
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
+// function getSkuFromProductItem(item) {
+//   return item.querySelector('span.item__sku').innerText;
+// }
 
 function cartItemClickListener(event) {
   const li = event.path[0];
@@ -62,6 +73,7 @@ function createCartItemElement({ sku, name, salePrice }) {
 }
 
 async function addToList(id) {
+  // mesma trapaça da linha 28
   const ol = document.getElementsByClassName('cart__items')[0];
   const { title, price } = await productMercadoLivre(id);
   const object = {
