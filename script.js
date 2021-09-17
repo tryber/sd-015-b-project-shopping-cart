@@ -44,7 +44,7 @@ function createCartItemElement({ sku, name, salePrice }) {
 
 // 1. Crie uma listagem de produtos
 function createProductListing() {
-  try{
+  try {
   const fetchML = fetch(mercadoLivreApi)
   .then((responseThen) => responseThen.json())
   .then((productList) => productList.results.forEach(({ id, title, thumbnail }) => {
