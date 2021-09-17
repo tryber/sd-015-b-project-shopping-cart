@@ -28,8 +28,8 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-function cartItemClickListener() {
-  // coloque seu código aqui
+function cartItemClickListener(event) {
+  event.target.remove();
 }
 
 // commitas
@@ -71,5 +71,5 @@ const buttonToCart = () => {
 
 window.onload = () => { 
   apiMercadoLivre()
-    .then(() => buttonToCart()); 
+    .then(() => buttonToCart());
 };
