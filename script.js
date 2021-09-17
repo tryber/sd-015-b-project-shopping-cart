@@ -1,3 +1,43 @@
+function saveCart() {
+  const cartHtml = document.querySelector('.cart__items').innerHTML;
+  localStorage.setItem('cart', cartHtml);
+}
+
+function updatePrice() {
+  const totalElement = document.querySelector('.total-price');
+  const cartItems = document.querySelectorAll('.cart__item');
+
+  let total = 0;
+
+  for (let i = 0; i < cartItems.length; i += 1) {
+    const price = cartItems[i].getAttribute('price');
+    total += parseFloat(price);
+  }
+
+  totalElement.innerText = total;
+
+}
+
+function cartItemClickListener(event) {
+  // coloque seu código aqui
+  const product = event.target;
+  product.remove();
+  updatePrice();
+  saveCart();
+}
+
+function loadCart() {
+  const savedCart = localStorage.getItem('cart');
+  const cart = document.querySelector('.cart__items');
+  cart.innerHTML = savedCart;
+  const cartItems = document.querySelectorAll('.cart__item');
+
+  for (let index = 0; index < cartItems.length; index += 1) {
+    const item = cartItems[index];
+    item.addEventListener('click', cartItemClickListener);
+  }
+}
+
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
@@ -5,6 +45,7 @@ function getSkuFromProductItem(item) {
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
+  li.setAttribute('price', salePrice)
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   return li;
@@ -27,7 +68,8 @@ async function addToCartClickListener(event) {
   const cart = document.querySelector('.cart__items');
   const cartItemElement = createCartItemElement({ sku, name, salePrice });
   cart.appendChild(cartItemElement);
-
+  updatePrice();
+  saveCart();
 }
 
 function createProductImageElement(imageSource) {
@@ -75,20 +117,13 @@ async function fetchProducts(product = 'computador') {
     const response = await fetch(ENDPOINT);
     const { results } = await response.json();
     appendProducts(results);
-    console.log(results);
   } catch (e) {
     console.error(e);
   }
 }
 
-function cartItemClickListener(event) {
-  // coloque seu código aqui
-  const product = event.target();
-
-}
-
-
-
-window.onload = () => {   
+window.onload = () => {
   fetchProducts(); 
+  loadCart();
+  updatePrice();
 };
