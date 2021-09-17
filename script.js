@@ -119,7 +119,16 @@ function loadCart() {
   sumTotal();
 }
 
+function emptyCart() {
+  const cart = document.querySelectorAll('.cart__item');
+  cart.forEach((item) => item.remove());
+  sumTotal();
+}
+
 window.onload = () => {
   fetchProducts();
   loadCart();
+
+  const button = document.querySelector('.empty-cart');
+  button.addEventListener('click', emptyCart);
 };
