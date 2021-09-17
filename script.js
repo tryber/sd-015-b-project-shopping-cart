@@ -14,18 +14,6 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({ sku, name, image }) {
-  const section = document.createElement('section');
-  section.className = 'item';
-
-  section.appendChild(createCustomElement('span', 'item__sku', sku));
-  section.appendChild(createCustomElement('span', 'item__title', name));
-  section.appendChild(createProductImageElement(image));
-  section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-
-  return section;
-}
-
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
@@ -40,6 +28,38 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   return li;
+}
+
+// 2. Adicione o produto ao carrinho de compras
+async function addProductCart() {
+  try {
+  const productId = getSkuFromProductItem(this);
+  const url = `https://api.mercadolibre.com/items/${productId}`;
+  const myFetch = await fetch(url);
+  const searchFetch = await myFetch.json();
+  const item = { 
+    sku: searchFetch.id, 
+    name: searchFetch.title, 
+    salePrice: searchFetch.price,
+  }; 
+  const productToCart = createCartItemElement(item);
+  const cart = document.querySelector('.cart__items');
+  cart.appendChild(productToCart);
+  } catch (error) {
+    console.log('error');
+  }
+}
+
+function createProductItemElement({ sku, name, image }) {
+  const section = document.createElement('section');
+  section.className = 'item';
+
+  section.appendChild(createCustomElement('span', 'item__sku', sku));
+  section.appendChild(createCustomElement('span', 'item__title', name));
+  section.appendChild(createProductImageElement(image));
+  section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
+  section.addEventListener('click', addProductCart);
+  return section;
 }
 
 // 1. Crie uma listagem de produtos
@@ -58,7 +78,7 @@ function createProductListing() {
     section.appendChild(creationProductElement);
     }));
   } catch (error) {
-    console.log('Esse endereço não foi encontrado.');
+    console.log('error');
   }
 }
 

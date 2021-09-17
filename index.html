@@ -20,3 +20,13 @@
     </section>
   </body>
 </html>
+
+<!-- const id = getSkuFromProductItem(this);
+fetch(`https://api.mercadolibre.com/items/${id}`)
+  .then((product) => product.json())
+  .then(({ title, price }) => {
+    const item = { sku: id, name: title, salePrice: price };
+    const cart = document.querySelector('.cart__items');
+    const productToCart = createCartItemElement(item);
+    cart.appendChild(productToCart);
+  }); -->
