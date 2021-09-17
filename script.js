@@ -23,12 +23,8 @@ function sumTotalPrice() {
       sum += Number(((currentItem.innerText.split(':'))[3]).trim().slice(1));
       return sum;
     }, 0);
-  let total = document.querySelector('.total-price p');
-  if (total === null) {
-    total = document.createElement('p');
-  }
-  total.innerText = result;
-  getTotalPriceContainer.appendChild(total);
+
+    getTotalPriceContainer.innerText = result;
 }
 
 function updateLocalStorage() {
@@ -80,6 +76,10 @@ function createProductItemElement({ sku, name, image }) {
 
   return section;
 }
+function showContent() {
+  document.querySelector('.loading').remove();
+  document.querySelector('.container').style.display = 'flex';
+}
 
 const fetchProduct = (product) => {
   fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${product}`)
@@ -89,7 +89,8 @@ const fetchProduct = (product) => {
         const productItem = { sku: id, name: title, image: thumbnail };
         const itemSection = createProductItemElement(productItem);
         document.querySelector('.items').appendChild(itemSection);
-      }));
+      }))
+    .then(() => showContent());
 };
 
 btnEmptyCart.addEventListener('click', () => {
@@ -100,9 +101,7 @@ btnEmptyCart.addEventListener('click', () => {
 
 function loadSavedCart() {
   const savedCart = localStorage.getItem('cartItems');
-  if (savedCart !== null || undefined) {
   getCartItems.innerHTML = savedCart;
-  }
   document.querySelectorAll('.cart__item').forEach((item) => {
     item.addEventListener('click', cartItemClickListener);
   });
