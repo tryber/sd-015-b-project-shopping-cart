@@ -48,6 +48,8 @@
   display: flex;
   flex-basis: 30%;
   flex-flow: column wrap;
+  border: 1px solid black;
+  padding: 0px 10px;
 }
 
 .cart .cart__title {
