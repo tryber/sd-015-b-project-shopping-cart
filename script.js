@@ -97,6 +97,15 @@ function addProducts({ id, title, thumbnail }) {
   const items = document.querySelector('.items');
   items.appendChild(productElementItem);
 }
+
+function removeAll() {
+  const ol = document.querySelector('.cart__items');
+  const totalPrice = document.querySelector('.total-price');
+  ol.innerHTML = '';
+  totalPrice.innerHTML = '';
+  localStorage.setItem('content', ol.innerHTML);
+  localStorage.setItem('total', '');
+}
 window.onload = () => { 
   searchMercadoLivre().then((jsonData) => {
     const { results } = jsonData;
@@ -104,6 +113,8 @@ window.onload = () => {
   });
   const ol = document.querySelector('.cart__items');
   const totalPrice = document.querySelector('.total-price');
+  const emptyCart = document.querySelector('.empty-cart');
+  emptyCart.addEventListener('click', removeAll);
   if (localStorage.getItem('content')) {
     ol.innerHTML = localStorage.getItem('content');
     totalPrice.innerText = localStorage.getItem('total');
