@@ -88,7 +88,7 @@ async function getProductsList() {
   const url = `https://api.mercadolibre.com/sites/MLB/search?q=$${query}`;
   const reponse = await fetch(url);
   const jsonResponse = await reponse.json();
-  const resultsList = await jsonResponse.results; 
+  const resultsList = await jsonResponse.results;
   return resultsList;
 }
 
@@ -100,17 +100,11 @@ function addElementToParent(element, parentSelector) {
 async function appendProductList() {
   const productsList = await getProductsList();
   productsList.forEach((product) => {
-    const { id, title, price } = product;
-    const element = createProductItemElement({ sku: id, name: title, salePrice: price });
+    const { id, title, thumbnail } = product;
+    const element = createProductItemElement({ sku: id, name: title, image: thumbnail });
     addElementToParent(element, ('section.items'));
   });
-}
-
-function appendToCart(element) {
-  const parent = document.querySelector('ol.cart__items');
-  parent.appendChild(element);
-  saveCartOnLocalStorage();
-  calculateCartTotal();
+  removeLoadingElement();
 }
 
 async function addToCart(event) {
@@ -121,7 +115,9 @@ async function addToCart(event) {
   const { title, price } = product;
   const cartItemElement = createCartItemElement({ sku: id, name: title, salePrice: price });
   cartItemElement.addEventListener('click', cartItemClickListener);
-  appendToCart(cartItemElement);
+  addElementToParent(cartItemElement, 'ol.cart__items');
+  saveCartOnLocalStorage();
+  calculateCartTotal();
 }
 
 function emptyCart() {
@@ -139,7 +135,20 @@ function addEventListeners() {
   emptyCartButtom.addEventListener('click', emptyCart)
 }
 
+function appendLoadingElement() {
+  const loadingElement = document.createElement('p');
+  loadingElement.className = 'loading';
+  loadingElement.innerText = 'Loading...';
+  addElementToParent(loadingElement, 'section.items');
+}
+
+function removeLoadingElement() {
+  const loadingElement = document.querySelector('.loading');
+  loadingElement.remove();
+}
+
 window.onload = async () => {
+  appendLoadingElement();
   await appendProductList();
   addEventListeners();
   loadCartFromLocalStorage();
