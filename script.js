@@ -14,12 +14,6 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-async function requestComputador() {
-  const data = await fetch(API_ML);
-  const result = await data.json();
-  return result;
-}
-
 function createProductItemElement({ id, name, image }) {
   const section = document.createElement('section');
   section.className = 'item';
@@ -31,6 +25,12 @@ function createProductItemElement({ id, name, image }) {
   
   return section;
 }
+async function requestComputador() {
+  const data = await fetch(API_ML);
+  const result = await data.json();
+  return result;
+}
+
 
 function addProducts(products) {
   const section = document.querySelector('.items');
@@ -61,6 +61,6 @@ window.onload = async () => {
     const product = await requestComputador();
     addProducts(product);
   } catch (error) {
-    console.log(error);
+    throw new Error(error);
   }
  };
