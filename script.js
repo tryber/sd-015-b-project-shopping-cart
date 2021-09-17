@@ -1,3 +1,5 @@
+const cartItemsOl = '.cart__items';
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -9,9 +11,17 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+const saveCartLocalStorage = () => {
+  const cartItems = document.querySelector(cartItemsOl);
+
+  localStorage.setItem('myCart', cartItems.innerHTML);
+};
+
 function cartItemClickListener(event) {
   // coloque seu código aqui
   event.target.remove();
+
+  saveCartLocalStorage();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -29,10 +39,16 @@ const addToCartEndpoint = async (event) => {
   const itemId = getSkuFromProductItem(currentProduct);
   const url = `https://api.mercadolibre.com/items/${itemId}`;
 
-  const { id: sku, title: name, price: salePrice } = await fetchAPI(url);
-  const cartItems = document.querySelector('.cart__items');
+  try {
+    const { id: sku, title: name, price: salePrice } = await fetchAPI(url);
+    const cartItems = document.querySelector(cartItemsOl);
 
-  cartItems.append(createCartItemElement({ sku, name, salePrice }));
+    cartItems.append(createCartItemElement({ sku, name, salePrice }));
+    saveCartLocalStorage();
+  } catch (e) {
+    console.log('Error!!!');
+    console.log(e);
+  }
 };
 
 function createCustomElement(element, className, innerText) {
@@ -75,14 +91,23 @@ const createItemProductSection = async () => {
 };
 
 const emptyCart = () => {
-  const listedCartItems = document.querySelector('.cart__items');
+  const listedCartItems = document.querySelector(cartItemsOl);
 
   listedCartItems.innerHTML = '';
   localStorage.clear();
 };
 
+const restoreCartStorage = () => {
+  const listedCartItems = document.querySelector(cartItemsOl);
+  const myCartStorage = localStorage.getItem('myCart');
+
+  listedCartItems.innerHTML = myCartStorage;
+  listedCartItems.addEventListener('click', cartItemClickListener);
+};
+
 window.onload = () => {
   createItemProductSection();
+  restoreCartStorage();
 
   const emptyCartButton = document.querySelector('.empty-cart');
   emptyCartButton.addEventListener('click', emptyCart);
