@@ -42,8 +42,23 @@ function saveCart() {
   localStorage.setItem('currentCart', JSON.stringify(itemForLocalStorage));
 }
 
+function calculeTotalAmount() {
+  const allItemsCart = [...document.querySelectorAll('.cart__item')];
+  const amount = document.querySelector('.total-price');
+
+  const allValues = allItemsCart.map((item) => {
+    const valueStr = item.innerText.split('$').reverse()[0];
+    const valueNum = parseFloat(valueStr, 10);
+    return valueNum;
+  });
+
+  const sum = allValues.reduce((total, current) => (total + current), 0);
+  amount.innerText = `${sum}`;
+}
+
 function cartItemClickListener(event) {
   event.target.remove();
+  calculeTotalAmount();
   saveCart();
 }
 
@@ -97,6 +112,7 @@ async function takeComputerID(element) {
       };
       const ol = document.querySelector('.cart__items');
       ol.append(createCartItemElement(output));
+      calculeTotalAmount();
       saveCart();
     });
 }
@@ -112,6 +128,7 @@ function addListenersToBtns() {
 function execOrder() {
   requestMlComputador(mercadoLivreApi)
     .then(() => addListenersToBtns())
+    .then(() => calculeTotalAmount())
     .catch(() => console.error('Opa, esse endereço não foi encontrado.'));
 }
 

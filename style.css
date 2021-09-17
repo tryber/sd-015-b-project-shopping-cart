@@ -55,3 +55,26 @@
   font-size: 16pt;
   text-align: center;
 }
+
+.cart__items {
+  padding: 0;
+}
+
+.cart__items > li {
+  list-style: none;
+  margin: 7px 0;
+  padding: 5px;
+  border-radius: 5px;
+  background-color: white;
+  transition: 2s;
+}
+
+.cart__items > li:hover {
+  background-color: green;
+  transition: 1.5s;
+}
+
+.container-amount {
+  text-align: center;
+  margin: 10px 0;
+}
