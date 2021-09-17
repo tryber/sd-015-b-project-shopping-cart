@@ -117,11 +117,23 @@ function appendProducts(productsJson) {
   });
 }
 
+function showLoad() {
+  const loader = document.querySelector('.load-container');
+  loader.classList.add('show');
+}
+
+function hideLoad() {
+  const loader = document.querySelector('.load-container');
+  loader.remove();
+}
+
 async function fetchProducts(product = 'computador') {
   const ENDPOINT = `https://api.mercadolibre.com/sites/MLB/search?q=${product}`;
   try {
+    showLoad();
     const response = await fetch(ENDPOINT);
     const { results } = await response.json();
+    hideLoad();
     appendProducts(results);
   } catch (e) {
     console.error(e);
