@@ -26,13 +26,30 @@ function createProductItemElement({ sku, name, image }) {
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
+ 
+async function totalPrice() {
+  const reponse = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=$computador');
+  const computers = await reponse.json();
+  const lis = document.querySelectorAll('li');
+  const resultTotalPrice = [];
+  lis.forEach((li) => {
+    const computersKeys = Object.keys(computers.results);
+    const selected = computersKeys.find((computer) => li.id === computers.results[computer].id);
+    resultTotalPrice.push(computers.results[selected].price);
+  });
+  const priceTotal = resultTotalPrice.reduce((acc, curr) => acc + curr);
+  const spanTotalPrice = document.querySelector('.total-price');
+  spanTotalPrice.innerHTML = priceTotal;
+}
 
 function cartItemClickListener(event) {
   event.target.remove();
+  totalPrice();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
+  li.id = sku;
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
@@ -49,6 +66,7 @@ async function searchComputer(item) {
     salePrice: infoComputer.price,
   };
   ol.appendChild(createCartItemElement(objInfoComputer));
+  totalPrice();
 }
 
 function addToCard() {
@@ -63,8 +81,8 @@ function addToCard() {
 
 async function fetchComputers() {
   const reponse = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=$computador');
-  const sectionItems = document.querySelector('.items');
   const computers = await reponse.json();
+  const sectionItems = document.querySelector('.items');
   Object.keys(computers.results).forEach((computer) => {
     const objComputer = {
       sku: computers.results[computer].id,
