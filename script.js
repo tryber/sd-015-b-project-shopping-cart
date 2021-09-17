@@ -32,7 +32,7 @@ function cartItemClickListener(event) {
   // coloque seu código aqui
 }
 
-function createCartItemElement({ sku, name, salePrice }) {
+function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
@@ -52,6 +52,22 @@ const createProductList = async () => {
   });
 };
 
+// * Requisito 2
+const addProductShoppingCart = async () => {
+  const button = document.querySelector('.item__add');
+  button.forEach((element) => {
+    element.addEventListener('click', async (event) => {
+      const itemID = getSkuFromProductItem(event.target.parentElement); // ref.: https://stackoverflow.com/questions/29168719/can-you-target-an-elements-parent-element-using-event-target
+      const responseFetch = await fetch(`https://api.mercadolibre.com/items/${itemID}`);
+      const responseJson = await responseFetch.json();
+      const liProducts = createCartItemElement(responseJson);
+      const cartItems = document.querySelector('.cart__items');
+      cartItems.appendChild(liProducts);
+    });
+  });
+};
+
 window.onload = async () => {
   await createProductList(); // * Requisito 1
+  await addProductShoppingCart(); // * Requisito 2
 };
