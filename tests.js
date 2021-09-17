@@ -1,8 +1,6 @@
-async function getProductsList() {
-  const query = 'computador'
-  const url = `https://api.mercadolibre.com/sites/MLB/search?q=$${query}`;
-  const reponse = await fetch(url);
-  const jsonResponse = await reponse.json();
-  console.log(jsonResponse.results)
-}
-getProductsList()
+const string = `SKU: MLB1937079157 | NAME: Pc Computador Cpu Core I5 650 + Ssd 240gb, 8gb Memória Ram 
+| PRICE: $1419.85`
+
+const number = string.match(/(PRICE: \W)/).index + 8
+
+console.log(Number(string.slice(number)))
