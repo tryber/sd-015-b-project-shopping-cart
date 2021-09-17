@@ -1,4 +1,5 @@
 const retrieveCart = localStorage.getItem('SavedCart');
+const cartItems = ('.cart__items');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -31,10 +32,10 @@ function getSkuFromProductItem(item) {
 }
 
 function saveStorage() {
-  const cartItems = [...document.querySelectorAll('.cart__item')];
+  const cartItem = [...document.querySelectorAll('.cart__item')];
   const ItemStorage = [];
   
-  cartItems.forEach((item) => {
+  cartItem.forEach((item) => {
     ItemStorage.push(item.innerHTML);
   });
   
@@ -44,7 +45,7 @@ function saveStorage() {
 const totalPrice = '.total-price';
 async function payment() {
   const totalCart = [...document.querySelectorAll('.cart__item')];
-  document.querySelector(totalPrice).innerHTML = 0;
+  document.querySelector(totalPrice).innerText = 0;
   
   const getAllValues = totalCart.map((value) => {
     const valueString = value.innerText.split('$').reverse()[0];
@@ -53,7 +54,7 @@ async function payment() {
   });
   
   const sum = getAllValues.reduce((result, current) => (result + current), 0);
-  document.querySelector(totalPrice).innerHTML = `${sum}`;
+  document.querySelector(totalPrice).innerText = `${sum}`;
 }
 
 function cartItemClickListener(event) {
@@ -64,7 +65,7 @@ function cartItemClickListener(event) {
 
 function resetButton() {
   const ol = document.createElement('ol');
-  const olReset = document.querySelector('.cart__items');
+  const olReset = document.querySelector(cartItems);
   const cartArea = document.querySelector('.cart');
   olReset.remove();
   ol.classList.add('cart__items');
@@ -89,10 +90,10 @@ const addToCart = async (item) => {
         name: title,
         salePrice: price,
       };
-      const ol = document.querySelector('.cart__items');
+      const ol = document.querySelector(cartItems);
       ol.append(createCartItemElement(idInfos));
-      saveStorage();
       payment();
+      saveStorage();
     });
 };
 
@@ -119,7 +120,7 @@ function recoverySavedList() {
     
   recoveryList.forEach((item) => {
     const li = document.createElement('li');
-    const listItems = document.querySelector('.cart__items');
+    const listItems = document.querySelector(cartItems);
       li.innerHTML = item;
       li.classList.add('cart__item');
       li.addEventListener('click', cartItemClickListener);
