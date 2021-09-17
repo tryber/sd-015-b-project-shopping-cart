@@ -42,7 +42,7 @@ function cartItemClickListener(event) {
     .target.innerText.slice(indexPrice + 1, lastIndex)) * 100) / 100;
   const totalPrice = document.querySelector('.total-price');
   const oldPrice = Math.round(parseFloat(totalPrice.innerText) * 100) / 100;
-  totalPrice.innerText = oldPrice - price;
+  totalPrice.innerText = Math.round((oldPrice - price) * 100) / 100;
   localStorage.setItem('totalprice', totalPrice.innerText);
   event.target.remove();
   const htmlCard = cardItemsElement.innerHTML;
@@ -100,12 +100,8 @@ const addToCart = async (e) => {
 };
 
 const loadingfc = async () => {
-  const loading = document.createElement('div');
-  loading.className = 'loading';
-  loading.innerText = 'LOADING...';
-  document.querySelector('.items').appendChild(loading);
   try {
-    await getProductsArray().then(document.querySelector('.loading').remove());
+  setTimeout(() => getProductsArray().then(document.querySelector('.loading').remove()), 1000);
   } catch (err) { console.error(err); }
 };
 
@@ -116,6 +112,10 @@ const clearCard = () => {
 };
 
 window.onload = () => {
+const loading = document.createElement('div');
+loading.className = 'loading';
+loading.innerText = 'LOADING...';
+document.querySelector('.items').appendChild(loading);
 loadingfc();
 if (localStorage.getItem('totalprice') === '' || !localStorage.getItem('totalprice')) {
   localStorage.setItem('totalprice', 0);
