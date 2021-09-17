@@ -1,3 +1,5 @@
+const requestURL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
+
 function createProductImageElement(imageSource) {
   // Cria elemento com os dados do createProductItemElement
   const img = document.createElement('img');
@@ -46,7 +48,14 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-const apiRequest = () => {
+const apiRequest = (requestURL) => {
+  return fetch(requestURL) // Requisita URL
+  .then(result => {
+    result.json();
+    console.log(result);
+  }) // Converte Binário para Json
 
 }
-window.onload = () => { };
+window.onload = () => {
+  apiRequest(requestURL);
+ };
