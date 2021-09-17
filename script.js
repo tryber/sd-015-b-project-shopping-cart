@@ -9,6 +9,8 @@ function createProductImageElement(imageSource) {
 
 function cartItemClickListener(event) {
   // coloque seu código aqui
+  const olDad = document.querySelector('.cart__items');
+  olDad.removeChild(event.path[0]);
 }
 
 function createCartItemElement({ id, name, salePrice }) {
@@ -36,9 +38,6 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-// function getSkuFromProductItem(item) {
-//   return item.querySelector('span.item__sku').innerText;
-// }
 function createProductItemElement({ id, name, image }) {
   const section = document.createElement('section');
   section.className = 'item';
