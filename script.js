@@ -31,7 +31,7 @@ function getSkuFromProductItem(item) {
 
 function cartItemClickListener(event) {
   // coloque seu código aqui
-  
+  event.target.remove();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -80,5 +80,5 @@ const API_URL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
 
 window.onload = () => { 
   getProduct()
-  .then(() => botao());
+  .then(() => botao());  
 };
