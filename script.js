@@ -20,6 +20,7 @@ function getSkuFromProductItem(item) {
 
 function cartItemClickListener(event) {
   // coloque seu código aqui
+  event.target.remove(event);
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -33,6 +34,7 @@ function createCartItemElement({ sku, name, salePrice }) {
 // 2. Adicione o produto ao carrinho de compras
 async function addProductCart() {
   try {
+  // A linha 37 foi feito com referencia ao codigo da Annie Haurani, segue o link do repositorio: https://github.com/tryber/sd-015-b-project-shopping-cart/pull/60/commits/217276490c68d9bb5def076fea3a70ccf8099784
   const productId = getSkuFromProductItem(this);
   const url = `https://api.mercadolibre.com/items/${productId}`;
   const myFetch = await fetch(url);
