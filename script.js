@@ -42,21 +42,38 @@ function createCartItemElement({ sku, name, salePrice }) {
 
 function createListOfProducts(productName) {
   const sectionItems = document.querySelector('.items');
-
-  function returnElementFromApi() {
-    return fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${productName}`)
-      .then((result) => result.json())
-      .then((product) => {
-        product.results.forEach(({ id, title, thumbnail }) => {
-          const itemData = { sku: id, name: title, image: thumbnail };
-          const displayProduct = createProductItemElement(itemData);
-          sectionItems.appendChild(displayProduct);
-        });
+  const returnApi = fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${productName}`)
+    .then((result) => result.json())
+    .then((product) => {
+      product.results.forEach(({ id, title, thumbnail }) => {
+        const itemData = { sku: id, name: title, image: thumbnail };
+        const displayProduct = createProductItemElement(itemData);
+        sectionItems.appendChild(displayProduct);
       });
-  }
-  return returnElementFromApi();
+    });
+  return returnApi;
+}
+
+function addProductToCart() {
+  const buttons = document.querySelectorAll('.item__add');
+  const olCart = document.querySelector('.cart__items');
+  const addToCart = buttons.forEach((addButton) => {
+    addButton.addEventListener('click', () => {
+      const productId = addButton.parentNode.firstChild.innerText;
+      const callProductData = fetch(`https://api.mercadolibre.com/items/${productId}`)
+        .then((result) => result.json())
+        .then((product) => {
+          const itemData = { sku: product.id, name: product.title, salePrice: product.price };
+          const createCartItem = createCartItemElement(itemData);
+          olCart.appendChild(createCartItem);
+        });
+      return callProductData;
+    });
+  });
+  return addToCart;
 }
 
 window.onload = () => { 
-  createListOfProducts('computador');
+  createListOfProducts('computador')
+    .then(() => addProductToCart());
 };
