@@ -33,12 +33,19 @@ function cartItemClickListener(event) {
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
-  console.log()
+  console.log(sku, name, salePrice)
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   return li;
+}
+
+async function getProductById(id) {
+  const url = `https://api.mercadolibre.com/items/${id}`;
+  const response = await fetch(url);
+  const jsonResponse = await response.json();
+  return jsonResponse;
 }
 
 async function getProductsList() {
@@ -55,11 +62,39 @@ function addElementToParent(element, parentSelector) {
   parentElment.appendChild(element);
 }
 
-window.onload = async () => {
+async function appendProductList() {
   const productsList = await getProductsList();
   productsList.forEach((product) => {
     const { id, title, price } = product;
     const element = createProductItemElement({ sku: id, name: title, salePrice: price })
     addElementToParent(element, ('section.items'));
   })
+}
+
+function appendToCart(element) {
+  const parent = document.querySelector('ol.cart__items');
+  parent.appendChild(element);
+}
+
+async function addToCart(event) {
+  const buttom = event.target;
+  const idElement = buttom.parentNode.firstChild
+  const id = idElement.innerText;
+  const product = await getProductById(id);
+  const { title, price } = product;
+  const cartItemElement = createCartItemElement({ sku: id, name: title, salePrice: price });
+  console.log(cartItemElement);
+  appendToCart(cartItemElement);
+}
+
+function addEventListeners() {
+  const addToCartButtomsColletction = document.getElementsByClassName('item__add');
+  const addToCartButtomsList = [...addToCartButtomsColletction];
+  addToCartButtomsList.forEach((buttom) => buttom.addEventListener('click', addToCart));
+}
+
+window.onload = async () => {
+  await appendProductList();
+  addEventListeners();
+
 };
