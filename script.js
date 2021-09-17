@@ -30,7 +30,15 @@ function getSkuFromProductItem(item) {
 
 function cartItemClickListener(event) {
   // coloque seu código aqui
-  
+  let target = event.target.innerText;
+  let cart = document.getElementsByClassName('cart__item');
+  for (let index = 0; index < cart.length; index++) {
+    const element = cart[index];
+    if(target == element.innerText){
+      element.remove()
+    }
+    
+  }
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -40,6 +48,8 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////
 
 async function fetchPCs() {
   try {
@@ -64,23 +74,20 @@ async function setupProductList() {
     itemList.append(item)
   })
 
+
   const addButton = document.querySelectorAll('.item__add');
   addButton.forEach(e => {
-    e.addEventListener('click', ( async ({target})=> {
-      let id = target.parentNode.children[0].innerHTML;
-      const data = await fetch(`https://api.mercadolibre.com/items/${id}`);
-      const item = await data.json();
-      let product = {
-        sku: item.id,
-        name: item.title,
-        salePrice: item.price
-      }
-      document.querySelector('.cart__items').append(createCartItemElement(product));
-    }))
+    e.addEventListener('click', (e) => {createCardProduct(e)})
   })
 }
 
-window.onload = () => { 
+const itemsIDs;
+
+async function createCardProduct({target}) {
+  const id = target.parentNode.children[0].innerText;
+}
+
+window.onload = () => {
   setupProductList();
-  
 };
+
