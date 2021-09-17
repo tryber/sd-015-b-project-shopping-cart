@@ -50,11 +50,22 @@ function getSkuFromProductItem(item) {
 }
 
 const cartItems = document.querySelector('.cart__items');
+const totalValueCart = document.createElement('span');
+cartItems.insertAdjacentElement('afterend', totalValueCart);
+totalValueCart.innerText = '00.00';
+totalValueCart.className = 'total-price';
+let totalPriceReturn = 0;
 function cartItemClickListener(event) {
   const targetedLi = event.target;
   const liParent = targetedLi.parentNode;
   liParent.removeChild(targetedLi);
   window.localStorage.setItem('product', cartItems.innerHTML);
+  totalValueCart.innerText = totalPriceReturn;
+
+  const sentence = targetedLi.innerText.split('$');
+  const numberToSub = parseFloat(sentence[1]);
+  totalPriceReturn -= numberToSub;
+  totalValueCart.innerText = totalPriceReturn;
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -65,22 +76,32 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
+function sumValue(itemAdd) {
+  const { salePrice } = itemAdd;
+  totalPriceReturn += salePrice;
+  return totalPriceReturn;
+}
+
+function addToCartResponse(id, title, price) {
+  const itemAdd = {
+    sku: id,
+    name: title,
+    salePrice: price,
+  };
+  const liToAdd = createCartItemElement(itemAdd);
+  cartItems.appendChild(liToAdd);
+  const totalPrice = sumValue(itemAdd);
+  totalValueCart.innerText = totalPrice;
+  window.localStorage.setItem('product', cartItems.innerHTML);
+}
+
 function addToCart(event) {
   const sectionSelected = event.target.parentNode;
   const idToApi = sectionSelected.firstChild.innerText;
   const apiWithId = `https://api.mercadolibre.com/items/${idToApi}`;
   return fetch(apiWithId)
     .then((result) => result.json())
-    .then(({ id, title, price }) => {
-      const itemAdd = {
-        sku: id,
-        name: title,
-        salePrice: price,
-      };
-      const liToAdd = createCartItemElement(itemAdd);
-      cartItems.appendChild(liToAdd);
-      window.localStorage.setItem('product', cartItems.innerHTML);
-    });
+    .then(({ id, title, price }) => addToCartResponse(id, title, price));
 }
 
 function initialize() {
@@ -88,13 +109,13 @@ function initialize() {
   cartItems.innerHTML = localStorageCart;
   const li = document.querySelectorAll('li');
   li.forEach((element) => { element.addEventListener('click', cartItemClickListener); });
-}
-
-window.onload = () => { 
-  initialize();
   fetchApiItems()
   .then(() => { 
     const itemAddButton = document.querySelectorAll('.item__add');
     itemAddButton.forEach((btn) => btn.addEventListener('click', addToCart));
   });
+}
+
+window.onload = () => { 
+  initialize();
  };
