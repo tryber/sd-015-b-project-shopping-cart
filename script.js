@@ -1,4 +1,5 @@
 const existStorage = localStorage.getItem('actualCar');
+const cartItem = ('.cart__item');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -30,8 +31,22 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+const totalPrice = '.total-price';
+function sumCart() {
+  const itemsCart = [...document.querySelectorAll(cartItem)];
+  document.querySelector(totalPrice).innerText = 0;
+  const arrayCart = itemsCart.map((item) => {
+    const valueString = item.innerText.split('$').reverse()[0];
+    const numbers = parseFloat(valueString, 10);
+    console.log(numbers);
+    return numbers;
+  });
+  const sum = arrayCart.reduce((acc, current) => (acc + current), 0);
+  document.querySelector(totalPrice).innerText = `${sum}`;
+}
+
 function savedCar() {
-  const carItems = [...document.querySelectorAll('.cart__item')];
+  const carItems = [...document.querySelectorAll(cartItem)];
   const localStorageItem = [];
 
   carItems.forEach((item) => {
@@ -43,6 +58,7 @@ function savedCar() {
 function cartItemClickListener(event) {
   event.target.remove();
   savedCar();
+  sumCart();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -81,6 +97,7 @@ async function searchId(element) {
     const ol = document.querySelector('.cart__items');
     ol.append(createCartItemElement(output));
     savedCar();
+    sumCart();
   });
 }
 function addListenerButton() {
@@ -97,6 +114,7 @@ function recoveryCar() {
   convertCar.forEach((item) => {
     const li = document.createElement('li');
     li.innerHTML = item;
+    li.classList.add('.cart__item');
     li.addEventListener('click', cartItemClickListener);
     itemsCar.append(li);
   });
