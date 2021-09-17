@@ -61,8 +61,7 @@ const addItemByIdToShop = (idItem) => {
       const priceItem = { sku: id, name: title, salePrice: price };
       const selectCart = document.querySelector('.cart__items');
       selectCart.appendChild(createCartItemElement(priceItem));
-    })
-    .catch(console.error('erro funcao addItemByIdToShop'));
+    });
 };
 
 const buttonToCart = () => {
