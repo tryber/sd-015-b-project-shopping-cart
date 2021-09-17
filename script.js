@@ -5,10 +5,45 @@ function createProductImageElement(imageSource) {
   return img;
 }
 
+const setCartItensOnLocalStorage = (list) => {
+  localStorage.setItem('cartItens', list.innerHTML);
+};
+
+function getSkuFromProductItem(item) {
+  return item.querySelector('span.item__sku').innerHTML;
+}
+
+function cartItemClickListener(event) {
+  event.target.remove();
+}
+
+function createCartItemElement({ id, title, price }) {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${id} | NAME: ${title} | PRICE: $${price}`;
+  li.addEventListener('click', cartItemClickListener);
+  return li;
+}
+
+const getProductID = (event) => {
+  const itemId = getSkuFromProductItem(event.target.parentElement);
+  fetch(`https://api.mercadolibre.com/items/${itemId}`)
+  .then((response) => response.json())
+  .then((product) => {
+    const cartItem = createCartItemElement(product);
+    document.querySelector('.cart__items').appendChild(cartItem);
+  })
+  .then(() => {
+    const cartItens = document.querySelector('.cart__items');
+    setCartItensOnLocalStorage(cartItens);
+  });
+};
+
 function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
   e.className = className;
   e.innerText = innerText;
+  e.addEventListener('click', (event) => getProductID(event));
   return e;
 }
 
@@ -22,22 +57,6 @@ function createProductItemElement({ id, title, thumbnail }) {
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
 
   return section;
-}
-
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
-
-function cartItemClickListener(event) {
-  // coloque seu código aqui
-}
-
-function createCartItemElement({ sku, name, salePrice }) {
-  const li = document.createElement('li');
-  li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
-  return li;
 }
 
 const getProductsFromAPI = (product = 'computador') => {
@@ -54,6 +73,19 @@ const getProductsFromAPI = (product = 'computador') => {
   .catch(() => alert('Error - Product is not found!'));
 };
 
+const getElementsFromLocalStorage = () => {
+  const cartItens = document.getElementsByClassName('cart__items')[0];
+  const cartListItens = localStorage.getItem('cartItens');
+  if (cartListItens) {
+    cartItens.innerHTML = cartListItens;
+    const items = document.querySelectorAll('.cart__item');
+    items.forEach((item) => {
+      item.addEventListener('click', cartItemClickListener);
+    });
+  }
+};
+
 window.onload = () => { 
   getProductsFromAPI();
+  getElementsFromLocalStorage();
 };
