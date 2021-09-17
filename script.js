@@ -1,34 +1,3 @@
-async function fetchProductList() {
-  const queryTarget = 'computador';
-  const queryUrl = `https://api.mercadolibre.com/sites/MLB/search?q=${queryTarget}`;
-  const endpointFormat = {
-    method: 'GET',
-    headers: { Accept: 'application/json' },
-  };
-
-  const fetchResult = fetch(queryUrl, endpointFormat)
-    .then((response) => response.json())
-    .then((data) => data.results);
-
-    return fetchResult;
-}
-
-async function fetchProductItem(event) {
-  const productItem = event.target.parentElement;
-  const productId = getSkuFromProductItem(productItem);
-  const itemUrl = `https://api.mercadolibre.com/items/${productId}`;
-  const endpointFormat = {
-    method: 'GET',
-    headers: { Accept: 'application/json' },
-  };
-
-  const fetchResult = fetch(itemUrl, endpointFormat)
-    .then((response) => response.json())
-    .then((data) => data);
-
-    return fetchResult;
-}
-
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -70,6 +39,37 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }  
+
+async function fetchProductList() {
+  const queryTarget = 'computador';
+  const queryUrl = `https://api.mercadolibre.com/sites/MLB/search?q=${queryTarget}`;
+  const endpointFormat = {
+    method: 'GET',
+    headers: { Accept: 'application/json' },
+  };
+
+  const fetchResult = fetch(queryUrl, endpointFormat)
+    .then((response) => response.json())
+    .then((data) => data.results);
+
+    return fetchResult;
+}
+
+async function fetchProductItem(event) {
+  const productItem = event.target.parentElement;
+  const productId = getSkuFromProductItem(productItem);
+  const itemUrl = `https://api.mercadolibre.com/items/${productId}`;
+  const endpointFormat = {
+    method: 'GET',
+    headers: { Accept: 'application/json' },
+  };
+
+  const fetchResult = fetch(itemUrl, endpointFormat)
+    .then((response) => response.json())
+    .then((data) => data);
+
+    return fetchResult;
+}
 
 async function transformProductToCartItem(event) {
   const cartItem = await fetchProductItem(event)
