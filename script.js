@@ -54,10 +54,40 @@ async function requestMlComputador(url) {
       const sectionItems = document.querySelector('.items');
       const itemElement = createProductItemElement(output);
       sectionItems.append(itemElement);
-    }))
+    }));
+}
+
+async function takeComputerID(element) {
+  const elementId = getSkuFromProductItem(element);
+  const mercadoLivreApiPeloId = `https://api.mercadolibre.com/items/${elementId}`;
+
+  return fetch(mercadoLivreApiPeloId)
+    .then((response) => response.json())
+    .then(({ id, title, price }) => {
+      const output = {
+        sku: id,
+        name: title,
+        salePrice: price,
+      };
+      const ol = document.querySelector('.cart__items');
+      ol.append(createCartItemElement(output));
+    });
+}
+
+function addListenersToBtns() {
+  const allItems = document.querySelectorAll('.item');
+  
+  allItems.forEach((item) => item.lastChild.addEventListener('click', (() => {
+    takeComputerID(item);
+  })));
+}
+
+function execOrder() {
+  requestMlComputador(mercadoLivreApi)
+    .then(() => addListenersToBtns())
     .catch(() => console.error('Opa, esse endereço não foi encontrado.'));
 }
 
 window.onload = () => {
-  requestMlComputador(mercadoLivreApi);
+  execOrder();
 };
