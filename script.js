@@ -31,7 +31,6 @@ async function requestComputador() {
   return result;
 }
 
-
 function addProducts(products) {
   const section = document.querySelector('.items');
   products.results.forEach(({ id, title, thumbnail }) => {
