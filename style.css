@@ -78,3 +78,8 @@
   text-align: center;
   margin: 10px 0;
 }
+
+.loading {
+  margin-top: 100px;
+  text-align: center;
+}

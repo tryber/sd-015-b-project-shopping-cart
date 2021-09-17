@@ -111,14 +111,10 @@ async function takeComputerID(element) {
   const elementId = getSkuFromProductItem(element);
   const mercadoLivreApiPeloId = `https://api.mercadolibre.com/items/${elementId}`;
 
-  return fetch(mercadoLivreApiPeloId)
+  fetch(mercadoLivreApiPeloId)
     .then((response) => response.json())
     .then(({ id, title, price }) => {
-      const output = {
-        sku: id,
-        name: title,
-        salePrice: price,
-      };
+      const output = { sku: id, name: title, salePrice: price };
       const ol = document.querySelector('.cart__items');
       ol.append(createCartItemElement(output));
       calculeTotalAmount();
@@ -128,10 +124,13 @@ async function takeComputerID(element) {
 
 function addListenersToBtns() {
   const allItems = document.querySelectorAll('.item');
-
+  const loading = document.querySelector('.loading');
+  
   allItems.forEach((item) => item.lastChild.addEventListener('click', (() => {
     takeComputerID(item);
   })));
+
+  loading.remove();
 }
 
 function execOrder() {
