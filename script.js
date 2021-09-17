@@ -4,6 +4,12 @@ async function searchMercadoLivre() {
   return productsJson;
 }
 
+async function productMercadoLivre(id) {
+  const apiProduct = await fetch(`https://api.mercadolibre.com/items/${id}`);
+  const productJson = await apiProduct.json();
+  return productJson;
+}
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -16,28 +22,6 @@ function createCustomElement(element, className, innerText) {
   e.className = className;
   e.innerText = innerText;
   return e;
-}
-
-function createProductItemElement({ sku, name, image }) {
-  const section = document.createElement('section');
-  section.className = 'item';
-
-  section.appendChild(createCustomElement('span', 'item__sku', sku));
-  section.appendChild(createCustomElement('span', 'item__title', name));
-  section.appendChild(createProductImageElement(image));
-  section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-
-  return section;
-}
-
-function addProducts({ id, title, thumbnail }) {
-  const productElementItem = createProductItemElement({
-    sku: id,
-    name: title,
-    image: thumbnail,
-  });
-  const items = document.querySelector('.items');
-  items.appendChild(productElementItem);
 }
 
 function getSkuFromProductItem(item) {
@@ -56,6 +40,40 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
+async function addToList(id) {
+  const ol = document.querySelector('.cart__items');
+  const { title, price } = await productMercadoLivre(id);
+  const object = {
+    sku: id,
+    name: title,
+    salePrice: price,
+  };
+  const li = createCartItemElement(object);
+  ol.appendChild(li);
+}
+
+function createProductItemElement({ sku, name, image }) {
+  const section = document.createElement('section');
+  section.className = 'item';
+
+  section.appendChild(createCustomElement('span', 'item__sku', sku));
+  section.appendChild(createCustomElement('span', 'item__title', name));
+  section.appendChild(createProductImageElement(image));
+  const button = createCustomElement('button', 'item__add', 'Adicionar ao carrinho!');
+  button.addEventListener('click', (() => addToList(sku)));
+  section.appendChild(button);
+  return section;
+}
+
+function addProducts({ id, title, thumbnail }) {
+  const productElementItem = createProductItemElement({
+    sku: id,
+    name: title,
+    image: thumbnail,
+  });
+  const items = document.querySelector('.items');
+  items.appendChild(productElementItem);
+}
 window.onload = () => { 
   searchMercadoLivre().then((jsonData) => {
     const { results } = jsonData;
