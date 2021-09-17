@@ -1,7 +1,4 @@
-function saveCart() {
-  const cartHtml = document.querySelector('.cart__items').innerHTML;
-  localStorage.setItem('cart', cartHtml);
-}
+const cartClassString = '.cart__items';
 
 function updatePrice() {
   const totalElement = document.querySelector('.total-price');
@@ -15,20 +12,30 @@ function updatePrice() {
   }
 
   totalElement.innerText = total;
+}
 
+function saveCart() {
+  const cartHtml = document.querySelector(cartClassString).innerHTML;
+  localStorage.setItem('cart', cartHtml);
+  updatePrice();
+}
+
+function eraseCart() {
+  const cart = document.querySelector(cartClassString);
+  cart.innerHTML = '';
+  saveCart();
 }
 
 function cartItemClickListener(event) {
   // coloque seu código aqui
   const product = event.target;
   product.remove();
-  updatePrice();
   saveCart();
 }
 
 function loadCart() {
   const savedCart = localStorage.getItem('cart');
-  const cart = document.querySelector('.cart__items');
+  const cart = document.querySelector(cartClassString);
   cart.innerHTML = savedCart;
   const cartItems = document.querySelectorAll('.cart__item');
 
@@ -45,7 +52,7 @@ function getSkuFromProductItem(item) {
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
-  li.setAttribute('price', salePrice)
+  li.setAttribute('price', salePrice);
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   return li;
@@ -65,10 +72,9 @@ async function addToCartClickListener(event) {
   const response = await fetch(ENDPOINT);
   const { id: sku, title: name, price: salePrice } = await response.json();
 
-  const cart = document.querySelector('.cart__items');
+  const cart = document.querySelector(cartClassString);
   const cartItemElement = createCartItemElement({ sku, name, salePrice });
   cart.appendChild(cartItemElement);
-  updatePrice();
   saveCart();
 }
 
@@ -99,9 +105,9 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
-function appendProduct({id:sku, title:name, thumbnail: image}) {
+function appendProduct({ id: sku, title: name, thumbnail: image }) {
   const itemsSection = document.querySelector('.items');
-  const productElement = createProductItemElement({sku, name, image});
+  const productElement = createProductItemElement({ sku, name, image });
   itemsSection.appendChild(productElement);
 }
 
@@ -126,4 +132,6 @@ window.onload = () => {
   fetchProducts(); 
   loadCart();
   updatePrice();
+
+  document.querySelector('.empty-cart').addEventListener('click', eraseCart);
 };
