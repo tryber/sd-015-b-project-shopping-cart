@@ -62,6 +62,15 @@ function cartItemClickListener(event) {
   payment();
 }
 
+function resetButton() {
+  const ol = document.createElement('ol');
+  const olReset = document.querySelector('.cart__items');
+  const cartArea = document.querySelector('.cart');
+  olReset.remove();
+  ol.classList.add('cart__items');
+  cartArea.append(ol);
+}
+
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
@@ -126,4 +135,6 @@ function loadOrder() {
 window.onload = () => { 
   if (retrieveCart) recoverySavedList();
   loadOrder();
+  const removeButton = document.querySelector('.empty-cart');
+  removeButton.addEventListener('click', resetButton);
 };
