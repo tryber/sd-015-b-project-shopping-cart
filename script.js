@@ -24,13 +24,32 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
+function updatePrice(price, operation) {
+  const totalPrice = document.querySelector('.total-price');
+  let total = 0;
+  if (totalPrice.innerText) {
+    total = parseFloat(totalPrice.innerText);
+  }
+  if (operation === 'sum') {
+    total += price;
+  }
+  if (operation === 'sub') {
+    total -= price;
+  }
+  totalPrice.innerText = total;
+  localStorage.setItem('total', total);
+}
+
+// para que serve isso?
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
 function cartItemClickListener(event) {
+  const li = event.path[0];
   const ol = event.path[1];
-  ol.removeChild(event.path[0]);
+  updatePrice(li.innerText.split('PRICE: $').pop(), 'sub');
+  ol.removeChild(li);
   localStorage.setItem('content', ol.innerHTML);
 }
 
@@ -50,6 +69,7 @@ async function addToList(id) {
     name: title,
     salePrice: price,
   };
+  updatePrice(price, 'sum');
   const li = createCartItemElement(object);
   ol.appendChild(li);
   localStorage.setItem('content', ol.innerHTML);
@@ -83,8 +103,10 @@ window.onload = () => {
     results.forEach((result) => addProducts(result));
   });
   const ol = document.querySelector('.cart__items');
+  const totalPrice = document.querySelector('.total-price');
   if (localStorage.getItem('content')) {
     ol.innerHTML = localStorage.getItem('content');
+    totalPrice.innerText = localStorage.getItem('total');
     ol.addEventListener('click', cartItemClickListener);
   }
 };
