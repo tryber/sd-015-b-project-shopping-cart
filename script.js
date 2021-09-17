@@ -1,3 +1,5 @@
+const API_ML = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -12,16 +14,30 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({ sku, name, image }) {
+async function requestComputador() {
+  const data = await fetch(API_ML);
+  const result = await data.json();
+  return result;
+}
+
+function createProductItemElement({ id, name, image }) {
   const section = document.createElement('section');
   section.className = 'item';
-
-  section.appendChild(createCustomElement('span', 'item__sku', sku));
+  
+  section.appendChild(createCustomElement('span', 'item__sku', id));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-
+  
   return section;
+}
+
+function addProducts(products) {
+  const section = document.querySelector('.items');
+  products.results.forEach(({ id, title, thumbnail }) => {
+    const createProduct = createProductItemElement({ sku: id, name: title, image: thumbnail });
+    section.appendChild(createProduct);
+  });
 }
 
 function getSkuFromProductItem(item) {
@@ -32,12 +48,19 @@ function cartItemClickListener(event) {
   // coloque seu código aqui
 }
 
-function createCartItemElement({ sku, name, salePrice }) {
+function createCartItemElement({ id, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.innerText = `SKU: ${id} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
 
-window.onload = () => { };
+window.onload = async () => {
+  try {
+    const product = await requestComputador();
+    addProducts(product);
+  } catch (error) {
+    console.log(error);
+  }
+ };
