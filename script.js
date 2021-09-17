@@ -52,7 +52,8 @@ const apiMercadoLivre = () => {
       sectionItems.appendChild(addCartItems);
     }));
 };
+// t
 
 window.onload = () => { 
-  apiMercadoLivre(); 
+  apiMercadoLivre();
 };
