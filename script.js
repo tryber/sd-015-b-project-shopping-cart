@@ -25,7 +25,7 @@ function createCustomElement(element, className, innerText) {
 }
 
 function updatePrice(price, operation) {
-  const totalPrice = document.querySelector('.total-price');
+  const totalPrice = document.getElementsByClassName('total-price')[0];
   let total = 0;
   if (totalPrice.innerText) {
     total = parseFloat(totalPrice.innerText);
@@ -62,7 +62,7 @@ function createCartItemElement({ sku, name, salePrice }) {
 }
 
 async function addToList(id) {
-  const ol = document.querySelector('.cart__items');
+  const ol = document.getElementsByClassName('cart__items')[0];
   const { title, price } = await productMercadoLivre(id);
   const object = {
     sku: id,
@@ -106,6 +106,7 @@ function removeAll() {
   localStorage.setItem('content', ol.innerHTML);
   localStorage.setItem('total', '');
 }
+
 window.onload = () => { 
   searchMercadoLivre().then((jsonData) => {
     const { results } = jsonData;
