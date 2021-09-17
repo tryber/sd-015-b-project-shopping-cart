@@ -1,3 +1,5 @@
+const mercadoLivreApi = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -40,4 +42,26 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-window.onload = () => { };
+// 1. Crie uma listagem de produtos
+function createProductListing() {
+  try{
+  const fetchML = fetch(mercadoLivreApi)
+  .then((responseThen) => responseThen.json())
+  .then((productList) => productList.results.forEach(({ id, title, thumbnail }) => {
+      const productObject = {
+        sku: id, 
+        name: title, 
+        image: thumbnail,
+      };
+    const creationProductElement = createProductItemElement(productObject);
+    const section = document.querySelector('.items');
+    section.appendChild(creationProductElement);
+    }));
+  } catch (error) {
+    console.log('Esse endereço não foi encontrado.');
+  }
+}
+
+window.onload = () => { 
+  createProductListing();
+};
