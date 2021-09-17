@@ -1,4 +1,5 @@
 function createProductImageElement(imageSource) {
+  // Cria elemento com os dados do createProductItemElement
   const img = document.createElement('img');
   img.className = 'item__image';
   img.src = imageSource;
@@ -6,6 +7,7 @@ function createProductImageElement(imageSource) {
 }
 
 function createCustomElement(element, className, innerText) {
+  // Cria elemento com os dados do createProductItemElement
   const e = document.createElement(element);
   e.className = className;
   e.innerText = innerText;
@@ -13,6 +15,7 @@ function createCustomElement(element, className, innerText) {
 }
 
 function createProductItemElement({ sku, name, image }) {
+  // Recebe os parâmetros sku, name & image do JSON da API
   const section = document.createElement('section');
   section.className = 'item';
 
@@ -25,15 +28,17 @@ function createProductItemElement({ sku, name, image }) {
 }
 
 function getSkuFromProductItem(item) {
+  // Deve ser chamada quando o JSON da API for carregado, para assim realizar sua conversão
   return item.querySelector('span.item__sku').innerText;
 }
 
 function cartItemClickListener(event) {
   // coloque seu código aqui
-  // Inicia Projeto
+  // Adiciona evento de click para item no Carrinho
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
+  // Deve ser chamada, ao se clicar no botão "Adicionar ao Carrinho"
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
@@ -41,4 +46,7 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
+const apiRequest = () => {
+
+}
 window.onload = () => { };
