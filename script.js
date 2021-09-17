@@ -1,3 +1,16 @@
+// Semelhante ao exemplo dado no dia 5.4
+const localStorageKey = 'shopListSaved';
+
+function saveShoppingCartList(shoppingCartItem) {
+  if (localStorage.getItem(localStorageKey) === null) {
+    localStorage.setItem(localStorageKey, JSON.stringify([]));
+  }
+
+  const oldList = JSON.parse(localStorage.getItem(localStorageKey));
+  oldList.push(shoppingCartItem.innerText);
+  localStorage.setItem(localStorageKey, JSON.stringify(oldList));
+}
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -60,21 +73,38 @@ async function listProducts({ results }) {
 async function addToShoppingCart(products) {
   const addButtons = document.querySelectorAll('.item__add');
   const shopCart = document.querySelector('.cart__items');
-
   addButtons.forEach((element, idx) => element
   .addEventListener('click', async (_) => {
     await
     fetch(`https://api.mercadolibre.com/items/${products[idx].id}`)
       .then((requsition) => requsition.json())
       .then(({ id, title, price }) => {
-        const shoppingCartItem = createCartItemElement({ sku: id, name: title, salePrice: price });
+        const shopListItem = { sku: id, name: title, salePrice: price };
+        const shoppingCartItem = createCartItemElement(shopListItem);
         shopCart.appendChild(shoppingCartItem);
+        saveShoppingCartList(shoppingCartItem);
       });
-  }));
+    }));
 }
 
+function loadLocalStorage() {
+  const fullShoppingListSaved = localStorage.getItem(localStorageKey);
+  const fullShoppingListSavedObj = JSON.parse(fullShoppingListSaved);
+  const shopCart = document.querySelector('.cart__items');
+  
+  if (fullShoppingListSavedObj !== null) {
+    fullShoppingListSavedObj.forEach((element) => {
+      const item = document.createElement('li');
+      item.innerHTML = element;
+      shopCart.addEventListener('click', cartItemClickListener);
+      shopCart.appendChild(item);
+    });
+  }
+}
 window.onload = () => {
   const product = 'computador';
+
+  loadLocalStorage();
   getDataFromML(product)
   .then((productData) => listProducts(productData))
   .then((products) => addToShoppingCart(products));
