@@ -50,7 +50,9 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
+  const targetedLi = event.target;
+  const liParent = targetedLi.parentNode;
+  liParent.removeChild(targetedLi);
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
