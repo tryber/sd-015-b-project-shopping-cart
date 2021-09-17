@@ -5,10 +5,43 @@ function createProductImageElement(imageSource) {
   return img;
 }
 
+function getSkuFromProductItem(item) {
+  return item.querySelector('span.item__sku').innerText;
+}
+
+function cartItemClickListener(event) {
+  // coloque seu código aqui
+  
+}
+
+function createCartItemElement({ sku, name, salePrice }) {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.addEventListener('click', cartItemClickListener);
+  return li;
+}
+
+const fetchAPI = async (url) => (await fetch(url)).json();
+
+const searchProduct = async (event) => {
+  const currentProduct = event.target.parentElement;
+  const itemId = getSkuFromProductItem(currentProduct);
+  const url = `https://api.mercadolibre.com/items/${itemId}`;
+
+  const { id: sku, title: name, price: salePrice } = await fetchAPI(url);
+  const cartItems = document.querySelector('.cart__items');
+
+  cartItems.append(createCartItemElement({ sku, name, salePrice }));
+};
+
 function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
   e.className = className;
   e.innerText = innerText;
+
+  if (className === 'item__add') e.addEventListener('click', searchProduct);
+
   return e;
 }
 
@@ -23,24 +56,6 @@ function createProductItemElement({ sku, name, image }) {
 
   return section;
 }
-
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
-
-function cartItemClickListener(event) {
-  // coloque seu código aqui
-}
-
-function createCartItemElement({ sku, name, salePrice }) {
-  const li = document.createElement('li');
-  li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
-  return li;
-}
-
-const fetchAPI = async (url) => (await fetch(url)).json();
 
 const createItemProductSection = async () => {
   const url = 'https://api.mercadolibre.com/sites/MLB/search?q=$computador';
