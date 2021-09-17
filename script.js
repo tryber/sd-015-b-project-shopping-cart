@@ -37,7 +37,6 @@ function calculateCartTotal() {
   const cartElement = document.querySelector('ol.cart__items');
   const cartItemsCollection = cartElement.children;
   const cartItemsList = [...cartItemsCollection];
-  console.log(cartItemsList);
   const total = cartItemsList.reduce((acc, act) => {
     const texto = act.innerText;
     const priceIndex = texto.match(/(PRICE: \W)/).index + 8
@@ -55,7 +54,6 @@ function cartItemClickListener(event) {
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
-  console.log(sku, name, salePrice);
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
@@ -126,10 +124,19 @@ async function addToCart(event) {
   appendToCart(cartItemElement);
 }
 
+function emptyCart() {
+  const cartElement = document.querySelector('ol.cart__items')
+  cartElement.innerHTML = '';
+  localStorage.removeItem('cart');
+  calculateCartTotal();
+}
+
 function addEventListeners() {
   const addToCartButtomsColletction = document.getElementsByClassName('item__add');
   const addToCartButtomsList = [...addToCartButtomsColletction];
   addToCartButtomsList.forEach((buttom) => buttom.addEventListener('click', addToCart));
+  const emptyCartButtom = document.querySelector('.empty-cart');
+  emptyCartButtom.addEventListener('click', emptyCart)
 }
 
 window.onload = async () => {
