@@ -12,7 +12,7 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({ sku, name, image }) {
+function createProductItemElement({ sku, name, image }) { // * Requisito 1
   const section = document.createElement('section');
   section.className = 'item';
 
@@ -24,7 +24,7 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
-function getSkuFromProductItem(item) {
+function getSkuFromProductItem(item) { // * Requisito 2
   return item.querySelector('span.item__sku').innerText;
 }
 
@@ -32,7 +32,7 @@ function cartItemClickListener(event) {
   // coloque seu código aqui
 }
 
-function createCartItemElement({ id: sku, title: name, price: salePrice }) {
+function createCartItemElement({ id: sku, title: name, price: salePrice }) { // * Requisito 2
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
@@ -54,7 +54,7 @@ const createProductList = async () => {
 
 // * Requisito 2
 const addProductShoppingCart = async () => {
-  const button = document.querySelector('.item__add');
+  const button = document.querySelectorAll('.item__add');
   button.forEach((element) => {
     element.addEventListener('click', async (event) => {
       const itemID = getSkuFromProductItem(event.target.parentElement); // ref.: https://stackoverflow.com/questions/29168719/can-you-target-an-elements-parent-element-using-event-target
