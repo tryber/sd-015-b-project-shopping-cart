@@ -22,11 +22,15 @@ async function itemObjectPromise(id) {
     .then((resultJson) => resultJson);
 }
 
+function cartItemClickListener(event) {
+  event.target.parentNode.removeChild(event.target);
+}
+
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  // li.addEventListener('click', cartItemClickListener);
+  li.addEventListener('click', cartItemClickListener);
   return li;
 }
 
@@ -51,10 +55,6 @@ function createProductItemElement({ sku, name, image }) {
   section.lastChild.addEventListener('click', addElementToCart);
   return section;
 }
-
-// function cartItemClickListener(event) {
-//   // coloque seu código aqui
-// }
 
 const computersArrayPromise = new Promise((resolve, _) => {
   fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
