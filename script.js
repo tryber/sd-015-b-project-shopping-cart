@@ -64,10 +64,10 @@ function criarElementos(dados) {
     });
 }
 
-async function apiRequest (requestURL) {
+async function apiRequest(calledURL) {
   // console.log("CONECTANDO A API DO MERCADO LIVRE...");
 
-  fetch(requestURL) // Requisita URL
+  fetch(calledURL) // Requisita URL
   .then((response) => response.json()) // Converte Binário para JSON
   .then((element) => criarElementos(element.results))
   .catch((erro) => console.log(':::ERRO::: >>', erro));
