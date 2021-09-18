@@ -28,6 +28,24 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+function totalPriceDocument() {
+  return document.querySelector('.total-price');
+}
+
+function getTotalPriceOnLoad() {
+  const cartItems = document.querySelectorAll('.cart__item');
+  let actualPrice = parseFloat(totalPriceDocument().innerText);
+  actualPrice = 0;
+  if (cartItems.length === 0) totalPriceDocument().innerText = actualPrice;
+  const searchPrice = cartItems.forEach((product) => {
+    const id = product.innerHTML;
+    const price = (id.split(' | ')[2].split(': $')[1]);
+    actualPrice += parseFloat(price);
+    totalPriceDocument().innerText = actualPrice;
+  });
+  return searchPrice;
+}
+
 function setCartLocal() {
   const cartList = document.querySelector('.cart__items').innerHTML;
   const saveCartList = JSON.stringify(cartList);
@@ -89,24 +107,6 @@ function addProductToCart(cartList) {
     });
   });
   return addToCart;
-}
-
-function totalPriceDocument() {
-  return document.querySelector('.total-price');
-}
-
-function getTotalPriceOnLoad() {
-  const cartItems = document.querySelectorAll('.cart__item');
-  let actualPrice = parseFloat(totalPriceDocument().innerText);
-  actualPrice = 0;
-  if (cartItems.length === 0) return totalPriceDocument().innerHTML = actualPrice;
-  const searchPrice = cartItems.forEach((product) => {
-    const id = product.innerHTML;
-    const price = (id.split(' | ')[2].split(': $')[1]);
-    const totalPrice = actualPrice += parseFloat(price);
-    totalPriceDocument().innerHTML = totalPrice;
-  });
-  return searchPrice;
 }
 
 window.onload = () => { 
