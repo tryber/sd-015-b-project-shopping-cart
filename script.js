@@ -24,6 +24,11 @@ async function itemObjectPromise(id) {
     .then((resultJson) => resultJson);
 }
 
+function addCartToLocalStorage() {
+  const cartListArray= cartListInArray();
+  local.setItem('cartList', JSON.stringify(cartListArray));
+}
+
 function cartItemClickListener(event) {
   event.target.parentNode.removeChild(event.target);
   addCartToLocalStorage();
@@ -33,10 +38,6 @@ function cartListInArray() {
   const cartListElements = document.querySelector('ol.cart__items').children;
   const cartListArray = Object.values(cartListElements).map((element) => element.innerText);
   return cartListArray;
-}
-
-function addCartToLocalStorage() {
-  local.setItem('cartList', JSON.stringify(cartListInArray()));
 }
 
 function addLocalStorageToCart() {
@@ -50,7 +51,7 @@ function addLocalStorageToCart() {
      document.querySelector('ol.cart__items').appendChild(li);
     });
    }
-};
+}
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
