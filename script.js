@@ -25,10 +25,9 @@ async function getProductsArray() {
   return results;
 }
 
-function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
+function createProductItemElement({ id: sku, title: name }, image) {
   const section = document.createElement('section');
   section.className = 'item';
-
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
@@ -40,7 +39,11 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 async function createProducts() {
   const products = await getProductsArray();
   products.forEach((product) => {
-    items.appendChild(createProductItemElement(product));
+   fetch(`https://api.mercadolibre.com/items/${product.id}`)
+    .then((response) => response.json())
+    .then((item) => item.pictures[0])
+    .then(({ url }) => url)
+    .then((imageUrl) => items.appendChild(createProductItemElement(product, imageUrl)));
   });
   loading.remove();
 }
@@ -65,9 +68,11 @@ function removeProductsFromLocalStorage(index) {
   localStorage.setItem('userCart', JSON.stringify(newStorage));
 }
 
-function subtractPrice(product) {
-  const productPrice = product.innerHTML.split('|')[2].split(' ')[2].replace('$', '');
-  totalPrice.innerHTML = Number(totalPrice.innerHTML) - productPrice;
+function subtractPrice(index) {
+  const productStorage = JSON.parse(localStorage.getItem('userCart'));
+  const product = productStorage.find((_, i) => i === index);
+  const { price } = product; 
+  totalPrice.innerHTML = (Number(totalPrice.innerHTML) - price).toFixed(2);
   localStorage.setItem('totalPrice', JSON.stringify(totalPrice.innerHTML));
 }
 
@@ -83,10 +88,9 @@ function cartItemClickListener(event) {
   const el = event.target;
   el.classList.add('toRemove');
   const cartArr = Array.from(userCart.children);
-  console.log(cartArr);
-  const productIndexToRemove = getProductIndexToRemove(cartArr);
-  removeProductsFromLocalStorage(productIndexToRemove);
-  subtractPrice(el);
+  const productIndex = getProductIndexToRemove(cartArr);
+  subtractPrice(productIndex);
+  removeProductsFromLocalStorage(productIndex);
   el.remove();
 }
 
