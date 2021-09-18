@@ -1,3 +1,6 @@
+let localStorageActual = [];
+const cart = document.querySelector('.cart__items');
+
 // func 1 - cria uma "img", insere uma classe "item__image" e atribui um src para buscar a imagem
 // imageSource -> link da imagem
 function createProductImageElement(imageSource) {
@@ -36,6 +39,8 @@ function getSkuFromProductItem(item) {
 function cartItemClickListener(event) {
   // coloque seu código aqui
   event.target.remove();
+  localStorageActual = Array.from(cart.childNodes, (item) => item.innerText);
+  localStorage.setItem('cart', JSON.stringify(localStorageActual));
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -46,19 +51,33 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
+function teste(item) {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = item;
+  li.addEventListener('click', cartItemClickListener);
+  return li;
+}
+
 async function addToCart(event) {
-  const cart = document.querySelector('.cart__items');
   const spanSku = event.target.parentNode.firstChild;
   const response = await fetch(`https://api.mercadolibre.com/items/${spanSku.innerText}`);
   const data = await response.json();
   cart.appendChild(createCartItemElement(
     { sku: data.id, name: data.title, salePrice: data.price },
 ));
+  localStorageActual = Array.from(cart.childNodes, (item) => item.innerText);
+  localStorage.setItem('cart', JSON.stringify(localStorageActual));
 }
 
 function buttonsAdd() {
   const buttons = document.querySelectorAll('.item__add');
   buttons.forEach((button) => button.addEventListener('click', addToCart));
+}
+
+function updateLocalStorage() {
+  localStorageActual = JSON.parse(localStorage.getItem('cart'));
+  localStorageActual.forEach((item) => cart.appendChild(teste(item)));
 }
 
 async function getItemsForScreen() {
@@ -72,9 +91,10 @@ async function getItemsForScreen() {
 ));
   });
   buttonsAdd();
+  updateLocalStorage();
   return result;
 }
 
-window.onload = () => { 
+window.onload = () => {
   getItemsForScreen();
 };
