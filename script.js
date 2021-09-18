@@ -1,5 +1,6 @@
 let localStorageActual = [];
 const cart = document.querySelector('.cart__items');
+const buttonEmptyCart = document.querySelector('.empty-cart');
 
 // func 1 - cria uma "img", insere uma classe "item__image" e atribui um src para buscar a imagem
 // imageSource -> link da imagem
@@ -106,6 +107,15 @@ async function getItemsForScreen() {
   return result;
 }
 
+function emptyCart() {
+  cart.innerText = '';
+  localStorageActual = Array.from(cart.childNodes, (item) => item.innerText);
+  localStorage.setItem('cart', JSON.stringify(localStorageActual));
+  updatePrice();
+}
+
 window.onload = () => {
   getItemsForScreen();
 };
+
+buttonEmptyCart.addEventListener('click', emptyCart);
