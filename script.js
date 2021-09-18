@@ -1,3 +1,4 @@
+const OlClass = '.cart__items';
 const retrieveCart = localStorage.getItem('currentCart');
 
 function createProductImageElement(imageSource) {
@@ -28,11 +29,12 @@ function createProductItemElement({ sku, name, image }) {
 
 function resetCartItems() {
   const ol = document.createElement('ol');
-  const olForReset = document.querySelector('#cart__items');
-  const cart = document.querySelector('.cart');
+  const olForReset = document.querySelector(OlClass);
+  const cartSession = document.querySelector('.cart');
+
   olForReset.remove();
   ol.classList.add('cart__items');
-  cart.append(ol);
+  cartSession.append(ol);
 }
 
 function getSkuFromProductItem(item) {
@@ -71,7 +73,7 @@ function cartItemClickListener(event) {
 }
 
 function retrieveSavedCart() {
-  const listItems = document.querySelector('.cart__items');
+  const listItems = document.querySelector(OlClass);
   const previousCart = JSON.parse(localStorage.getItem('currentCart'));
 
   previousCart.forEach((item) => {
@@ -120,7 +122,7 @@ async function addItemIntoCart(element) {
     .then((response) => response.json())
     .then(({ id, title, price }) => {
       const output = { sku: id, name: title, salePrice: price };
-      const ol = document.querySelector('.cart__items');
+      const ol = document.querySelector(OlClass);
       ol.append(createCartItemElement(output));
       calculeTotalAmount();
       saveCart();
