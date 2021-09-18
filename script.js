@@ -1,4 +1,5 @@
 const local = localStorage;
+const ordenedlistCart = document.querySelector('ol.cart__items');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -25,7 +26,7 @@ async function itemObjectPromise(id) {
 }
 
 function cartListInArray() {
-  const cartListElements = document.querySelector('ol.cart__items').children;
+  const cartListElements = ordenedlistCart.children;
   const cartListArray = Object.values(cartListElements).map((element) => element.innerText);
   return cartListArray;
 }
@@ -49,7 +50,7 @@ function addLocalStorageToCart() {
      li.className = 'cart__item';
      li.innerText = element;
      li.addEventListener('click', cartItemClickListener);
-     document.querySelector('ol.cart__items').appendChild(li);
+     ordenedlistCart.appendChild(li);
     });
    }
 }
@@ -69,7 +70,7 @@ function addElementToCart(event) {
     .then((object) => {
       const { id: sku, title: name, price: salePrice } = object;
       const listItem = createCartItemElement({ sku, name, salePrice });
-      document.querySelector('ol.cart__items').appendChild(listItem);
+      ordenedlistCart.appendChild(listItem);
       addCartToLocalStorage();
     });
 }
