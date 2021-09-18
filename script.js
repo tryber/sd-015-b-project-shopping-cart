@@ -13,7 +13,7 @@ const sumPrice = () => {
     return test;
   });
   const reduceResult = result.reduce((accumulator, number) => accumulator + number, 0);
-  document.querySelector('.total-price').innerText = `${reduceResult.toFixed(2)}`;
+  document.querySelector('.total-price').innerText = `${reduceResult}`;
   return reduceResult;
 };
 
