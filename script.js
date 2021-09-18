@@ -28,7 +28,7 @@ async function itemObjectPromise(id) {
     .then((result) => result.json())
     .then((resultJson) => {
       loadingScreanList.innerText = '';
-      return resultJson
+      return resultJson;
     });
 }
 
@@ -111,7 +111,7 @@ const computersArrayPromise = new Promise((resolve, _) => {
     .then((result) => result.json())
     .then((resultJson) => {
       loadingScreanInit.innerText = '';
-      return resolve(resultJson.results)
+      return resolve(resultJson.results);
     });
 });
 
