@@ -74,9 +74,10 @@ function removeProductsFromLocalStorage(index) {
 
 function subtractPrice(index) {
   const productStorage = JSON.parse(localStorage.getItem('userCart'));
+  if (!productStorage) return;
   const product = productStorage.find((_, i) => i === index);
   const { price } = product; 
-  totalPrice.innerHTML = (Number(totalPrice.innerHTML) - price).toFixed(2);
+  totalPrice.innerHTML = (Number(totalPrice.innerHTML) - price);
   localStorage.setItem('totalPrice', JSON.stringify(totalPrice.innerHTML));
 }
 
@@ -128,7 +129,7 @@ function updatePrice({ price }) {
   let total = 0;
   if (totalPrice.innerHTML) total += Number(totalPrice.innerHTML);
   total += price;
-  totalPrice.innerHTML = total.toFixed(2);
+  totalPrice.innerHTML = total;
 }
 
 function loadPrice() {
@@ -138,7 +139,7 @@ function loadPrice() {
 
 emptyCartBtn.addEventListener('click', () => {
   userCart.innerHTML = '';
-  localStorage.setItem('userCart', '');
+  localStorage.setItem('userCart', JSON.stringify([]));
   totalPrice.innerHTML = 0;
   localStorage.setItem('totalPrice', JSON.stringify(0));
 });
