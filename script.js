@@ -1,4 +1,5 @@
 const cartItemsOl = '.cart__items';
+const priceContainer = '.total-price';
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -17,10 +18,29 @@ const saveCartLocalStorage = () => {
   localStorage.setItem('myCart', cartItems.innerHTML);
 };
 
+const sumPrices = () => {
+  let sum = 0;
+  const totalPrice = document.querySelector(priceContainer);
+  const itemsList = document.getElementsByClassName('cart__item');
+
+  for (let i = 0; i < itemsList.length; i += 1) {
+    const price = itemsList[i].getAttribute('price');
+    sum += parseFloat(price);
+  }
+
+  if (sum === 0) {
+    totalPrice.style.display = 'none';
+  } else {
+    totalPrice.style.display = 'inline';
+    totalPrice.innerText = sum;
+  }
+};
+
 function cartItemClickListener(event) {
   // coloque seu código aqui
   event.target.remove();
 
+  sumPrices();
   saveCartLocalStorage();
 }
 
@@ -28,6 +48,7 @@ function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.setAttribute('price', salePrice);
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
@@ -42,8 +63,10 @@ const addToCartEndpoint = async (event) => {
   try {
     const { id: sku, title: name, price: salePrice } = await fetchAPI(url);
     const cartItems = document.querySelector(cartItemsOl);
+    const selectedProduct = createCartItemElement({ sku, name, salePrice });
 
-    cartItems.append(createCartItemElement({ sku, name, salePrice }));
+    cartItems.append(selectedProduct);
+    sumPrices();
     saveCartLocalStorage();
   } catch (e) {
     console.log('Error!!!');
@@ -74,7 +97,7 @@ function createProductItemElement({ sku, name, image }) {
 }
 
 const createItemProductSection = async () => {
-  const url = 'https://api.mercadolibre.com/sites/MLB/search?q=$computador';
+  const url = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
   try {
     const { results } = await fetchAPI(url);
     const itemsSection = document.querySelector('.items');
@@ -94,15 +117,19 @@ const emptyCart = () => {
   const listedCartItems = document.querySelector(cartItemsOl);
 
   listedCartItems.innerHTML = '';
+
+  sumPrices();
   localStorage.clear();
 };
 
 const restoreCartStorage = () => {
   const listedCartItems = document.querySelector(cartItemsOl);
+
   const myCartStorage = localStorage.getItem('myCart');
 
   listedCartItems.innerHTML = myCartStorage;
   listedCartItems.addEventListener('click', cartItemClickListener);
+  sumPrices();
 };
 
 window.onload = () => {
