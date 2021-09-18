@@ -48,14 +48,22 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-const apiRequest = (requestURL) => {
-  return fetch(requestURL) // Requisita URL
-  .then(result => {
-    result.json();
-    console.log(result);
-  }) // Converte Binário para Json
+async function apiRequest (requestURL) {
 
+  fetch(requestURL) // Requisita URL
+  .then(response => response.json()) // Converte Binário para JSON
+  .then((element) => {
+    const computadores = element.results;
+    const containerItems = document.getElementsByClassName('.items');
+    console.log(containerItems);
+    computadores.forEach( (computador) => {
+      const {title, id, price} = computador
+      const produtoCriado = createProductItemElement({title, id, price});
+      containerItems.appendChild(produtoCriado);
+    });
+  })
 }
+
 window.onload = () => {
   apiRequest(requestURL);
  };
