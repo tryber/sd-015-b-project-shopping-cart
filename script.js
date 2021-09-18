@@ -131,7 +131,7 @@ const loading = () => {
 };
 
 window.onload = async () => {
-  loading();
+  loading(); // * Requisito 7
   await createProductList(); // * Requisito 1
   await addProductShoppingCart(); // * Requisito 2
   getLocal(); // * Requisito 4.2
