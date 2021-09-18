@@ -1,9 +1,8 @@
-const API_ML = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
-
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
   img.src = imageSource;
+
   return img;
 }
 
@@ -11,6 +10,7 @@ function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
   e.className = className;
   e.innerText = innerText;
+
   return e;
 }
 
@@ -25,9 +25,12 @@ function createProductItemElement({ sku, name, image }) {
   
   return section;
 }
+
 async function requestComputador() {
+  const API_ML = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
   const data = await fetch(API_ML);
   const result = await data.json();
+
   return result;
 }
 
@@ -53,6 +56,7 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
+
   return li;
 }
 
@@ -71,6 +75,7 @@ async function addIdComputer(actualId) {
   const olCart = document.querySelector('.cart__items');
   olCart.appendChild(createCartItemElement(dataComputer));
 }
+
 function addEventButtons() {
   const items = document.querySelectorAll('.item');
   items.forEach((item) => item.lastChild.addEventListener('click', (() => {
@@ -78,12 +83,16 @@ function addEventButtons() {
   })));
 }
 
-window.onload = async () => {
+async function allFunctionsCalled() {
   try {
     const product = await requestComputador();
     addProducts(product);
-    await addEventButtons();
+    addEventButtons();
   } catch (error) {
     throw new Error(error);
   }
+}
+
+window.onload = () => {
+  allFunctionsCalled();
  };
