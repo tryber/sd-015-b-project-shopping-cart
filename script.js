@@ -46,6 +46,8 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
+  // Chama função sumItems
+  // Chama função saveItems
   return li;
 }
 
@@ -78,7 +80,22 @@ async function apiRequest(calledURL) {
   .catch((erro) => console.log(':::ERRO::: >>', erro));
 }
 
+function limpaLista() {
+  const botaoLimpar = document.querySelector('.empty-cart');
+  botaoLimpar.addEventListener('click', function () {
+
+    const listaCompras = document.querySelectorAll('li');
+
+    listaCompras.forEach((produto) => {
+      produto.remove();
+    });
+    // salvaTarefas();
+  });
+}
+
 window.onload = () => {
   apiRequest(requestURL);
+  limpaLista();
+  // localStorageLoad();
   console.log('PÁGINA CARREGADA!!!');
  };
