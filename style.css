@@ -19,7 +19,7 @@
   flex-direction: column;
   height: auto;
   margin: 5px;
-  width: 200px;
+  width: 150px;
 }
 
 .item .item__sku {
@@ -33,7 +33,7 @@
 }
 
 .item .item__image {
-  width: 100%;
+  width: 90%;
 }
 
 .item .item__add {

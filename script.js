@@ -1,6 +1,7 @@
 const cartItens = '.cart__items';
 // Semelhante ao exemplo dado no dia 5.4
 const localStorageKey = 'shopListSaved';
+let totalPriceValue = 0;
 
 function saveShoppingCartList(shoppingCartItem) {
   if (localStorage.getItem(localStorageKey) === null) {
@@ -42,11 +43,20 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+// Fonte: https://stackoverflow.com/questions/3650081/why-does-the-sum-of-2-parsefloat-variables-give-me-an-incorrect-decimal-number 
+// Fonte: https://stackoverflow.com/questions/3612744/remove-insignificant-trailing-zeros-from-a-number
+function updateTotalPrice(price) {
+  const totalPrice = document.querySelector('.total-price');
+  totalPriceValue += parseFloat(price.toFixed(4));
+  totalPrice.innerHTML = totalPriceValue.toFixed(2).replace(/\.0+|0+$/, '');
+}
+
 function cartItemClickListener(event) {
   // coloque seu código aqui
   event.target.parentNode.removeChild(event.target);
-  console.log('dentro da função click listener', event.target);
   saveShoppingCartList(event);
+  const itemPrice = parseFloat(event.target.innerHTML.split('$')[1]);
+  updateTotalPrice(-itemPrice);
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -73,19 +83,24 @@ async function listProducts({ results }) {
   return results;
 }
 
+function addShoppingCartItem(id, title, price, shopCart) {
+  const shopListItem = { sku: id, name: title, salePrice: price };
+        const shoppingCartItem = createCartItemElement(shopListItem);
+        shopCart.appendChild(shoppingCartItem);
+        saveShoppingCartList(shoppingCartItem);
+}
+
 async function addToShoppingCart(products) {
   const addButtons = document.querySelectorAll('.item__add');
   const shopCart = document.querySelector(cartItens);
   addButtons.forEach((element, idx) => element
-  .addEventListener('click', async (event) => {
+  .addEventListener('click', async (_) => {
     await
     fetch(`https://api.mercadolibre.com/items/${products[idx].id}`)
       .then((requsition) => requsition.json())
       .then(({ id, title, price }) => {
-        const shopListItem = { sku: id, name: title, salePrice: price };
-        const shoppingCartItem = createCartItemElement(shopListItem);
-        shopCart.appendChild(shoppingCartItem);
-        saveShoppingCartList(shoppingCartItem);
+        addShoppingCartItem(id, title, price, shopCart);
+        updateTotalPrice(price);
       });
     }));
 }
@@ -108,9 +123,13 @@ function loadLocalStorage() {
 function clearShoppingCart() {
   const clearButton = document.querySelector('.empty-cart');
   const list = document.querySelector(cartItens);
+  const totalPrice = document.querySelector('.total-price');
 
   clearButton.addEventListener('click', (_) => {
+    localStorage.clear();
     list.innerHTML = '';
+    totalPrice.innerHTML = '';
+    totalPriceValue = 0;
   });
 }
 
