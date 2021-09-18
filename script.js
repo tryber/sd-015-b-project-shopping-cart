@@ -31,8 +31,8 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-function cartItemClickListener(event) {
-
+function cartItemClickListener() {
+ this.remove();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -43,17 +43,6 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
-//  function test() {
-//   const arrayButtons = document.getElementsByClassName('item__add');
-//   arrayButtons.forEach((button) => button.addEventListener('click', () => {
-//     const skuElement = button.closest('span.item__sku');
-//     const idItem = skuElement;
-//     fetch(`https://api.mercadolibre.com/items/${idItem}`)
-//     .then((data) => createCartItemElement(
-//       { sku: data.id, name: data.title, salePrice: data.price },
-//       ));
-//   }));
-// }
 
 const startButtonHandlers = () => {
   const arrayButtons = document.querySelectorAll('.item__add');
@@ -73,14 +62,12 @@ fetch(API_URL)
   .then((response) => response.json())
   .then((data) => data.results)
   .then((results) => results.forEach((computer) => {
-    console.log('obtive resultado');
     const items = document.querySelector('.items');
     items.appendChild(createProductItemElement(
       { sku: computer.id, name: computer.title, image: computer.thumbnail },
     ));
   }))
   .then(() => startButtonHandlers());
-console.log('vou criar o botão');
 
 window.onload = () => {
 
