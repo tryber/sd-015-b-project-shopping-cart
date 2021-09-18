@@ -1,3 +1,4 @@
+const cartItens = '.cart__items';
 // Semelhante ao exemplo dado no dia 5.4
 const localStorageKey = 'shopListSaved';
 
@@ -44,6 +45,8 @@ function getSkuFromProductItem(item) {
 function cartItemClickListener(event) {
   // coloque seu código aqui
   event.target.parentNode.removeChild(event.target);
+  console.log('dentro da função click listener', event.target);
+  saveShoppingCartList(event);
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -72,9 +75,9 @@ async function listProducts({ results }) {
 
 async function addToShoppingCart(products) {
   const addButtons = document.querySelectorAll('.item__add');
-  const shopCart = document.querySelector('.cart__items');
+  const shopCart = document.querySelector(cartItens);
   addButtons.forEach((element, idx) => element
-  .addEventListener('click', async (_) => {
+  .addEventListener('click', async (event) => {
     await
     fetch(`https://api.mercadolibre.com/items/${products[idx].id}`)
       .then((requsition) => requsition.json())
@@ -90,7 +93,7 @@ async function addToShoppingCart(products) {
 function loadLocalStorage() {
   const fullShoppingListSaved = localStorage.getItem(localStorageKey);
   const fullShoppingListSavedObj = JSON.parse(fullShoppingListSaved);
-  const shopCart = document.querySelector('.cart__items');
+  const shopCart = document.querySelector(cartItens);
   
   if (fullShoppingListSavedObj !== null) {
     fullShoppingListSavedObj.forEach((element) => {
@@ -101,6 +104,16 @@ function loadLocalStorage() {
     });
   }
 }
+
+function clearShoppingCart() {
+  const clearButton = document.querySelector('.empty-cart');
+  const list = document.querySelector(cartItens);
+
+  clearButton.addEventListener('click', (_) => {
+    list.innerHTML = '';
+  });
+}
+
 window.onload = () => {
   const product = 'computador';
 
@@ -108,4 +121,6 @@ window.onload = () => {
   getDataFromML(product)
   .then((productData) => listProducts(productData))
   .then((products) => addToShoppingCart(products));
+
+  clearShoppingCart();
  };
