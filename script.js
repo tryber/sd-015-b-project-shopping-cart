@@ -2,7 +2,6 @@ function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
   img.src = imageSource;
-  img.height = 180;
   return img;
 }
 
@@ -29,9 +28,18 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-function cartItemClickListener(event) {
-  // coloque seu código aqui
+async function getInfos(url) {
+  const urlData = url;
+  try {
+    const response = await fetch(urlData);
+    const jsonData = await response.json();
+    return await jsonData;
+  } catch (error) {
+    throw new Error();
+  }
 }
+
+function cartItemClickListener(event) {}
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
@@ -41,31 +49,48 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-async function getInfos() {
-  const url = 'https://api.mercadolibre.com/sites/MLB/search?q=$computador';
-  try {
-    const response = await fetch(url);
-    const jsonData = await response.json();
-    return await jsonData;
-  } catch (error) {
-    throw new Error();
-  }
+async function getIntemInfos(item) {
+  const productId = getSkuFromProductItem(item);
+  const url = `https://api.mercadolibre.com/items/${productId}`;
+  const endPointInfos = await getInfos(url);
+  const response = endPointInfos;
+  const cartItems = document.querySelector('.cart__items');
+
+  cartItems.appendChild(createCartItemElement({
+    sku: response.id, name: response.title, salePrice: response.price,
+  }));
 }
 
-window.onload = async () => {
-  const endPointInfos = await getInfos();
+async function addItemToCart() {
+  const items = document.querySelectorAll('.item');
+
+  items.forEach((item) => item.lastChild.addEventListener('click', () => {
+    getIntemInfos(item);
+  }));
+}
+
+async function getItemsElement() {
+  const endPointInfos = await getInfos(
+    'https://api.mercadolibre.com/sites/MLB/search?q=$computador',
+  );
   const productResults = endPointInfos.results;
   
   const sectionItems = document.querySelector('.items');
 
-  productResults.forEach((product) => {
+  const result = productResults.forEach((product) => {
     const productId = product.id;
     const productName = product.title;
     const productImageId = product.thumbnail_id;
     const productImage = `https://http2.mlstatic.com/D_NQ_NP_${productImageId}-O.webp`;
 
     sectionItems.appendChild(
-      createProductItemElement({ id: productId, name: productName, image: productImage }),
+      createProductItemElement({ sku: productId, name: productName, image: productImage }),
     );
   });
+  return result;
+}
+
+window.onload = async () => {
+  await getItemsElement();
+  await addItemToCart();
 };
