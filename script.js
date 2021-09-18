@@ -1,3 +1,12 @@
+function saveLocalStorage() {
+  const input = [];
+  const listItems = document.querySelectorAll('.cart__item');
+
+  listItems.forEach((element) => input.push(element.innerText));
+
+  localStorage.setItem('actualCart', JSON.stringify(input));
+}
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -26,12 +35,13 @@ function createProductItemElement({ id, title, thumbnail }) {
   return section;
 }
 
-function getIdFromProductItem(item) {
-  return item.querySelector('span.item__id').innerText;
-}
+// function getIdFromProductItem(item) {
+//   return item.querySelector('span.item__sku').innerText;
+// }
 
 function cartItemClickListener(event) {
   event.target.remove();
+  saveLocalStorage();
 }
 
 function createCartItemElement({ id, title, price }) {
@@ -42,7 +52,23 @@ function createCartItemElement({ id, title, price }) {
   li.innerText = `SKU: ${id} | NAME: ${title} | PRICE: $${price}`;
   li.addEventListener('click', cartItemClickListener);
   ol.appendChild(li);
+  saveLocalStorage();
   return li;
+}
+
+function loadLocalStorage() {
+  const ol = document.querySelector('ol.cart__items');
+  if (localStorage.getItem('actualCart')) {
+  const item = JSON.parse(localStorage.getItem('actualCart'));
+
+  item.forEach((element) => {
+    const li = document.createElement('li');
+    li.innerText = element;
+    li.className = 'cart__item';
+    li.addEventListener('click', cartItemClickListener);
+    ol.appendChild(li);
+  });
+  }
 }
 
 function requestApiItem(ItemID) {
@@ -56,9 +82,9 @@ function requestApiMercado() {
   return fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
     .then((response) => response.json().then((data) => {
   data.results.forEach((element) => createProductItemElement(element));
-  
+
   return data;
-}));
+  }));
 }
 
 window.onload = () => {
@@ -69,4 +95,6 @@ window.onload = () => {
       return requestApiItem(event.target.parentNode.firstChild.innerText);
     }
   });
+  loadLocalStorage();
+  // getIdFromProductItem();
  };
