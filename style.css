@@ -21,7 +21,12 @@
   margin: 5px;
   width: 200px;
 }
-
+.loading-message {
+  display:none
+}
+.loading {
+  display:block
+}
 .item .item__sku {
   display: none;
 }

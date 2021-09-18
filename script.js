@@ -67,18 +67,27 @@ function clearCartItems() {
   });
 }
 
-fetch(API_URL)
+function callApi(url) {
+  const sectionLoading = document.querySelector('.loading-message');
+  sectionLoading.classList.add('loading');
+
+  fetch(url)
   .then((response) => response.json())
   .then((data) => data.results)
-  .then((results) => results.forEach((computer) => {
+  .then((results) => {
+    results.forEach((computer) => {
     const items = document.querySelector('.items');
     items.appendChild(createProductItemElement(
       { sku: computer.id, name: computer.title, image: computer.thumbnail },
     ));
-  }))
+    sectionLoading.classList.remove('loading');
+    sectionLoading.remove();
+  });
+})
   .then(() => startButtonHandlers())
   .then(() => clearCartItems());
+}
 
 window.onload = () => {
-
+  callApi(API_URL);
 };
