@@ -1,4 +1,8 @@
-const ol = document.querySelector('.cart__items');
+const cartSection = document.querySelector('ol');
+
+const localSave = () => {
+  localStorage.setItem('chave', cartSection.innerHTML);
+};
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -13,11 +17,6 @@ function createCustomElement(element, className, innerText) {
   e.innerText = innerText;
   return e;
 }
-
-// * Requisito 4.1
-const saveStorage = () => {
-  localStorage.setItem('item_cart', ol.innerHTML);
-};
 
 function createProductItemElement({ sku, name, image }) { // * Requisito 1
   const section = document.createElement('section');
@@ -36,17 +35,10 @@ function getSkuFromProductItem(item) { // * Requisito 2
 }
 
 function cartItemClickListener(event) {
-  event.target.remove(); // * Requisito 3
-  saveStorage(); // * Requisito 4.1
+  const cartItem = event.target;
+  cartItem.parentElement.removeChild(cartItem); // * Requisito 3
+  localSave();
 }
-
-// * Requisito 4.2
-const loadLocalStorage = () => {
-  ol.innerHTML = localStorage.getItem('item_cart');
-  ol.childNodes.forEach((li) => {
-    li.addEventListener('click', cartItemClickListener);
-  });
-};
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) { // * Requisito 2
   const li = document.createElement('li');
@@ -79,13 +71,22 @@ const addProductShoppingCart = async () => {
       const liProducts = createCartItemElement(responseJson);
       const cartItems = document.querySelector('.cart__items');
       cartItems.appendChild(liProducts);
-      saveStorage(); // * Requisito 4.1
+      localSave();
     });
+  });
+};
+
+// * Requisito 4
+const getLocal = () => {
+  cartSection.innerHTML = localStorage.getItem('chave');
+  const cartItem2 = document.querySelectorAll('.cart__item');
+  cartItem2.forEach((element) => {
+    element.addEventListener('click', cartItemClickListener);
   });
 };
 
 window.onload = async () => {
   await createProductList(); // * Requisito 1
   await addProductShoppingCart(); // * Requisito 2
-  loadLocalStorage(); // * Requisito 4.2
+  getLocal(); // * Requisito 4
 };
