@@ -24,15 +24,26 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
+const saveStorage = () => {
+  const shopCart = document.querySelector('.cart__items').innerHTML;
+  localStorage.setItem('key', JSON.stringify(shopCart));
+};
+
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
 function cartItemClickListener(event) {
   event.target.remove();
+  saveStorage();
 }
 
-// commitas
+const getStorage = () => {
+  const recovery = JSON.parse(localStorage.getItem('key'));
+  const ol = document.querySelector('ol');
+  ol.innerHTML = recovery;
+  ol.addEventListener('click', cartItemClickListener);
+};
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
@@ -60,6 +71,7 @@ const addItemByIdToShop = (idItem) => {
       const priceItem = { sku: id, name: title, salePrice: price };
       const selectCart = document.querySelector('.cart__items');
       selectCart.appendChild(createCartItemElement(priceItem));
+      saveStorage();
     });
 };
 
@@ -71,5 +83,6 @@ const buttonToCart = () => {
 
 window.onload = () => { 
   apiMercadoLivre()
-    .then(() => buttonToCart());
+    .then(() => buttonToCart())
+    .then(() => getStorage());
 };
