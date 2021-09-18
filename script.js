@@ -107,11 +107,15 @@ async function requestMlComputador(url) {
     }));
 }
 
-async function takeComputerID(element) {
+async function checkApiItems(element) {
   const elementId = getSkuFromProductItem(element);
-  const mercadoLivreApiPeloId = `https://api.mercadolibre.com/items/${elementId}`;
+  const mercadoLivreApiId = `https://api.mercadolibre.com/items/${elementId}`;
 
-  fetch(mercadoLivreApiPeloId)
+  return fetch(mercadoLivreApiId);
+}
+
+async function addItemIntoCart(element) {
+  await checkApiItems(element)
     .then((response) => response.json())
     .then(({ id, title, price }) => {
       const output = { sku: id, name: title, salePrice: price };
@@ -119,15 +123,16 @@ async function takeComputerID(element) {
       ol.append(createCartItemElement(output));
       calculeTotalAmount();
       saveCart();
-    });
+    })
+    .catch(() => console.error('Ops.'));
 }
 
 function addListenersToBtns() {
   const allItems = document.querySelectorAll('.item');
   const loading = document.querySelector('.loading');
-  
+
   allItems.forEach((item) => item.lastChild.addEventListener('click', (() => {
-    takeComputerID(item);
+    addItemIntoCart(item);
   })));
 
   loading.remove();
