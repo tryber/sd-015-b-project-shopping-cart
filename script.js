@@ -111,9 +111,22 @@ function buttonId() {
   }));
 }
 
+function buttonClearCart() {
+  const getOl = document.querySelector('ol');
+    const getSpan = document.querySelector('.total-price');
+      getOl.innerHTML = '';
+      getSpan.innerHTML = '';
+      getLocalStorage();
+}
+
 window.onload = () => {
   createListElements('computador')
     .then(() => buttonId())
     .then(() => saveLocalStorageOl())
-    .then(() => sumCart());
+    .then(() => sumCart())
+    .then(() => {
+      const buttonClearOl = document.querySelector('.empty-cart');
+      buttonClearOl.addEventListener('click', buttonClearCart);
+    })
+    .catch(() => console.log('Fatal ERROR'));
 };
