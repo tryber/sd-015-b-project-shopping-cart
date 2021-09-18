@@ -11,16 +11,6 @@ function createProductImageElement(imageSource) {
 function createCustomElement(element, className, innerText, sku) {
   // Cria elemento com os dados do createProductItemElement
   const e = document.createElement(element);
-  if (element === 'button') {
-    const reachURL = `https://api.mercadolibre.com/items/${sku}`;
-    e.addEventListener('click', () => {
-      fetch(reachURL)
-      .then((result) => {
-        console.log("ISSO ESTÁ FUNCIONANDO!!! :D");
-        console.log(result);
-      })
-    });
-  }
   e.className = className;
   e.innerText = innerText;
   return e;
@@ -48,7 +38,7 @@ function cartItemClickListener(event) {
   // coloque seu código aqui
   // Adiciona evento de click para item no Carrinho
   // Quando o item do carrinho for clickado, o mesmo deve ser removido
-  // console.log("That's working Fine!");
+  console.log("That's working Fine!");
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -62,15 +52,22 @@ function createCartItemElement({ sku, name, salePrice }) {
 
 function criarElementos(dados) {
   const resultados = dados;
-    const itensContainer = document.querySelector('.items');
-    resultados.forEach(({ id, title, thumbnail }) => {
-      const dadosRecebidos = {
-        sku: id,
-        name: title,
-        image: thumbnail,
-      };
-      const criaElemento = createProductItemElement(dadosRecebidos);
-      itensContainer.appendChild(criaElemento);
+  const itensContainer = document.querySelector('.items');
+  // console.log(resultados);
+  resultados.forEach(({ id, title, thumbnail, price }) => {
+    const dadosRecebidos = {
+      sku: id,
+      name: title,
+      image: thumbnail,
+    };
+    // Cria cada item da lista com os dadosRecebidos
+    const criaElemento = createProductItemElement(dadosRecebidos);
+    criaElemento.addEventListener('click', () => {
+      // eventListener do adicionarCarrinho
+      console.log(price);
+      // const novaLi = createCartItemElement({id, title, salePrice});
+    });
+    itensContainer.appendChild(criaElemento);
     });
 }
 
