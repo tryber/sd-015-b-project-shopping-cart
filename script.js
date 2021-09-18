@@ -81,6 +81,11 @@ const addItemToCart = (itemId) => {
     });
 };
 
+const removeItemsFromCart = () => {
+  const cartItems = document.querySelectorAll('.cart__item');
+  cartItems.forEach((item) => item.remove());
+};
+
 function createProductItemElement({ sku, name, image }) {
   const section = document.createElement('section');
   section.className = 'item';
@@ -122,4 +127,6 @@ function getSkuFromProductItem(item) {
 window.onload = () => {
   getProducts();
   getCartFromLocalStorage();
+  const removeButton = document.querySelector('.empty-cart');
+  removeButton.addEventListener('click', removeItemsFromCart);
 };
