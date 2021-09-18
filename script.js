@@ -24,9 +24,9 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
+// function getSkuFromProductItem(item) {
+//   return item.querySelector('span.item__sku').innerText;
+// }
 
 function totalPriceDocument() {
   return document.querySelector('.total-price');
@@ -118,9 +118,15 @@ function cleanCart(cartList) {
   });
 }
 
+function deleteLoading() {
+  const loadScreen = document.querySelector('.loading');
+  loadScreen.remove();
+}
+
 window.onload = () => { 
   const cartList = document.querySelector('.cart__items');
   createListOfProducts('computador')
+    .then(() => deleteLoading())
     .then(() => getCartLocal(cartList))
     .then(() => addProductToCart(cartList))
     .then(() => getTotalPriceOnLoad())
