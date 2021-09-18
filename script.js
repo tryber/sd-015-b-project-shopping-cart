@@ -11,6 +11,11 @@ function createProductImageElement(imageSource) {
 function createCustomElement(element, className, innerText) {
   // Cria elemento com os dados do createProductItemElement
   const e = document.createElement(element);
+  if (element === 'button') {
+    e.addEventListener('click', () => {
+      console.log("ISSO ESTÁ FUNCIONANDO!!! :D");
+    });
+  }
   e.className = className;
   e.innerText = innerText;
   return e;
@@ -20,12 +25,12 @@ function createProductItemElement({ sku, name, image }) {
   // Recebe os parâmetros sku, name & image do JSON da API
   const section = document.createElement('section');
   section.className = 'item';
+  const carrinho = document.querySelector('ol');
 
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-
   return section;
 }
 
