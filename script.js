@@ -36,11 +36,20 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+function updatePrice() {
+  const priceScreen = document.querySelector('.total-price');
+  const totalPrice = localStorageActual.map((item) => item.split('$')).map(
+    (price) => +price[1],
+      ).reduce((accum, curr) => accum + curr, 0);
+  priceScreen.innerText = totalPrice;
+}
+
 function cartItemClickListener(event) {
   // coloque seu código aqui
   event.target.remove();
   localStorageActual = Array.from(cart.childNodes, (item) => item.innerText);
   localStorage.setItem('cart', JSON.stringify(localStorageActual));
+  updatePrice();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -51,7 +60,7 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-function teste(item) {
+function createCartItemElement2(item) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = item;
@@ -68,6 +77,7 @@ async function addToCart(event) {
 ));
   localStorageActual = Array.from(cart.childNodes, (item) => item.innerText);
   localStorage.setItem('cart', JSON.stringify(localStorageActual));
+  updatePrice();
 }
 
 function buttonsAdd() {
@@ -77,7 +87,8 @@ function buttonsAdd() {
 
 function updateLocalStorage() {
   localStorageActual = JSON.parse(localStorage.getItem('cart'));
-  localStorageActual.forEach((item) => cart.appendChild(teste(item)));
+  localStorageActual.forEach((item) => cart.appendChild(createCartItemElement2(item)));
+  updatePrice();
 }
 
 async function getItemsForScreen() {
