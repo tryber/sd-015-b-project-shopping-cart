@@ -39,13 +39,21 @@ async function getInfos(url) {
   }
 }
 
-function cartItemClickListener(event) {}
+function cartItemClickListener(element) {
+  const cartItems = document.querySelector('.cart__item');
+
+  if (cartItems.parentNode) {
+    cartItems.parentNode.removeChild(element);
+  }
+}
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
+  li.addEventListener('click', () => {
+    cartItemClickListener(li);
+  });
   return li;
 }
 
@@ -63,7 +71,6 @@ async function getIntemInfos(item) {
 
 async function addItemToCart() {
   const items = document.querySelectorAll('.item');
-
   items.forEach((item) => item.lastChild.addEventListener('click', () => {
     getIntemInfos(item);
   }));
