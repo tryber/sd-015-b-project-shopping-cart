@@ -40,4 +40,22 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-window.onload = () => { };
+// consultando a resposta de Denis percebi que não estava 
+// passando por que o teste rodava antes do carregamento do fecth
+// então coloquei o fetch dentro de uma função e a chamei dentro window.onload
+// https://github.com/tryber/sd-015-b-project-shopping-cart/pull/2/commits/c9ad5927fa9cd32f2d0146cc161f3af2cca44b6e
+function returnListMLB() {
+return fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${'computador'}`)
+  .then((allInfo) => allInfo.json())
+  .then((list) => list.results)
+  .then((results) => results.forEach((computer) => {
+      const product = document.querySelector('.items');
+      product.appendChild(createProductItemElement(
+        { sku: computer.id, name: computer.title, image: computer.thumbnail },
+)); 
+}));
+}
+
+window.onload = () => {
+  returnListMLB();
+ };
