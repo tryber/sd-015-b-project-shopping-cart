@@ -1,4 +1,5 @@
 const mercadoLivreApi = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
+const queryCart = '.cart__items';
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -18,6 +19,7 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+// 3. Remova o item do carrinho de compras ao clicar nele
 function cartItemClickListener(event) {
   // coloque seu código aqui
   event.target.remove(event);
@@ -32,10 +34,10 @@ function createCartItemElement({ sku, name, salePrice }) {
 }
 
 // 2. Adicione o produto ao carrinho de compras
+// A linha 37 foi feito com referencia ao codigo da Annie Haurani, segue o link do repositorio: https://github.com/tryber/sd-015-b-project-shopping-cart/pull/60/commits/217276490c68d9bb5def076fea3a70ccf8099784
 async function addProductCart() {
   try {
-  // A linha 37 foi feito com referencia ao codigo da Annie Haurani, segue o link do repositorio: https://github.com/tryber/sd-015-b-project-shopping-cart/pull/60/commits/217276490c68d9bb5def076fea3a70ccf8099784
-  const productId = getSkuFromProductItem(this);
+  const productId = getSkuFromProductItem(this); 
   const url = `https://api.mercadolibre.com/items/${productId}`;
   const myFetch = await fetch(url);
   const searchFetch = await myFetch.json();
@@ -43,10 +45,12 @@ async function addProductCart() {
     sku: searchFetch.id, 
     name: searchFetch.title, 
     salePrice: searchFetch.price,
-  }; 
+  };
   const productToCart = createCartItemElement(item);
-  const cart = document.querySelector('.cart__items');
+  const cart = document.querySelector(queryCart);
   cart.appendChild(productToCart);
+  const searchOl = document.querySelector(queryCart);
+  localStorage.setItem('content', searchOl.innerHTML);
   } catch (error) {
     console.log('error');
   }
@@ -67,7 +71,7 @@ function createProductItemElement({ sku, name, image }) {
 // 1. Crie uma listagem de produtos
 function createProductListing() {
   try {
-  const fetchML = fetch(mercadoLivreApi)
+  fetch(mercadoLivreApi)
   .then((responseThen) => responseThen.json())
   .then((productList) => productList.results.forEach(({ id, title, thumbnail }) => {
       const productObject = {
@@ -84,6 +88,16 @@ function createProductListing() {
   }
 }
 
+// 4. Carregue o carrinho de compras através do LocalStorage ao iniciar a página (Cria função para chamar no window.onload)
+function loadCart() {
+  const searchOlCart = document.querySelector(queryCart);
+  if (localStorage.getItem('content')) {
+    searchOlCart.innerHTML = localStorage.getItem('content');
+    searchOlCart.addEventListener('click', cartItemClickListener);
+  }
+}
+
 window.onload = () => { 
   createProductListing();
+  loadCart();
 };
