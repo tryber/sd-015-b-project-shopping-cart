@@ -49,7 +49,7 @@ async function payment() {
   
   const getAllValues = totalCart.map((value) => {
     const valueString = value.innerText.split('$').reverse()[0];
-    const stringToNumber = parseFloat(valueString, 10);
+    const stringToNumber = parseFloat(valueString);
     return stringToNumber;
   });
   
