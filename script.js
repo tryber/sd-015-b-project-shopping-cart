@@ -1,3 +1,5 @@
+const local = localStorage;
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -24,7 +26,31 @@ async function itemObjectPromise(id) {
 
 function cartItemClickListener(event) {
   event.target.parentNode.removeChild(event.target);
+  addCartToLocalStorage();
 }
+
+function cartListInArray() {
+  const cartListElements = document.querySelector('ol.cart__items').children;
+  const cartListArray = Object.values(cartListElements).map((element) => element.innerText);
+  return cartListArray;
+}
+
+function addCartToLocalStorage() {
+  local.setItem('cartList', JSON.stringify(cartListInArray()));
+}
+
+function addLocalStorageToCart() {
+  if (local.getItem('cartList')) {
+    const cartList = JSON.parse(local.getItem('cartList'));
+    cartList.forEach((element) => {
+     const li = document.createElement('li');
+     li.className = 'cart__item';
+     li.innerText = element;
+     li.addEventListener('click', cartItemClickListener);
+     document.querySelector('ol.cart__items').appendChild(li);
+    });
+   }
+};
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
@@ -39,9 +65,10 @@ function addElementToCart(event) {
   const elementId = getSkuFromProductItem(element);
   itemObjectPromise(elementId)
     .then((object) => {
-      const { id: sku, title: name, base_price: salePrice } = object;
+      const { id: sku, title: name, price: salePrice } = object;
       const listItem = createCartItemElement({ sku, name, salePrice });
       document.querySelector('ol.cart__items').appendChild(listItem);
+      addCartToLocalStorage();
     });
 }
 
@@ -64,6 +91,7 @@ const computersArrayPromise = new Promise((resolve, _) => {
 
 window.onload = () => {
   const sectionItemsElement = document.querySelector('section.items');
+  addLocalStorageToCart();
   computersArrayPromise
     .then((results) => {
       results.forEach((element) => {
