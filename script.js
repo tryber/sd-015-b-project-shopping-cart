@@ -1,5 +1,6 @@
 const local = localStorage;
 const ordenedlistCart = document.querySelector('ol.cart__items');
+const buttonEmptyCart = document.querySelector('button.empty-cart');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -103,6 +104,16 @@ const computersArrayPromise = new Promise((resolve, _) => {
     .then((result) => result.json())
     .then((resultJson) => resolve(resultJson.results));
 });
+
+function emptyCart() {
+  const arrayElementsLi = ordenedlistCart.children;
+  Object.keys(arrayElementsLi).forEach((_) => {
+    ordenedlistCart.removeChild(ordenedlistCart.lastChild);
+  });
+  addCartToLocalStorage();
+}
+
+buttonEmptyCart.addEventListener('click', emptyCart);
 
 window.onload = () => {
   const sectionItemsElement = document.querySelector('section.items');
