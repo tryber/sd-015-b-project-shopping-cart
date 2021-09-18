@@ -1,3 +1,10 @@
+function displayLoadingText() {
+  const loadingDisplay = document.createElement('span');
+  loadingDisplay.className = 'loading';
+  loadingDisplay.innerText = 'loading...';
+  document.body.appendChild(loadingDisplay);
+}
+
 function selectCartContainer() {
   return document.querySelector('.cart__items');
 }
@@ -70,13 +77,14 @@ function createCartItemElement({ sku, name, salePrice }) {
 }
 
 function fetchFromApi(endpoint) {
-  const endpointFormat = {
-    method: 'GET',
-    headers: { Accept: 'application/json' },
-  };  
-
-  return fetch(endpoint, endpointFormat)
-    .then((response) => response.json());
+  displayLoadingText();
+  return fetch(endpoint)
+    .then((response) => response.json())
+    .then((data) => {
+      const loadingDisplay = document.querySelector('.loading');
+      loadingDisplay.remove();
+      return data;
+    });
 }
 
 async function addItemToCart(event) {
