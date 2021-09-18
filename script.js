@@ -38,22 +38,22 @@ function getSkuFromProductItem(item) { // * Requisito 2
 }
 
 // * Requisito 5
-const updatePrice = (total) => {
+const updateTotalPrice = (total) => {
   priceSave.innerText = total;
 };
 
 // * Requisito 5.1
 const addPrice = (price) => {
-  let totalPrice = priceSave.innerText;
-  totalPrice = Math.round((Number(totalPrice) * 100) + (price * 100)) / 100;
-  updatePrice(totalPrice);
+  let totalPriceSpan = priceSave.innerText;
+  totalPriceSpan = Math.round((Number(totalPriceSpan) * 100) + (price * 100)) / 100;
+  updateTotalPrice(totalPriceSpan);
 };
 
 // * Requisito 5.2
 const removePrice = (price) => {
-  let totalPrice = priceSave.innerText;
-  totalPrice = Math.round((Number(totalPrice) * 100) - (price * 100)) / 100;
-  updatePrice(totalPrice);
+  let totalPriceSpan = priceSave.innerText;
+  totalPriceSpan = Math.round((Number(totalPriceSpan) * 100) - (price * 100)) / 100;
+  updateTotalPrice(totalPriceSpan);
 };
 
 function cartItemClickListener(event) {
@@ -96,7 +96,7 @@ const addProductShoppingCart = async () => {
       const liProducts = createCartItemElement(responseJson);
       const cartItems = document.querySelector('.cart__items');
       cartItems.appendChild(liProducts);
-      addPrice(responseJson); // * Requisito 5.1
+      addPrice(responseJson.price); // * Requisito 5.1
       localSave(); // * Requisito 4.1
     });
   });
@@ -104,12 +104,12 @@ const addProductShoppingCart = async () => {
 
 // * Requisito 6
 const emptyCart = () => {
-  const buttonEmpty = document.querySelector('.empty-cart-button');
-  buttonEmpty.appendChild('click', () => {
+  const buttonEmpty = document.querySelector('.empty-cart');
+  buttonEmpty.addEventListener('click', () => {
     cartSection.innerHTML = '';
     let emptyPrice = priceSave.innerHTML;
     emptyPrice = 0;
-    updatePrice(emptyPrice);
+    updateTotalPrice(emptyPrice);
     localSave();
   });
 };
