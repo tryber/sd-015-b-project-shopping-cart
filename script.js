@@ -5,9 +5,22 @@ const setItemLocal = () => {
   localStorage.setItem('key', saveStorage);
 };
 
+const sumPrice = () => {
+  const getItem = [...document.querySelectorAll('.cart__item')];
+  const result = getItem.map((value) => {
+    const splited = value.innerText.split('$').reverse()[0];
+    const test = parseFloat(splited, 10);
+    return test;
+  });
+  const reduceResult = result.reduce((accumulator, number) => accumulator + number, 0);
+  document.querySelector('.total-price').innerText = `${reduceResult.toFixed(2)}`;
+  return reduceResult;
+};
+
 function cartItemClickListener(event) {
   // coloque seu código aqui
   event.target.remove();
+  sumPrice();
   setItemLocal();
 }
 
@@ -88,6 +101,7 @@ const getId = async (item) => {
     const olCart = document.querySelector('.cart__items');
     const liCart = createCartItemElement(object);
     olCart.appendChild(liCart);
+    sumPrice();
     setItemLocal();
   })
   .catch(() => console.error('Deu erro para adicionar ao carrinho'));
@@ -97,6 +111,7 @@ const buttonAdd = () => {
   const items = document.querySelectorAll('.item');
   items.forEach((item) =>
     item.lastChild.addEventListener('click', () => getId(item)));
+  sumPrice();
 };
 
 const orderFunction = () => {
