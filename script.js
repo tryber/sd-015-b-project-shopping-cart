@@ -32,16 +32,33 @@ const getProductBySku = async (sku) => {
   }
 };
 
+const updateCartTotal = async () => {
+  const cartItemsElements = document.querySelectorAll('.cart__item');
+  const cartItems = Array.from(cartItemsElements);
+  const prices = [];
+  console.log('atualizarei');
+  await cartItems.forEach(async ({ id: sku }) => {
+    const { salePrice: itemPrice } = await getProductBySku(sku);
+    prices.push(itemPrice);
+  });
+  console.log(prices);
+};
+
 const saveCartOnLocalStorage = () => {
   const cartItems = Array.from(document.getElementsByClassName('cart__item'));
-  const cartItemsSkus = cartItems.map((item) => item.id);
-  localStorage.setItem('shoppingCart', JSON.stringify(cartItemsSkus));
+  if (cartItems.length > 0) {
+    const cartItemsSkus = cartItems.map((item) => item.id);
+    localStorage.setItem('shoppingCart', JSON.stringify(cartItemsSkus));
+  } else {
+    localStorage.removeItem('shoppingCart');
+  }
 };
 
 const clearCart = () => {
   const cart = document.querySelector('.cart__items');
   cart.innerHTML = '';
   saveCartOnLocalStorage();
+  updateCartTotal();
 };
 
 const createImageElement = (imageSource) => {
@@ -66,6 +83,7 @@ const createCartItemElement = ({ sku, name, salePrice }) => {
   li.addEventListener('click', (event) => {
     event.target.remove();
     saveCartOnLocalStorage();
+    updateCartTotal();
   });
   return li;
 };
@@ -89,6 +107,7 @@ const createProductItemElement = ({ sku, name, image }) => {
     const itemSku = event.target.parentElement.querySelector('span.item__sku').innerText;
     await insertItemInCart(itemSku);
     saveCartOnLocalStorage();
+    updateCartTotal();
   });
 
   itemSection.appendChild(addItemBtn);
@@ -104,7 +123,9 @@ const renderItemsList = async (itemList) => {
 
 const renderPreviousCartItems = async (previousCart) => {
   const previousItemsSkus = JSON.parse(previousCart);
-  previousItemsSkus.forEach(async (itemSku) => insertItemInCart(itemSku));
+  await previousItemsSkus.forEach(async (itemSku) => {
+    await insertItemInCart(itemSku);
+  });
 };
 
 window.onload = async () => {
@@ -115,7 +136,8 @@ window.onload = async () => {
   renderItemsList(list);
 
   const previousCart = localStorage.getItem('shoppingCart');
-  if (previousCart.length > 0) {
-    renderPreviousCartItems(previousCart);
+  if (previousCart) {
+    await renderPreviousCartItems(previousCart);
+    updateCartTotal();
   }
 };
