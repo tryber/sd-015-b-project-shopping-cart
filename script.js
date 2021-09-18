@@ -28,9 +28,22 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+function getLocalStorage() {
+  const saveStorage = document.querySelector('.cart__items').innerHTML;
+  localStorage.setItem('item', JSON.stringify(saveStorage));
+}
+
 function cartItemClickListener(event) {
   const eventoClick = event.target;
   eventoClick.remove();
+  getLocalStorage();
+}
+
+function saveLocalStorageOl() {
+  const getLis = JSON.parse(localStorage.getItem('item'));
+  const getOl = document.querySelector('ol');
+  getOl.innerHTML = getLis;
+  getOl.addEventListener('click', cartItemClickListener);
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -54,7 +67,8 @@ async function createListElements(products) {
         const classItems = document.querySelector('.items');
         const createProducts = createProductItemElement(listProducts);
         classItems.appendChild(createProducts);
-    })).catch(() => console.log('error'));
+    }))
+    .catch(() => console.log('error'));
 }
 
 function getListIds(idItem) {
@@ -71,6 +85,7 @@ function getListIds(idItem) {
       const itemLi = createCartItemElement(idProducts);
       const itemOl = document.querySelector('.cart__items');
       itemOl.appendChild(itemLi);
+      getLocalStorage();
     })
     .catch(() => console.log('error na verificacao do id'));
 }
@@ -84,5 +99,6 @@ function buttonId() {
 
 window.onload = () => {
   createListElements('computador')
-    .then(() => buttonId());
+    .then(() => buttonId())
+    .then(() => saveLocalStorageOl());
 };
