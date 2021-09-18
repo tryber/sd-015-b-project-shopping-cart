@@ -100,8 +100,9 @@ async function getItemsForScreen() {
   const result = items.forEach((item) => {
     itemList.appendChild(createProductItemElement(
       { sku: item.id, name: item.title, image: item.thumbnail },
-));
-  });
+      ));
+    });
+    document.querySelector('.loading').remove();
   buttonsAdd();
   updateLocalStorage();
   return result;
