@@ -480,7 +480,7 @@ Obs: Devemos tomar cuidado, no entanto, pois estamos buscando os dados do produt
 ### 6. Crie um botão para limpar carrinho de compras
 
 Crie um botão para remover todos os itens do carrinho de compras. Ele deve, **obrigatóriamente**, ter a classe `empty-cart`.
-
+  
 ### 7. Adicione um texto de "loading" durante uma requisição à API
 
 Uma requisição à API gasta um tempo e durante ele, ficamos sem saber se está tudo certo ou se algo deu errado.
