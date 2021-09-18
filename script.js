@@ -12,7 +12,7 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({ sku, name, image }) {
+function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
 
@@ -49,22 +49,17 @@ const getListProductId = () => {
       .map((objProd) => objProd.id)));
 };
 
-const getListProductTilte = () => {
+const getListProducts = () => {
   fetch(API_URL)
     .then((response) => response.json())
-    .then((listProd) => console.log(listProd.results
-      .map((objProd) => objProd.title)));
-};
-
-const getListProductThumbnail = () => {
-  fetch(API_URL)
-    .then((response) => response.json())
-    .then((listProd) => console.log(listProd.results
-      .map((objProd) => objProd.thumbnail)));
+    .then((listProd) => {
+      listProd.results.forEach((result) => {
+      const section = document.querySelector('.items'); 
+      section.appendChild(createProductItemElement(result));
+    });
+  });
 };
 
 window.onload = () => { 
-  getListProductId();
-  getListProductTilte();
-  getListProductThumbnail();
+getListProducts();
 };
