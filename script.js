@@ -34,12 +34,13 @@ function getLocalStorage() {
 
 function sumCart() {
   const getClassItem = [...document.querySelectorAll('.cart__item')];
-  const valuess = getClassItem.map((value) => {
-    const splited = value.innerText.split('$').reverse()[0];
+  const getValues = getClassItem.map((value) => {
+    const splited = value.innerText.split('$')[1];
     const number = parseFloat(splited, 10);
+    console.log(number);
     return number;
   });
-  const result = valuess.reduce((acc, curr) => (acc + curr), 0);
+  const result = getValues.reduce((acc, curr) => (acc + curr), 0);
   document.querySelector('.total-price').innerText = `${result}`;
 }
 
@@ -50,7 +51,7 @@ function cartItemClickListener(event) {
   getLocalStorage();
 }
 
-function saveLocalStorageOl() {
+function recoveryLocalStorageOl() {
   const getLis = JSON.parse(localStorage.getItem('item'));
   const getOl = document.querySelector('ol');
   getOl.innerHTML = getLis;
@@ -133,7 +134,7 @@ window.onload = () => {
   createListElements('computador')
     .then(() => removeSpanLoading())
     .then(() => buttonId())
-    .then(() => saveLocalStorageOl())
+    .then(() => recoveryLocalStorageOl())
     .then(() => sumCart())
     .then(() => {
       const buttonClearOl = document.querySelector('.empty-cart');
