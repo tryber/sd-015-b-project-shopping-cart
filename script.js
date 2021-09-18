@@ -1,5 +1,13 @@
 const localKey = localStorage.getItem('key');
 
+const createElem = () => {
+  const p = document.createElement('p');
+  p.classList = 'loading';
+  p.innerText = 'loading...';
+  const cartFirst = document.querySelector('.cart');
+  cartFirst.appendChild(p);
+};
+
 const setItemLocal = () => {
   const saveStorage = JSON.stringify(document.querySelector('.cart__items').innerHTML);
   localStorage.setItem('key', saveStorage);
@@ -71,6 +79,7 @@ function createCartItemElement({ sku, name, salePrice }) {
 
 const createElement = async () => {
   try {
+    createElem();
     const response = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
     const listItems = await response.json();
     return listItems.results.forEach(({ id, title, thumbnail }) => {
@@ -93,11 +102,7 @@ const getId = async (item) => {
   fetch(`https://api.mercadolibre.com/items/${result}`)
   .then((response) => response.json())
   .then(({ id, title, price }) => {
-    const object = {
-      sku: id,
-      name: title,
-      salePrice: price,
-    };
+    const object = { sku: id, name: title, salePrice: price };
     const olCart = document.querySelector('.cart__items');
     const liCart = createCartItemElement(object);
     olCart.appendChild(liCart);
@@ -116,6 +121,10 @@ const buttonAdd = () => {
 
 const orderFunction = () => {
   createElement()
+  .then(() => {
+    const loading = document.querySelector('.loading');
+    loading.remove();
+  })
   .then(() => buttonAdd())
   .then(() => {
       const button = document.querySelector('.empty-cart');
