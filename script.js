@@ -39,9 +39,9 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
+// function getSkuFromProductItem(item) {
+//   return item.querySelector('span.item__sku').innerText;
+// }
 
 // Fonte: https://stackoverflow.com/questions/3650081/why-does-the-sum-of-2-parsefloat-variables-give-me-an-incorrect-decimal-number 
 // Fonte: https://stackoverflow.com/questions/3612744/remove-insignificant-trailing-zeros-from-a-number
@@ -55,7 +55,10 @@ function cartItemClickListener(event) {
   // coloque seu código aqui
   event.target.parentNode.removeChild(event.target);
   saveShoppingCartList(event);
-  const itemPrice = parseFloat(event.target.innerHTML.split('$')[1]);
+  // const itemPrice = parseFloat(event.target.innerHTML.split('$')[1]);
+  let itemPrice = event.target.innerHTML.split('$');
+  itemPrice = parseFloat(itemPrice[itemPrice.length - 1]);
+
   updateTotalPrice(-itemPrice);
 }
 
@@ -67,9 +70,26 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
+async function getDataUsingFetch(link) { 
+  return fetch(link).then((response) => response.json());
+}
+
+function addLoading() {
+  const loading = document.createElement('p');
+  const cart = document.querySelector(cartItens);
+  loading.className = 'loading';
+  loading.innerHTML = 'loading...';
+  cart.appendChild(loading);
+}
+
+function removeLoading() {
+  const loading = document.querySelector('.loading');
+  const cart = document.querySelector(cartItens);
+  cart.removeChild(loading);
+}
+
 async function getDataFromML(product) {
-  return fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${product}`)
-  .then((response) => response.json());
+  return getDataUsingFetch(`https://api.mercadolibre.com/sites/MLB/search?q=${product}`);
 }
 
 async function listProducts({ results }) {
@@ -95,13 +115,14 @@ async function addToShoppingCart(products) {
   const shopCart = document.querySelector(cartItens);
   addButtons.forEach((element, idx) => element
   .addEventListener('click', async (_) => {
+    addLoading();
     await
-    fetch(`https://api.mercadolibre.com/items/${products[idx].id}`)
-      .then((requsition) => requsition.json())
+    getDataUsingFetch(`https://api.mercadolibre.com/items/${products[idx].id}`)
       .then(({ id, title, price }) => {
         addShoppingCartItem(id, title, price, shopCart);
         updateTotalPrice(price);
       });
+    removeLoading();
     }));
 }
 
@@ -137,8 +158,12 @@ window.onload = () => {
   const product = 'computador';
 
   loadLocalStorage();
+  addLoading();
   getDataFromML(product)
-  .then((productData) => listProducts(productData))
+  .then((productData) => {
+    removeLoading();
+    return listProducts(productData);
+  })
   .then((products) => addToShoppingCart(products));
 
   clearShoppingCart();
