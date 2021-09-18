@@ -19,9 +19,25 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+function saveCartItems(ol) {
+  localStorage.cartItems = ol.innerHTML;
+}
+
 function cartItemClickListener(event) {
-  const itemContainer = event.target.parentElement;
-  itemContainer.removeChild(event.target);
+  const cartItemsOl = event.target.parentElement;
+  cartItemsOl.removeChild(event.target);
+  saveCartItems(cartItemsOl);
+}
+
+function loadCartItems() {
+  if (typeof localStorage.cartItems !== 'undefined') {
+    const cartItemsOl = document.querySelector('.cart__items');
+    cartItemsOl.innerHTML = localStorage.cartItems;
+
+    // transforma HTMLColection em array
+    const [...cartItems] = cartItemsOl.children;
+    cartItems.forEach((item) => item.addEventListener('click', cartItemClickListener));
+  }
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -42,6 +58,7 @@ function handleAddButton(event) {
       const cartItemsOl = document.querySelector('.cart__items');
       const product = { sku: id, name: title, salePrice: price };
       cartItemsOl.appendChild(createCartItemElement(product));
+      saveCartItems(cartItemsOl);
     });
 }
 
@@ -74,4 +91,5 @@ function fetchMercadoLivre() {
 
 window.onload = () => {
   fetchMercadoLivre();
+  loadCartItems();
 };
