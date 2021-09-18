@@ -99,8 +99,18 @@ function addButtons() {
 function requestOrder() {
   requestProducts(apiComputer)
     .then(() => addButtons())
+    .then(() => {
+      const clearButton = document.getElementsByClassName('empty-cart')[0];
+  clearButton.addEventListener('click', () => {
+  const olClear = document.querySelector('ol');
+  olClear.innerText = '';
+}
+);
+    })
     .catch(() => console.error('Endereço não encontrado.'));
 }
+
+
 
 window.onload = () => {
   if (localKey) {
