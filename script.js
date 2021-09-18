@@ -31,9 +31,21 @@ function cartListInArray() {
   return cartListArray;
 }
 
+function calculateTotal() {
+  const cartListArray = cartListInArray();
+  let total = cartListArray.reduce((acc, curr) => {
+    const valueCurr = parseFloat(curr.split(' PRICE: $')[1]);
+    return acc + valueCurr;
+  }, 0);
+  total = total.toFixed(2);
+  const totalElement = document.querySelector('span.total-price');
+  totalElement.innerText = `Preço total: $${total}`;
+}
+
 function addCartToLocalStorage() {
   const cartListArray = cartListInArray();
   local.setItem('cartList', JSON.stringify(cartListArray));
+  calculateTotal();
 }
 
 function cartItemClickListener(event) {
@@ -95,6 +107,7 @@ const computersArrayPromise = new Promise((resolve, _) => {
 window.onload = () => {
   const sectionItemsElement = document.querySelector('section.items');
   addLocalStorageToCart();
+  calculateTotal();
   computersArrayPromise
     .then((results) => {
       results.forEach((element) => {
