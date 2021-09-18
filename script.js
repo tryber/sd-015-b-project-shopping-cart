@@ -116,7 +116,16 @@ const buttonAdd = () => {
 
 const orderFunction = () => {
   createElement()
-  .then(() => buttonAdd());
+  .then(() => buttonAdd())
+  .then(() => {
+      const button = document.querySelector('.empty-cart');
+  button.addEventListener('click', () => {
+    const olClear = document.querySelector('ol');
+    const span = document.querySelector('.total-price');
+    olClear.innerText = '';
+    span.innerText = '';
+  });
+  });
 };
 
 window.onload = () => {
