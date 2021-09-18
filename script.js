@@ -1,3 +1,4 @@
+const apiComputer = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -31,7 +32,6 @@ function getSkuFromProductItem(item) {
 function cartItemClickListener(event) {
   // coloque seu código aqui
 }
-
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
@@ -40,9 +40,8 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-  const requestProducts = () => {
-     fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
-     .then((object) => object.json())
+  const requestProducts = async (link) => fetch(link)
+     .then((response) => response.json())
      .then((search) => search.results.forEach(({ id, title, thumbnail }) => {
       const myObject = {
         sku: id,
@@ -54,7 +53,39 @@ function createCartItemElement({ sku, name, salePrice }) {
      sections.appendChild(itemElement);
   }))
   .catch(() => console.error('Endereço não encontrado'));
-};
+
+async function computerId(element) {
+  const elementId = getSkuFromProductItem(element);
+  const idApiML = `https://api.mercadolibre.com/items/${elementId}`;
+
+  return fetch(idApiML)
+    .then((response) => response.json())
+    .then(({ id, title, price }) => {
+      const myObject = {
+        sku: id,
+        name: title,
+        salePrice: price,
+      };
+      const ol = document.getElementsByClassName('cart__items')[0];
+      ol.appendChild(createCartItemElement(myObject));
+    })
+    .catch(console.error('Erro ao adicionar ao carrinho'));
+}
+
+function addButtons() {
+  const allItems = document.querySelectorAll('.item');
+
+  allItems.forEach((item) => item.lastChild.addEventListener('click', (() => {
+    computerId(item);
+  })));
+}
+
+function requestOrder() {
+  requestProducts(apiComputer)
+    .then(() => addButtons())
+    .catch(() => console.error('Endereço não encontrado.'));
+}
+
 window.onload = () => {
- requestProducts();
+ requestOrder();
 };
