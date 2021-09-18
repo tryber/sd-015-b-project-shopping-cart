@@ -1,5 +1,4 @@
 const OlClass = '.cart__items';
-const retrieveCart = localStorage.getItem('currentCart');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -25,16 +24,6 @@ function createProductItemElement({ sku, name, image }) {
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
 
   return section;
-}
-
-function resetCartItems() {
-  const ol = document.createElement('ol');
-  const olForReset = document.querySelector(OlClass);
-  const cartSession = document.querySelector('.cart');
-
-  olForReset.remove();
-  ol.classList.add('cart__items');
-  cartSession.append(ol);
 }
 
 function getSkuFromProductItem(item) {
@@ -64,12 +53,13 @@ function calculeTotalAmount() {
 
   const sum = allValues.reduce((total, current) => (total + current), 0);
   amount.innerText = `${sum}`;
+
+  saveCart();
 }
 
 function cartItemClickListener(event) {
   event.target.remove();
   calculeTotalAmount();
-  saveCart();
 }
 
 function retrieveSavedCart() {
@@ -83,6 +73,23 @@ function retrieveSavedCart() {
     li.addEventListener('click', cartItemClickListener);
     listItems.append(li);
   });
+}
+
+function resetCartItems() {
+  const ol = document.createElement('ol');
+  const olForReset = document.querySelector(OlClass);
+  const cartSession = document.querySelector('.cart');
+
+  olForReset.remove();
+  ol.classList.add('cart__items');
+  cartSession.append(ol);
+
+  calculeTotalAmount();
+}
+
+function listenerForBtnReset() {
+  const resetBtn = document.querySelector('.empty-cart');
+  resetBtn.addEventListener('click', resetCartItems);
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -125,7 +132,6 @@ async function addItemIntoCart(element) {
       const ol = document.querySelector(OlClass);
       ol.append(createCartItemElement(output));
       calculeTotalAmount();
-      saveCart();
     })
     .catch(() => console.error('Ops.'));
 }
@@ -145,12 +151,12 @@ function execOrder() {
   fillPageWithItems()
     .then(() => addListenersToBtns())
     .then(() => calculeTotalAmount())
+    .then(() => listenerForBtnReset())
     .catch(() => console.error('Opa, esse endereço não foi encontrado.'));
 }
 
 window.onload = () => {
+  const retrieveCart = localStorage.getItem('currentCart');
   if (retrieveCart) retrieveSavedCart();
   execOrder();
-  const resetBtn = document.querySelector('.empty-cart');
-  resetBtn.addEventListener('click', resetCartItems);
 };
