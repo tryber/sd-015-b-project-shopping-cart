@@ -1,10 +1,11 @@
-// * Requisito 7
+// * Requisito 7.1
 const loading = () => {
   const msg = document.querySelector('.loading');
   msg.innerHTML = 'loading...';
   document.body.appendChild(msg);
 };
 
+// * Requisito 7.2
 const removeLoading = () => {
   document.getElementsByClassName('loading')[0].remove();
 };
@@ -86,11 +87,11 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) { // 
 
 // * ----- Requisito 1 -----
 const createProductList = async () => {
-  loading();
+  loading(); // * Requisito 7.1
   const responseFetch = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
   const responseJson = await responseFetch.json();
   responseJson.results.forEach((element) => {
-    removeLoading();
+    removeLoading(); // * Requisito 7.2
     const { id, title, thumbnail } = element;
     const item = createProductItemElement({ sku: id, name: title, image: thumbnail });
     const itemsList = document.querySelector('.items');
