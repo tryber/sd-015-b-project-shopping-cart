@@ -128,4 +128,5 @@ window.onload = async () => {
   await createProductList(); // * Requisito 1
   await addProductShoppingCart(); // * Requisito 2
   getLocal(); // * Requisito 4.2
+  emptyCart(); // * Requisito 6
 };
