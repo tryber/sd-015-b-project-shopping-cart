@@ -36,17 +36,17 @@ function cartItemClickListener(event) {
   // coloque seu código aqui
 }
 
-function createCartItemElement({ sku, name, salePrice }) {
+function createCartItemElement({ id, title, price }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.innerText = `SKU: ${id} | NAME: ${title} | PRICE: $${price}`;
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
 
 const getItemFromApi = async (apiUrl, item) => {
   try {
-    const response = await fetch(`${apiUrl}}${item}`);
+    const response = await fetch(`${apiUrl}${item}`);
     const itemsData = await response.json();
     return itemsData;
   } catch (error) {
@@ -54,19 +54,36 @@ const getItemFromApi = async (apiUrl, item) => {
   }
 };
 
-const renderItem = async () => {
+const appendElementTo = (element, parentClass) => {
+  const parent = document.querySelector(`.${parentClass}`);
+  parent.appendChild(element);
+};
+
+const renderItems = async () => {
   const itemsData = await getItemFromApi(urlApiItems, itemName);
   const items = itemsData.results;
 
   items.forEach((item) => {
     const createdItem = createProductItemElement(item);
-    const sectionItems = document.querySelector('.items');
-    sectionItems.appendChild(createdItem);
+    appendElementTo(createdItem, 'items');
   });
-  
+};
+
+const itemsClickListener = async (event) => {
+  if (event.target.className === 'item__add') {
+    const itemId = getSkuFromProductItem(event.target.parentElement);
+    const item = await getItemFromApi(urlApiItemForCart, itemId);
+    const cartElement = createCartItemElement(item);
+    appendElementTo(cartElement, 'cart__items');
+  } 
+};
+
+const addClickListenerToAllItems = () => {
+  const itemsSection = document.querySelector('.items');
+  itemsSection.addEventListener('click', itemsClickListener);
 };
 
 window.onload = () => { 
-  
-  renderItem();
+  renderItems();
+  addClickListenerToAllItems();
 };
