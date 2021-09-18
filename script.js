@@ -1,3 +1,8 @@
+function getTotalPrice() {
+  const totalPrice = document.querySelector('.total-price');
+  return totalPrice;
+}
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -43,10 +48,10 @@ function addProducts(products) {
 }
 
 async function cartItemClickListenerPrice(event) {
-  const totalProduct = document.querySelector('.total-price');
+  const totalPrice = getTotalPrice();
   const textProduct = event.target.innerText;
   const idProduct = textProduct.substr(5, 13);
-  const totalValue = parseFloat(totalProduct.innerText, 10);
+  const totalValue = parseFloat(totalPrice.innerText, 10);
   async function fetchId() {
     const API_ID = `https://api.mercadolibre.com/items/${idProduct}`;
     const data = await fetch(API_ID);
@@ -54,7 +59,7 @@ async function cartItemClickListenerPrice(event) {
     const { price } = computer;
     return price;
   }
-  totalProduct.innerText = totalValue - await fetchId();
+  totalPrice.innerText = totalValue - await fetchId();
 }
 function cartItemClickListener(event) {
   const buttonAdd = document.querySelector('.item_add');
@@ -76,15 +81,15 @@ function createCartItemElement({ sku, name, salePrice }) {
 }
 
 async function addIdComputer(actualId) {
+  const totalPrice = getTotalPrice();
   const idComputer = getSkuFromProductItem(actualId);
   const API_ID = `https://api.mercadolibre.com/items/${idComputer}`;
   const data = await fetch(API_ID);
   const computer = await data.json();
   const { id, title, price } = computer;
 
-  const totalValue = document.querySelector('.total-price');
-  const teste = parseFloat(totalValue.innerText, 10);
-  totalValue.innerText = teste + price;
+  const teste = parseFloat(totalPrice.innerText, 10);
+  totalPrice.innerText = teste + price;
 
   const dataComputer = {
     sku: id,
@@ -103,12 +108,11 @@ function addCartEventButtons() {
 }
 
 function resetCart() {
+  const totalPrice = getTotalPrice();
   const fatherCarts = document.querySelector('ol.cart__items');
   const childCarts = document.querySelectorAll('.cart__item');
-  const totalPrice = document.querySelector('.total-price');
-  const [...allChildCarts] = childCarts;
 
-  allChildCarts.forEach((element) => {
+  childCarts.forEach((element) => {
     fatherCarts.removeChild(element);
   });
   totalPrice.innerText = 0;
