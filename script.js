@@ -1,7 +1,9 @@
+const cartItems = '.cart__item';
+
 function sumPrice() {
   const totalPrice = document.querySelector('.total-price');
   totalPrice.innerText = 'Total Price: $';
-  const listItems = document.querySelectorAll('.cart__item');
+  const listItems = document.querySelectorAll(cartItems);
   let count = 0;
 
   listItems.forEach((text) => {
@@ -10,13 +12,21 @@ function sumPrice() {
       .map((element) => element.replace(' PRICE: $', ''));
     count += parseFloat(priceText);
   });
-  // (count.toFixed(2).endsWith('00') ? count : count.toFixed(2))
   totalPrice.innerText = count;
 }
 
+function emptyCartList() {
+  const listItems = document.querySelectorAll(cartItems);
+
+  listItems.forEach((element) => element.remove());
+}
+
+const buttonClearCart = document.getElementById('empty-cart');
+buttonClearCart.addEventListener('click', emptyCartList);
+
 function saveLocalStorage() {
   const input = [];
-  const listItems = document.querySelectorAll('.cart__item');
+  const listItems = document.querySelectorAll(cartItems);
 
   listItems.forEach((element) => input.push(element.innerText));
 
