@@ -1,3 +1,11 @@
+* {
+  font-family: Poppins, sans-serif;
+}
+
+body {
+  background-color: hsl(240, 11%, 98%);
+}
+
 .container {
   display: flex;
   justify-content: space-around;
@@ -12,7 +20,8 @@
 }
 
 .item {
-  border: 2px solid blue;
+  border: 2px solid rgb(84, 84, 85);
+  background-color: white;
   border-radius: 5px;
   box-sizing: border-box;
   display: flex;
@@ -20,6 +29,11 @@
   height: auto;
   margin: 5px;
   width: 200px;
+}
+
+.item:hover {
+  transition: 0.15s;
+  box-shadow: 0 0 13px 7px rgba(0, 0, 0, 0.47);
 }
 
 .item .item__sku {
@@ -32,16 +46,32 @@
   text-align: center;
 }
 
+.item .item__price {
+  text-align: center;
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
 .item .item__image {
   width: 100%;
 }
 
 .item .item__add {
-  background-color: green;
+  font-family: fantasy;
+  font-size: 1rem;
+  font-weight: 600;
+  background-color: rgb(0, 165, 143);
+  height: 35px;
+  color: white;
   border: 0;
+  border-radius: 2.5px;
   cursor: pointer;
   margin: 0;
   padding: 5px;
+}
+
+.item__add:hover {
+  background-color: coral;
 }
 
 .cart {
@@ -52,7 +82,7 @@
 
 .cart .cart__title {
   flex-basis: 1;
-  font-size: 16pt;
+  font-size: 1.7rem;
   text-align: center;
 }
 
@@ -65,21 +95,74 @@
   margin: 7px 0;
   padding: 5px;
   border-radius: 5px;
-  background-color: white;
+  background-color: hsl(240, 11%, 98%);
   transition: 2s;
 }
 
 .cart__items > li:hover {
-  background-color: green;
+  background-color: rgb(0, 165, 143);
+  color: white;
   transition: 1.5s;
 }
 
 .container-amount {
   text-align: center;
   margin: 10px 0;
+  font-size: 1.5rem;
 }
 
 .loading {
   margin-top: 100px;
   text-align: center;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-right: 31%;
+}
+
+.title {
+  margin-right: 50px;
+}
+
+.title h1 {
+  font-size: 2.3rem;
+}
+
+#section-search {
+  width: 40%;
+  margin-right: 20px;
+}
+
+#input-search {
+  width: 100%;
+  height: 35px;
+  border-radius: 10px;
+  padding-left: 10px;
+  font-size: 1rem;
+}
+
+#section-btn-search {
+  width: 15%;
+}
+
+#button-search {
+  width: 100%;
+  height: 35px;
+  border-radius: 10px;
+  background-color: rgb(0, 165, 143);
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+#button-search:hover {
+  cursor: pointer;
+  background-color: orange;
+}
+
+.empty-cart {
+  width: auto;
 }

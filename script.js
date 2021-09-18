@@ -14,14 +14,14 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({ sku, name, image }) {
+function createProductItemElement({ sku, name, price, image }) {
   const section = document.createElement('section');
   section.className = 'item';
 
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
-  section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
+  section.appendChild(createCustomElement('button', 'item__add', `R$${price}`));
 
   return section;
 }
@@ -109,8 +109,8 @@ async function checkApiSearch() {
 async function fillPageWithItems() {
   await checkApiSearch()
     .then((response) => response.json())
-    .then((request) => request.results.forEach(({ id, title, thumbnail }) => {
-      const output = { sku: id, name: title, image: thumbnail };
+    .then((request) => request.results.forEach(({ id, title, price, thumbnail }) => {
+      const output = { sku: id, name: title, price, image: thumbnail };
       const sectionItems = document.querySelector('.items');
       const itemElement = createProductItemElement(output);
       sectionItems.append(itemElement);
