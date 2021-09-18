@@ -109,10 +109,20 @@ function addProductToCart(cartList) {
   return addToCart;
 }
 
+function cleanCart(cartList) {
+  const buttonClean = document.querySelector('.empty-cart');
+  buttonClean.addEventListener('click', () => {
+    const cleanList = cartList;
+    cleanList.innerText = '';
+    getTotalPriceOnLoad();
+  });
+}
+
 window.onload = () => { 
   const cartList = document.querySelector('.cart__items');
   createListOfProducts('computador')
     .then(() => getCartLocal(cartList))
     .then(() => addProductToCart(cartList))
-    .then(() => getTotalPriceOnLoad());
+    .then(() => getTotalPriceOnLoad())
+    .then(() => cleanCart(cartList));
 };
