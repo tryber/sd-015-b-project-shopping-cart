@@ -35,8 +35,20 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+function sumAndRemove() {
+  const getClassItem = [...document.querySelectorAll('.cart__item')];
+  const selectItem = getClassItem.map((element) => { 
+    const splitedArray = element.innerText.split('$').reverse()[0];
+    const parsedString = parseFloat(splitedArray, 10);
+    return parsedString;
+  });
+  const reducedArray = selectItem.reduce((acc, current) => (acc + current), 0);
+  document.querySelector('.total-price').innerText = `${reducedArray}`;
+}
+
 function cartItemClickListener(event) {
   event.target.remove();
+  sumAndRemove();
   setLocalStorage();
 }
 
@@ -82,6 +94,7 @@ const getIdResponse = (itemId) => {
     const selectOl = document.querySelector('.cart__items');
     const createCartItem = createCartItemElement(itemPriceObj);
     selectOl.appendChild(createCartItem);
+    sumAndRemove();
     setLocalStorage();
   })
   .catch(() => console.log('Não foi possivel acessar o carrinho'));
@@ -92,10 +105,12 @@ const button = () => {
   getItemsElements.forEach((item) => {
     item.lastChild.addEventListener('click', () => getIdResponse(item));
   });
+  sumAndRemove();
 };
 
 window.onload = () => {
   mlComputerFetch()
   .then(() => button())
-  .then(() => getLocalStorage());
+  .then(() => getLocalStorage())
+  .then(() => sumAndRemove());
 };
