@@ -1,3 +1,5 @@
+const cartItems = '.cart__items';
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -67,7 +69,7 @@ async function getSingleProduct(id) {
   return productConverted;
 }
 function getCartProductIdList() {
-  const cartOl = document.querySelector('.cart__items');
+  const cartOl = document.querySelector(cartItems);
   const cartProductsLis = cartOl.querySelectorAll('li');
   const cartProductsIds = [];
   cartProductsLis.forEach((product) => {
@@ -97,7 +99,7 @@ function createCartItemElement({ sku, name, salePrice }) {
 }
 async function addItemToCart(id) {
   const productPromise = await getSingleProduct(id);
-  const cartItemsSection = document.querySelector('.cart__items');
+  const cartItemsSection = document.querySelector(cartItems);
   const cartProductObj = makeObjForCartItem(productPromise);
   const cartItemElement = createCartItemElement(cartProductObj);
   cartItemsSection.appendChild(cartItemElement);
@@ -111,7 +113,7 @@ function creatSavedLi(innerHtml) {
   return li;
 }
 function addSavedProductToCart(product) {
-  const cartItemsSection = document.querySelector('.cart__items');
+  const cartItemsSection = document.querySelector(cartItems);
   const cartSavedLi = creatSavedLi(product);
   cartItemsSection.appendChild(cartSavedLi);
 }
