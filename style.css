@@ -42,6 +42,7 @@
   cursor: pointer;
   margin: 0;
   padding: 5px;
+  color: whitesmoke;
 }
 
 .cart {
@@ -58,4 +59,7 @@
 
 .cart__item:hover{
   cursor: pointer;
+}
+body{
+  background-color: rgb(165, 167, 168);
 }
