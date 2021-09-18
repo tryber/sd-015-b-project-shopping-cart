@@ -34,7 +34,8 @@ const totalPrice = () => {
   const sumPrice = document.querySelector('.total-price');
   const itemsCart = document.querySelectorAll('.cart__item');
   let value = 0;
-  itemsCart.forEach((item) => { 
+  itemsCart.forEach((item) => {
+    // acessador: https://github.com/tryber/sd-014-b-project-shopping-cart/blob/antonio-cardoso-shopping-cart/script.js 
     const split$ = item.innerText.split('$');
       //  Aqui utilizamos a função explit para dividir as string em duas,
       //  dentro de um array.  E esse ponto de separação é no caractere $, como só possue um,
@@ -108,9 +109,25 @@ const addToCart = () => {
     }
   });
 };
+ 
+// requesito 6 :
 
+const clearbutton = () => {
+  const button = document.querySelector('.empty-cart');
+  button.addEventListener('click', () => {
+    const itemscart = document.querySelectorAll('.cart__item');
+    itemscart.forEach((item) => {
+      item.remove();
+      totalPrice();
+    });
+  });
+};
+//  Primeiro fazemos um forEach em todos os item do carrinho, e depois
+// os removemos utilizando a função remove(); e temos que atualizar o total price
+// já que não existe mais items no carrinho, então chamamos a função totalprice().
 window.onload = () => { 
   requestComputers();
   addToCart();
   totalPrice();
+  clearbutton();
 };
