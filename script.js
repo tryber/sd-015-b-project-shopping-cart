@@ -104,13 +104,10 @@ function requestOrder() {
   clearButton.addEventListener('click', () => {
   const olClear = document.querySelector('ol');
   olClear.innerText = '';
-}
-);
+});
     })
     .catch(() => console.error('Endereço não encontrado.'));
 }
-
-
 
 window.onload = () => {
   if (localKey) {
