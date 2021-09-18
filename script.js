@@ -65,12 +65,16 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 //  utilizei parte dos codigos utilizados na aula 9.2
 // https://github.com/tryber/sd-015-b-live-lectures/pull/23
 const requestComputers = async () => {
+  const loading = document.querySelector('.loading');
+  loading.innerText = 'loading';
  const computerResults = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
  const computerList = await computerResults.json();
     computerList.results.forEach(({ id, title, thumbnail }) => {
-    const productList = document.querySelector('section .items');
-    const listProduct = createProductItemElement({ id, title, thumbnail });
-    productList.appendChild(listProduct);
+      loading.innerText = '';
+      loading.remove();
+      const productList = document.querySelector('section .items');
+      const listProduct = createProductItemElement({ id, title, thumbnail });
+      productList.appendChild(listProduct);
     });
     //  Depois de obter o json, pegamos o array results que ele possui event 
     // fazemos um forEach para que cada elemento seja aplicado.Podem passamos como
