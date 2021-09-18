@@ -38,8 +38,8 @@ function calculateTotal() {
     return acc + valueCurr;
   }, 0);
   total = total.toFixed(2);
-  const totalElement = document.querySelector('span.total-price');
-  totalElement.innerText = `Preço total: $${total}`;
+  const totalElement = document.querySelector('span.total-price span');
+  totalElement.innerText = total;
 }
 
 function addCartToLocalStorage() {
