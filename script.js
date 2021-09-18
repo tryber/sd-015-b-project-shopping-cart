@@ -100,5 +100,15 @@ window.onload = () => {
   apiMercadoLivre()
     .then(() => buttonToCart())
     .then(() => getStorage())
-    .then(() => sumPrice());
+    .then(() => sumPrice())
+    .then(() => {
+      const btn = document.querySelector('.empty-cart');
+      btn.addEventListener('click', () => {
+        const ol = document.querySelector('ol');
+        const spam = document.querySelector('.total-price');
+        ol.innerHTML = '';
+        spam.innerHTML = '';
+        saveStorage();
+    });
+  });
 };
