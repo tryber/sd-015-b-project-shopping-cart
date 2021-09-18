@@ -100,14 +100,29 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-async function checkApiSearch() {
-  const mercadoLivreApi = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
+function getSearchValue() {
+  return document.querySelector('#input-search').value;
+}
+
+function resetPageItems() {
+  const container = document.querySelector('.container');
+  const cart = document.querySelector('.cart');
+  const items = document.querySelector('.items');
+  const section = document.createElement('section');
+  
+  items.remove();
+  section.classList.add('items');
+  container.insertBefore(section, cart);
+}
+
+async function checkApiSearch(search) {
+  const mercadoLivreApi = `https://api.mercadolibre.com/sites/MLB/search?q=${search}`;
 
   return fetch(mercadoLivreApi);
 }
 
-async function fillPageWithItems() {
-  await checkApiSearch()
+async function fillPageWithItems(search) {
+  await checkApiSearch(search)
     .then((response) => response.json())
     .then((request) => request.results.forEach(({ id, title, price, thumbnail }) => {
       const output = { sku: id, name: title, price, image: thumbnail };
@@ -147,8 +162,8 @@ function addListenersToBtns() {
   loading.remove();
 }
 
-function execOrder() {
-  fillPageWithItems()
+function initialExecOrder(search) {
+  fillPageWithItems(search)
     .then(() => addListenersToBtns())
     .then(() => calculeTotalAmount())
     .then(() => listenerForBtnReset())
@@ -157,6 +172,18 @@ function execOrder() {
 
 window.onload = () => {
   const retrieveCart = localStorage.getItem('currentCart');
+  const btnSearch = document.querySelector('#button-search');
+  const inputField = document.querySelector('#input-search');
   if (retrieveCart) retrieveSavedCart();
-  execOrder();
+  initialExecOrder();
+  btnSearch.addEventListener('click', () => {
+    resetPageItems();
+    initialExecOrder(getSearchValue());
+  });
+  inputField.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+      resetPageItems();
+      initialExecOrder(getSearchValue());
+    }
+  });
 };
