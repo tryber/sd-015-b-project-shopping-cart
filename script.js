@@ -1,3 +1,23 @@
+const localKey = localStorage.getItem('key');
+
+const setItemLocal = () => {
+  const saveStorage = JSON.stringify(document.querySelector('.cart__items').innerHTML);
+  localStorage.setItem('key', saveStorage);
+};
+
+function cartItemClickListener(event) {
+  // coloque seu código aqui
+  event.target.remove();
+  setItemLocal();
+}
+
+const getItemLocal = () => {
+  const getLi = JSON.parse(localStorage.getItem('key'));
+  const result = document.querySelector('ol');
+  result.innerHTML = getLi;
+  result.addEventListener('click', cartItemClickListener);
+};
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -26,11 +46,6 @@ function createProductItemElement({ sku, name, image }) {
 
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
-}
-
-function cartItemClickListener(event) {
-  // coloque seu código aqui
-  event.target.remove();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -73,6 +88,7 @@ const getId = async (item) => {
     const olCart = document.querySelector('.cart__items');
     const liCart = createCartItemElement(object);
     olCart.appendChild(liCart);
+    setItemLocal();
   })
   .catch(() => console.error('Deu erro para adicionar ao carrinho'));
 };
@@ -84,9 +100,11 @@ const buttonAdd = () => {
 };
 
 const orderFunction = () => {
-  createElement().then(() => buttonAdd());
+  createElement()
+  .then(() => buttonAdd());
 };
 
 window.onload = () => {
+  if (localKey) getItemLocal();
   orderFunction();
 };
