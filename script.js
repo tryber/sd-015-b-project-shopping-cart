@@ -25,7 +25,7 @@ async function getProductsArray() {
   return results;
 }
 
-function createProductItemElement({ id: sku, title: name }, image) {
+function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
   section.appendChild(createCustomElement('span', 'item__sku', sku));
@@ -38,13 +38,17 @@ function createProductItemElement({ id: sku, title: name }, image) {
 
 async function createProducts() {
   const products = await getProductsArray();
+
   products.forEach((product) => {
-   fetch(`https://api.mercadolibre.com/items/${product.id}`)
-    .then((response) => response.json())
-    .then((item) => item.pictures[0])
-    .then(({ url }) => url)
-    .then((imageUrl) => items.appendChild(createProductItemElement(product, imageUrl)));
+    items.appendChild(createProductItemElement(product));
   });
+  // products.forEach((product) => {
+  //  fetch(`https://api.mercadolibre.com/items/${product.id}`)
+  //   .then((response) => response.json())
+  //   .then((item) => item.pictures[0])
+  //   .then(({ url }) => url)
+  //   .then((imageUrl) => items.appendChild(createProductItemElement(product, imageUrl)));
+  // });
   loading.remove();
 }
 
