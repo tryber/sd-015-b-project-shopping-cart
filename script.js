@@ -28,8 +28,28 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+// requesito 5
+
+const totalPrice = () => {
+  const sumPrice = document.querySelector('.total-price');
+  const itemsCart = document.querySelectorAll('.cart__item');
+  let value = 0;
+  itemsCart.forEach((item) => { 
+    const split$ = item.innerText.split('$');
+      //  Aqui utilizamos a função explit para dividir as string em duas,
+      //  dentro de um array.  E esse ponto de separação é no caractere $, como só possue um,
+      // ele divide em duas strings dentro de um array. É precisamos acessar o segunda 
+      //  posição pois é onde está o valor do  price. 
+    value += Number(split$[1]);
+    // Aqui dizemos que o value é o value mais o segundo elemento dentro do
+    // split$ dentro da função number, que converte o argumento em um numero.
+  });
+  sumPrice.innerText = `${value}`;
+};
+
 function cartItemClickListener(event) {
   event.target.remove();
+  totalPrice();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -37,6 +57,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
+  
   return li;
 }
 
@@ -83,6 +104,7 @@ const addToCart = () => {
       // Pegmos sku obtido e jogamos na função para obter as informações com o id obtido
       cartItens.appendChild(createCartItemElement(itemDetails));
       // Aqui criamos esse item clicado no carrinho de compras;
+      totalPrice();
     }
   });
 };
@@ -90,4 +112,5 @@ const addToCart = () => {
 window.onload = () => { 
   requestComputers();
   addToCart();
+  totalPrice();
 };
