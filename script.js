@@ -24,20 +24,21 @@ async function itemObjectPromise(id) {
     .then((resultJson) => resultJson);
 }
 
-function addCartToLocalStorage() {
-  const cartListArray= cartListInArray();
-  local.setItem('cartList', JSON.stringify(cartListArray));
-}
-
-function cartItemClickListener(event) {
-  event.target.parentNode.removeChild(event.target);
-  addCartToLocalStorage();
-}
-
 function cartListInArray() {
   const cartListElements = document.querySelector('ol.cart__items').children;
   const cartListArray = Object.values(cartListElements).map((element) => element.innerText);
   return cartListArray;
+}
+
+function addCartToLocalStorage() {
+  const cartListArray = cartListInArray();
+  local.setItem('cartList', JSON.stringify(cartListArray));
+}
+
+function cartItemClickListener(event) {
+  const element = event.target;
+  element.parentNode.removeChild(element);
+  addCartToLocalStorage();
 }
 
 function addLocalStorageToCart() {
