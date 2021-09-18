@@ -1,4 +1,3 @@
-const mercadoLivreApi = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
 const retrieveCart = localStorage.getItem('currentCart');
 
 function createProductImageElement(imageSource) {
@@ -92,15 +91,17 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-async function requestMlComputador(url) {
-  return fetch(url)
+async function checkApiSearch() {
+  const mercadoLivreApi = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
+
+  return fetch(mercadoLivreApi);
+}
+
+async function fillPageWithItems() {
+  await checkApiSearch()
     .then((response) => response.json())
-    .then((listSearch) => listSearch.results.forEach(({ id, title, thumbnail }) => {
-      const output = {
-        sku: id,
-        name: title,
-        image: thumbnail,
-      };
+    .then((request) => request.results.forEach(({ id, title, thumbnail }) => {
+      const output = { sku: id, name: title, image: thumbnail };
       const sectionItems = document.querySelector('.items');
       const itemElement = createProductItemElement(output);
       sectionItems.append(itemElement);
@@ -139,7 +140,7 @@ function addListenersToBtns() {
 }
 
 function execOrder() {
-  requestMlComputador(mercadoLivreApi)
+  fillPageWithItems()
     .then(() => addListenersToBtns())
     .then(() => calculeTotalAmount())
     .catch(() => console.error('Opa, esse endereço não foi encontrado.'));
