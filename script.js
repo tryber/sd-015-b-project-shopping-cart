@@ -48,24 +48,32 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-async function apiRequest (requestURL) {
-
-  fetch(requestURL) // Requisita URL
-  .then(response => response.json()) // Converte Binário para JSON
-  .then((element) => {
-    const computadores = element.results;
-    const containerItems = document.getElementsByClassName('.items');
-    // console.log(containerItems);
-    console.log('Computadores:', computadores);
-    computadores.forEach( (computador) => {
-      // const {sku, name, image} = computador;
-      // const produtoCriado = createProductItemElement({sku, name, image});
-      // containerItems.appendChild(produtoCriado);
+function criarElementos(dados) {
+  const resultados = dados;
+    const itensContainer = document.querySelector('.items');
+    resultados.forEach(({ id, title, thumbnail }) => {
+      const dadosRecebidos = {
+        sku: id,
+        name: title,
+        image: thumbnail,
+      }
+      const criaElemento = createProductItemElement(dadosRecebidos);
+      itensContainer.appendChild(criaElemento);
     });
-  })
-  .catch(function(erro) { console.log(':::ERRO::: >>', erro); })
+}
+async function apiRequest (requestURL) {
+  console.log("CONECTANDO A API DO MERCADO LIVRE...");
+  const myObject = {
+    method: 'GET',
+    headers: { 'Accept': 'application/json' }
+  };
+  fetch(requestURL, myObject) // Requisita URL
+  .then(response => response.json()) // Converte Binário para JSON
+  .then((element) => criarElementos(element.results))
+  .catch((erro) => console.log(':::ERRO::: >>', erro));
 }
 
 window.onload = () => {
   apiRequest(requestURL);
+  console.log("PÁGINA CARREGADA!!!");
  };
