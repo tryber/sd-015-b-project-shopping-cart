@@ -45,7 +45,8 @@ function createCartItemElement({ sku, name, salePrice }) {
 async function addToCart(event) {
   try {
     const product = event.target.parentNode.firstChild;
-    const url = `https://api.mercadolibre.com/items/${product.id}`;
+    console.log(product);
+    const url = `https://api.mercadolibre.com/items/${product.innerText}`;
     const myFetch = await fetch(url);
     const searchResult = await myFetch.json();
     const results = { 
@@ -87,5 +88,4 @@ async function createProductsList() {
 
 window.onload = () => {
   createProductsList();
-  addToCart('MLB1607748387');
 };
