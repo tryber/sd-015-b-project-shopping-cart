@@ -28,9 +28,17 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+function saveStorage() {
+  const itensOnCart = document.querySelectorAll('.cart__item');
+  const itemStorage = [];
+  itensOnCart.forEach((cartItem) => itemStorage.push(cartItem.innerHTML));
+  localStorage.setItem('savedCartItem', JSON.stringify(itemStorage));
+}
+
 function cartItemClickListener(event) {
   const cartItem = event.target;
   cartItem.remove();
+  saveStorage();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -38,6 +46,7 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
+
   return li;
 }
 const addToCart = async (item) => {
@@ -53,6 +62,7 @@ const addToCart = async (item) => {
     const ol = createCartItemElement(productObject);
     const cartItems = document.querySelector('.cart__items');
     cartItems.appendChild(ol);
+    saveStorage();
   });
 };
 
@@ -60,6 +70,20 @@ function addListenersToButtons() {
   const listOfItems = document.querySelectorAll('.item');
   listOfItems.forEach((item) => item.lastChild.addEventListener('click', (() => addToCart(item))));
 }
+
+function loadStorage() {
+  const savedItems = JSON.parse(localStorage.getItem('savedCartItem'));
+  console.log(loadStorage);
+  localStorage.clear();
+  savedItems.forEach((itemSaved) => {
+    const li = document.createElement('li');
+    li.classList.add('cart__item');
+    li.innerText = itemSaved;
+    li.addEventListener('click', cartItemClickListener);
+    document.querySelector('.cart__items').appendChild(li);
+  });
+}
+
 async function requestProducts() {
   const response = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
   const data = await response.json();
@@ -74,6 +98,7 @@ async function requestProducts() {
     sectionItens.append(itemElement);
   });
   addListenersToButtons();
+  loadStorage();
   return result;
 }
 
