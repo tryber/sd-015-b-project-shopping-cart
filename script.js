@@ -38,6 +38,12 @@ function cartItemClickListener(event) {
   storeCart(cartContainer);
 }  
 
+// function getTotalCostOfCart(cartContainer) {
+//   const priceDisplay = document.querySelector('total-price');
+
+//   const totalPrice = cartContainer.childNodes.reduce((sum, cur) => sum + cur.salePrice, 0);
+// }
+
 function getStoredCart() {
   const storedCart = localStorage.getItem('cart');
   const cartContainer = document.querySelector('.cart__items');
@@ -52,7 +58,7 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   return li;
-}    
+}
 
 function fetchFromApi(endpoint) {
   const endpointFormat = {
@@ -62,7 +68,7 @@ function fetchFromApi(endpoint) {
 
   return fetch(endpoint, endpointFormat)
     .then((response) => response.json());
-}    
+}
 
 async function addItemToCart(event) {
   const productId = getSkuFromProductItem(event.target.parentElement);
@@ -74,9 +80,21 @@ async function addItemToCart(event) {
     .then((item) => {
       cart.appendChild(createCartItemElement(item));
     })
-    .then(() => storeCart(cart));
+    .then(() => {
+      storeCart(cart);
+    });
 }
-  
+
+function emptyCart() {
+  const cartContainer = document.querySelector('.cart__items');
+
+  while (cartContainer.firstChild) {
+    cartContainer.removeChild(cartContainer.firstChild);
+  }
+
+  storeCart(cartContainer);
+}
+
 async function createProductList() {
   const queryTarget = 'computador';
   const queryUrl = `https://api.mercadolibre.com/sites/MLB/search?q=${queryTarget}`;
@@ -94,7 +112,22 @@ async function createProductList() {
   }));
 }
 
+// function displayTotalCostofCart() {
+//   const priceDisplay = document.createElement('span');
+//   const priceContainer = document.createElement('p');
+  
+//   priceDisplay.className = 'total-price';
+//   priceDisplay.innerText = 'R$ 0,00';
+  
+//   priceContainer.innerText = 'Total: ';
+//   priceContainer.appendChild(priceDisplay);
+  
+//   document.querySelector('.cart').appendChild(priceContainer);
+// }
+
 window.onload = async () => {
   getStoredCart();
+  // displayTotalCostofCart();
+  document.querySelector('.empty-cart').addEventListener('click', emptyCart);
   await createProductList();
 };
