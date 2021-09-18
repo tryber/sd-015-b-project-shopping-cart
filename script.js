@@ -60,17 +60,13 @@ function cartListInArray() {
   return cartListArray;
 }
 
-function formatingNumber(num) {
-  return Number.isInteger(num) ? num : num.toFixed(2);
-}
-
 function calculateTotal() {
   const cartListArray = cartListInArray();
   let total = cartListArray.reduce((acc, curr) => {
     const valueCurr = parseFloat(curr.split(' PRICE: $')[1]);
     return acc + valueCurr;
   }, 0);
-  total = formatingNumber(total);
+  total = parseFloat(total.toFixed(2));
   const totalElement = document.querySelector('span span.total-price');
   totalElement.innerText = total;
 }
