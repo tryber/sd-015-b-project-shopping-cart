@@ -31,7 +31,8 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
+  myCart = document.querySelector('.cart__items');
+  myCart.removeChild(event.target);
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -45,7 +46,6 @@ function createCartItemElement({ sku, name, salePrice }) {
 async function addToCart(event) {
   try {
     const product = event.target.parentNode.firstChild;
-    console.log(product);
     const url = `https://api.mercadolibre.com/items/${product.innerText}`;
     const myFetch = await fetch(url);
     const searchResult = await myFetch.json();
