@@ -73,10 +73,25 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) { // 
   return li;
 }
 
-// * ----- Requisito 1 -----
+// * Requisito 7.1
+const addLoading = () => {
+  const load = document.createElement('h1');
+  load.innerHTML = 'Loading...';
+  load.className = 'loading';
+  document.body.appendChild(load);
+};
+
+// * Requisito 7.2
+const removeLoading = () => {
+  document.querySelector('.loading').remove();
+};
+
+// * Requisito 1
 const createProductList = async () => {
+  addLoading(); // * Requisito 7.1
   const responseFetch = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
   const responseJson = await responseFetch.json();
+  removeLoading(); // * Requisito 7.2
   responseJson.results.forEach((element) => {
     const { id, title, thumbnail } = element;
     const item = createProductItemElement({ sku: id, name: title, image: thumbnail });
@@ -85,7 +100,7 @@ const createProductList = async () => {
   });
 };
 
-// * ----- Requisito 2 -----
+// * Requisito 2
 const addProductShoppingCart = async () => {
   const button = document.querySelectorAll('.item__add');
   button.forEach((element) => {
@@ -124,14 +139,7 @@ const getLocal = () => {
   priceSave.innerHTML = localStorage.getItem('priceKey'); // * Requisito 5
 };
 
-// * Requisito 7
-const loading = () => {
-  document.querySelector('.items').appendChild(createCustomElement('p', 'loading', 'loading...'));
-  // ref.: https://developer.mozilla.org/pt-BR/docs/Web/Web_Components/Using_custom_elements
-};
-
 window.onload = async () => {
-  loading(); // * Requisito 7
   await createProductList(); // * Requisito 1
   await addProductShoppingCart(); // * Requisito 2
   getLocal(); // * Requisito 4.2
