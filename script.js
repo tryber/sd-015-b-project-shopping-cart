@@ -36,11 +36,11 @@ function cartItemClickListener() {
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
-  console.log(sku, name, salePrice);
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
+
   return li;
 }
 
@@ -55,8 +55,17 @@ const startButtonHandlers = () => {
         { sku: data.id, name: data.title, salePrice: data.price },
       ))
       .then((cartItem) => cartList.appendChild(cartItem));
+      // .then((listItem) => localStorage.setItem())
   }));
 };
+
+function clearCartItems() {
+  const buttonCart = document.querySelector('.empty-cart');
+  buttonCart.addEventListener('click', () => {
+    const items = cartList;
+    items.innerHTML = '';
+  });
+}
 
 fetch(API_URL)
   .then((response) => response.json())
@@ -67,7 +76,8 @@ fetch(API_URL)
       { sku: computer.id, name: computer.title, image: computer.thumbnail },
     ));
   }))
-  .then(() => startButtonHandlers());
+  .then(() => startButtonHandlers())
+  .then(() => clearCartItems());
 
 window.onload = () => {
 
