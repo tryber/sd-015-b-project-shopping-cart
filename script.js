@@ -33,9 +33,21 @@ function getLocalStorage() {
   localStorage.setItem('item', JSON.stringify(saveStorage));
 }
 
+function sumCart() {
+  const getClassItem = [...document.querySelectorAll('.cart__item')];
+  const valuess = getClassItem.map((value) => {
+    const splited = value.innerText.split('$').reverse()[0];
+    const number = parseFloat(splited, 10);
+    return number;
+  });
+  const result = valuess.reduce((acc, curr) => (acc + curr), 0);
+  document.querySelector('.total-price').innerText = `${result}`;
+}
+
 function cartItemClickListener(event) {
   const eventoClick = event.target;
   eventoClick.remove();
+  sumCart();
   getLocalStorage();
 }
 
@@ -85,6 +97,7 @@ function getListIds(idItem) {
       const itemLi = createCartItemElement(idProducts);
       const itemOl = document.querySelector('.cart__items');
       itemOl.appendChild(itemLi);
+      sumCart();
       getLocalStorage();
     })
     .catch(() => console.log('error na verificacao do id'));
@@ -94,11 +107,13 @@ function buttonId() {
   const items = document.querySelectorAll('.item');
   items.forEach((item) => item.lastChild.addEventListener('click', () => {
     getListIds(item);
+    sumCart();
   }));
 }
 
 window.onload = () => {
   createListElements('computador')
     .then(() => buttonId())
-    .then(() => saveLocalStorageOl());
+    .then(() => saveLocalStorageOl())
+    .then(() => sumCart());
 };
