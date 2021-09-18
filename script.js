@@ -35,9 +35,24 @@ function saveStorage() {
   localStorage.setItem('savedCartItem', JSON.stringify(itemStorage));
 }
 
+async function getCartTotalPrice() {
+  const shoppingCartItems = document.querySelectorAll('.cart__item');
+  const cartItemsPrices = [...shoppingCartItems].map((item) => {
+    const priceString = item.innerText.split('$').reverse()[0];
+    console.log(priceString);
+    const priceNumber = parseFloat(priceString, 10);
+    console.log(priceNumber);
+    return priceNumber;
+  });
+  console.log(cartItemsPrices);
+  const sumOfPrices = cartItemsPrices.reduce((result, current) => (result + current), 0);
+  document.querySelector('.total-price').innerHTML = `${sumOfPrices}`;
+}
+
 function cartItemClickListener(event) {
   const cartItem = event.target;
   cartItem.remove();
+  getCartTotalPrice();
   saveStorage();
 }
 
@@ -62,6 +77,7 @@ const addToCart = async (item) => {
     const ol = createCartItemElement(productObject);
     const cartItems = document.querySelector('.cart__items');
     cartItems.appendChild(ol);
+    getCartTotalPrice();
     saveStorage();
   });
 };
@@ -73,7 +89,6 @@ function addListenersToButtons() {
 
 function loadStorage() {
   const savedItems = JSON.parse(localStorage.getItem('savedCartItem'));
-  console.log(loadStorage);
   localStorage.clear();
   savedItems.forEach((itemSaved) => {
     const li = document.createElement('li');
@@ -82,6 +97,7 @@ function loadStorage() {
     li.addEventListener('click', cartItemClickListener);
     document.querySelector('.cart__items').appendChild(li);
   });
+  getCartTotalPrice();
 }
 
 async function requestProducts() {
