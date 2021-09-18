@@ -83,9 +83,7 @@ async function apiRequest(calledURL) {
 function limpaLista() {
   const botaoLimpar = document.querySelector('.empty-cart');
   botaoLimpar.addEventListener('click', function () {
-
     const listaCompras = document.querySelectorAll('li');
-
     listaCompras.forEach((produto) => {
       produto.remove();
     });
