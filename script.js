@@ -37,21 +37,31 @@ function getSkuFromProductItem(item) { // * Requisito 2
   return item.querySelector('span.item__sku').innerText;
 }
 
-// Requisito 5
+// * Requisito 5
 const updatePrice = (total) => {
   priceSave.innerText = total;
 };
 
-// Requisito 5.1
+// * Requisito 5.1
 const addPrice = (price) => {
   let totalPrice = priceSave.innerText;
   totalPrice = Math.round((Number(totalPrice) * 100) + (price * 100)) / 100;
   updatePrice(totalPrice);
 };
 
+// * Requisito 5.2
+const removePrice = (price) => {
+  let totalPrice = priceSave.innerText;
+  totalPrice = Math.round((Number(totalPrice) * 100) - (price * 100)) / 100;
+  updatePrice(totalPrice);
+};
+
 function cartItemClickListener(event) {
   const cartItem = event.target;
   cartItem.parentElement.removeChild(cartItem); // * Requisito 3
+  const priceItemString = cartItem.innerText.split('$')[1];
+  const priceItemNumber = parseFloat(priceItemString);
+  removePrice(priceItemNumber); // * Requisito 5.2
   localSave(); // * Requisito 4.1
 }
 
@@ -86,9 +96,21 @@ const addProductShoppingCart = async () => {
       const liProducts = createCartItemElement(responseJson);
       const cartItems = document.querySelector('.cart__items');
       cartItems.appendChild(liProducts);
-      localSave(); // * Requisito 4.1
       addPrice(responseJson); // * Requisito 5.1
+      localSave(); // * Requisito 4.1
     });
+  });
+};
+
+// * Requisito 6
+const emptyCart = () => {
+  const buttonEmpty = document.querySelector('.empty-cart-button');
+  buttonEmpty.appendChild('click', () => {
+    cartSection.innerHTML = '';
+    let emptyPrice = priceSave.innerHTML;
+    emptyPrice = 0;
+    updatePrice(emptyPrice);
+    localSave();
   });
 };
 
