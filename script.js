@@ -37,6 +37,7 @@ function cartItemClickListener(event) {
   // Adiciona evento de click para item no Carrinho
   // Quando o item do carrinho for clickado, o mesmo deve ser removido
   console.log('That\'s working Fine!');
+  this.remove();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
