@@ -59,13 +59,16 @@ function criarElementos(dados) {
       sku: id,
       name: title,
       image: thumbnail,
+      salePrice: price,
     };
     // Cria cada item da lista com os dadosRecebidos
     const criaElemento = createProductItemElement(dadosRecebidos);
     criaElemento.addEventListener('click', () => {
       // eventListener do adicionarCarrinho
-      console.log(price);
-      // const novaLi = createCartItemElement({id, title, salePrice});
+      // console.log(price);
+      const itensCarrinho = document.querySelector('.cart__items');
+      const novaLi = createCartItemElement(dadosRecebidos);
+      itensCarrinho.appendChild(novaLi);
     });
     itensContainer.appendChild(criaElemento);
     });
