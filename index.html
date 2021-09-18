@@ -5,20 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Projeto Carrinho de Compras</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredericka+the+Great&display=swap" rel="stylesheet">
   </head>
   
   <body>
-    <section class="container">
-      <section class="items"></section>
+    <header class = 'header'>
+      <h1 class='modal-title text-center'>
+        <i class="bi bi-cart4"></i>
+         Projeto Carrinho de compras <i class="bi bi-cart4"></i>
+        </h1>
+    </header>
+    <aside class="aside">
       <section class="cart">
         <span class="cart__title">Carrinho de compras</span>
         <section class="section-price">
-          Preço Total: $<span class="total-price" id='tprice'></span>
+          Preço Total: R$<span class="total-price" id='tprice'></span>
         </section>
-        <button class="empty-cart">Esvaziar carrinho</button>
+        <button class="empty-cart btn btn-primary gap3">
+          <i class="bi bi-x-square"></i>
+          Esvaziar carrinho</button>
         <ol class="cart__items"></ol>
       </section>
+    </aside>
+    <main class="container">
+      <section class="items"></section>
+    </main>
+    <section class="search">
+      <div class="input-group mb-3 search">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="inputGroup-sizing-default">
+            <i class="bi bi-search"></i>
+          </span>
+        </div>
+        <input type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default" id="search">
+      </div>
     </section>
     <script src="script.js"></script>
   </body>

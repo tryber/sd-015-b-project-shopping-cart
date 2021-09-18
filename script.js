@@ -1,4 +1,5 @@
 const cardItemsElement = document.querySelector('.cart__items');
+const search = document.querySelector('.input-group-prepend');
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -15,18 +16,19 @@ const saveCardStorage = (htmlContent) => {
 function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
   e.className = className;
-  e.innerText = innerText;
+  e.innerHTML = innerText;
   return e;
 }
 
-function createProductItemElement({ sku, name, image }) {
+function createProductItemElement({ sku, name, image, priceItem }) {
   const section = document.createElement('section');
   section.className = 'item';
-
   section.appendChild(createCustomElement('span', 'item__sku', sku));
+  section.appendChild(createCustomElement('span', 'item_price', `R$ ${priceItem}`));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
-  section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
+  section.appendChild(createCustomElement('button', 'item__add btn btn-success',
+   '<i class="bi bi-cart-plus"></i>'));
 
   return section;
 }
@@ -42,7 +44,7 @@ function cartItemClickListener(event) {
     .target.innerText.slice(indexPrice + 1, lastIndex)) * 100) / 100;
   const totalPrice = document.querySelector('.total-price');
   const oldPrice = Math.round(parseFloat(totalPrice.innerText) * 100) / 100;
-  totalPrice.innerText = Math.round((oldPrice - price) * 100) / 100;
+  totalPrice.innerText = (oldPrice - price).toFixed(2);
   localStorage.setItem('totalprice', totalPrice.innerText);
   event.target.remove();
   const htmlCard = cardItemsElement.innerHTML;
@@ -64,8 +66,8 @@ const getProductsArray = async (product = 'computador') => {
     const products = await fetch(link)
     .then((binResult) => binResult.json())
     .then((productsObj) => productsObj.results);
-    products.forEach(({ id, title, thumbnail }) => {
-    const objecReturn = { sku: id, name: title, image: thumbnail };
+    products.forEach(({ id, title, thumbnail, price }) => {
+    const objecReturn = { sku: id, name: title, image: thumbnail, priceItem: price };
     const element = createProductItemElement(objecReturn);
     document.querySelector('.items').appendChild(element);
     });
@@ -76,12 +78,12 @@ const getProductsArray = async (product = 'computador') => {
 
 const sumCardPrice = async (price) => {
   const priceHTML = document.getElementById('tprice');
-  priceHTML.innerText = (Math
-    .round(parseFloat(priceHTML.innerText) * 100) / 100 + Math.round(price * 100) / 100);
+  const priceShow = parseFloat(priceHTML.innerText) + price;
+  priceHTML.innerText = priceShow.toFixed(2);
 };
 
 const addToCart = async (e) => {
-  if (e.target.className === 'item__add') {
+  if (e.target.className === 'item__add btn btn-success') {
     const idProduct = e.target.parentElement.firstChild.innerText;
     const link = `https://api.mercadolibre.com/items/${idProduct}`;
     try {
@@ -99,9 +101,31 @@ const addToCart = async (e) => {
   }
 };
 
-const loadingfc = async () => {
+const createLoadingContent = () => {
+  const loading = document.createElement('div');
+  const loading2 = document.createElement('div');
+  const loading3 = document.createElement('div');
+  'LOADING...'.split('').forEach((letter, i) => {
+    const span = document.createElement('span');
+    span.style = `--a:${i + 1}`;
+    span.innerText = letter;
+    loading3.appendChild(span);
+  });
+  loading.className = 'loading';
+  loading2.className = 'loading-child1';
+  loading3.className = 'loading-child2';
+  loading.appendChild(loading2);
+  loading.appendChild(loading3);
+  document.querySelector('.items').appendChild(loading);
+};
+
+const loadingfc = async (product) => {
   try {
-  setTimeout(() => getProductsArray().then(document.querySelector('.loading').remove()), 1000);
+    const time = Math.floor(Math.random() * (1500 - 1000) + 1000);
+    document.querySelector('.items').innerHTML = '';
+    createLoadingContent();
+    setTimeout(() => getProductsArray(product)
+    .then(document.querySelector('.loading').remove()), time);
   } catch (err) { console.error(err); }
 };
 
@@ -111,11 +135,12 @@ const clearCard = () => {
   saveCardStorage('');
 };
 
+const searchFc = (event) => {
+  const product = document.querySelector('.form-control').value;
+  loadingfc(product);
+};
+
 window.onload = () => {
-const loading = document.createElement('div');
-loading.className = 'loading';
-loading.innerText = 'LOADING...';
-document.querySelector('.items').appendChild(loading);
 loadingfc();
 if (localStorage.getItem('totalprice') === '' || !localStorage.getItem('totalprice')) {
   localStorage.setItem('totalprice', 0);
@@ -128,4 +153,5 @@ for (let i = 0; i < liLocalStorage.length; i += 1) {
 }
 document.querySelector('.empty-cart').addEventListener('click', clearCard);
 document.addEventListener('click', addToCart);
+search.addEventListener('click', searchFc);
 };

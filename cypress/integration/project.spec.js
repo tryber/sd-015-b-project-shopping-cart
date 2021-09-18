@@ -202,7 +202,7 @@ describe('Shopping Cart Project', () => {
       cy.visit(PROJECT_URL)
       cy.get(LOADING)
         .should('exist')
-        .wait(10000)
+        .wait(3000)
         .should('not.exist');
     });
   });
