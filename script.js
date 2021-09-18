@@ -37,6 +37,8 @@ function getSkuFromProductItem(item) {
 function cartItemClickListener(event) {
   // coloque seu código aqui
   // Adiciona evento de click para item no Carrinho
+  // Quando o item do carrinho for clickado, o mesmo deve ser removido
+  // console.log("That's working Fine!");
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -56,24 +58,22 @@ function criarElementos(dados) {
         sku: id,
         name: title,
         image: thumbnail,
-      }
+      };
       const criaElemento = createProductItemElement(dadosRecebidos);
       itensContainer.appendChild(criaElemento);
     });
 }
+
 async function apiRequest (requestURL) {
-  console.log("CONECTANDO A API DO MERCADO LIVRE...");
-  const myObject = {
-    method: 'GET',
-    headers: { 'Accept': 'application/json' }
-  };
-  fetch(requestURL, myObject) // Requisita URL
-  .then(response => response.json()) // Converte Binário para JSON
+  // console.log("CONECTANDO A API DO MERCADO LIVRE...");
+
+  fetch(requestURL) // Requisita URL
+  .then((response) => response.json()) // Converte Binário para JSON
   .then((element) => criarElementos(element.results))
   .catch((erro) => console.log(':::ERRO::: >>', erro));
 }
 
 window.onload = () => {
   apiRequest(requestURL);
-  console.log("PÁGINA CARREGADA!!!");
+  console.log('PÁGINA CARREGADA!!!');
  };
