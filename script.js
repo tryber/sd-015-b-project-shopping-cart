@@ -55,13 +55,15 @@ async function apiRequest (requestURL) {
   .then((element) => {
     const computadores = element.results;
     const containerItems = document.getElementsByClassName('.items');
-    console.log(containerItems);
+    // console.log(containerItems);
+    console.log('Computadores:', computadores);
     computadores.forEach( (computador) => {
-      const {title, id, price} = computador
-      const produtoCriado = createProductItemElement({title, id, price});
-      containerItems.appendChild(produtoCriado);
+      // const {sku, name, image} = computador;
+      // const produtoCriado = createProductItemElement({sku, name, image});
+      // containerItems.appendChild(produtoCriado);
     });
   })
+  .catch(function(erro) { console.log(':::ERRO::: >>', erro); })
 }
 
 window.onload = () => {
