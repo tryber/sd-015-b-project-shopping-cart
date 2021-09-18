@@ -1,8 +1,30 @@
 const local = localStorage;
 const ordenedlistCart = document.querySelector('ol.cart__items');
 const buttonEmptyCart = document.querySelector('button.empty-cart');
-const loadingScreanInit = document.getElementsByClassName('loading')[0];
-const loadingScreanList = document.getElementsByClassName('loading')[1];
+
+function createLoadingScreanToInit() {
+  const element = document.createElement('span');
+  element.className = 'loading';
+  element.innerText = 'loading...';
+  document.body.prepend(element);
+}
+
+function createLoadingScreanToList() {
+  const element = document.createElement('span');
+  element.className = 'loading';
+  element.innerText = 'loading...';
+  document.querySelector('section.cart').appendChild(element);
+}
+
+function closeInitLoadingScrean() {
+  const element = document.querySelector('body span.loading');
+  document.body.removeChild(element);
+}
+
+function closeListLoadingScrean() {
+  const element = document.querySelector('section.cart span.loading');
+  document.querySelector('section.cart').removeChild(element);
+}
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -23,11 +45,11 @@ function getSkuFromProductItem(item) {
 }
 
 async function itemObjectPromise(id) {
-  loadingScreanList.innerText = 'loading...';
+  createLoadingScreanToList();
   return fetch(`https://api.mercadolibre.com/items/${id}`)
     .then((result) => result.json())
     .then((resultJson) => {
-      loadingScreanList.innerText = '';
+      closeListLoadingScrean();
       return resultJson;
     });
 }
@@ -44,7 +66,7 @@ function calculateTotal() {
     const valueCurr = parseFloat(curr.split(' PRICE: $')[1]);
     return acc + valueCurr;
   }, 0);
-  total = total.toFixed(2);
+  total = parseInt(total, 10);
   const totalElement = document.querySelector('span span.total-price');
   totalElement.innerText = total;
 }
@@ -106,11 +128,11 @@ function createProductItemElement({ sku, name, image }) {
 }
 
 const computersArrayPromise = new Promise((resolve, _) => {
-  loadingScreanInit.innerText = 'loading...';
+  createLoadingScreanToInit();
   fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
     .then((result) => result.json())
     .then((resultJson) => {
-      loadingScreanInit.innerText = '';
+      closeInitLoadingScrean();
       return resolve(resultJson.results);
     });
 });
