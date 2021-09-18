@@ -28,7 +28,10 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-  // ev
+  const orderedList = document.getElementsByClassName('cart__items');
+  const eventTarget = event.target;
+
+  orderedList[0].removeChild(eventTarget);
 }
 
 function createCartItemElement({ id, title, price }) {
