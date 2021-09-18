@@ -1,7 +1,10 @@
-const cartSection = document.querySelector('ol');
+const cartSection = document.querySelector('ol'); // * Requisito 4
+const priceSave = document.querySelector('.total-price'); // * Requisito 5
 
+// * Requisito 4.1
 const localSave = () => {
   localStorage.setItem('chave', cartSection.innerHTML);
+  localStorage.setItem('priceKey', priceSave.innerText); // * Requisito 5
 };
 
 function createProductImageElement(imageSource) {
@@ -34,10 +37,22 @@ function getSkuFromProductItem(item) { // * Requisito 2
   return item.querySelector('span.item__sku').innerText;
 }
 
+// Requisito 5
+const updatePrice = (total) => {
+  priceSave.innerText = total;
+};
+
+// Requisito 5.1
+const addPrice = (price) => {
+  let totalPrice = priceSave.innerText;
+  totalPrice = Math.round((Number(totalPrice) * 100) + (price * 100)) / 100;
+  updatePrice(totalPrice);
+};
+
 function cartItemClickListener(event) {
   const cartItem = event.target;
   cartItem.parentElement.removeChild(cartItem); // * Requisito 3
-  localSave();
+  localSave(); // * Requisito 4.1
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) { // * Requisito 2
@@ -71,22 +86,24 @@ const addProductShoppingCart = async () => {
       const liProducts = createCartItemElement(responseJson);
       const cartItems = document.querySelector('.cart__items');
       cartItems.appendChild(liProducts);
-      localSave();
+      localSave(); // * Requisito 4.1
+      addPrice(responseJson); // * Requisito 5.1
     });
   });
 };
 
-// * Requisito 4
+// * Requisito 4.2
 const getLocal = () => {
   cartSection.innerHTML = localStorage.getItem('chave');
   const cartItem2 = document.querySelectorAll('.cart__item');
   cartItem2.forEach((element) => {
     element.addEventListener('click', cartItemClickListener);
   });
+  priceSave.innerHTML = localStorage.getItem('priceKey'); // * Requisito 5
 };
 
 window.onload = async () => {
   await createProductList(); // * Requisito 1
   await addProductShoppingCart(); // * Requisito 2
-  getLocal(); // * Requisito 4
+  getLocal(); // * Requisito 4.2
 };
