@@ -8,7 +8,7 @@ function createProductImageElement(imageSource) {
   return img;
 }
 
-function createCustomElement(element, className, innerText, sku) {
+function createCustomElement(element, className, innerText) {
   // Cria elemento com os dados do createProductItemElement
   const e = document.createElement(element);
   e.className = className;
@@ -20,8 +20,6 @@ function createProductItemElement({ sku, name, image }) {
   // Recebe os parâmetros sku, name & image do JSON da API
   const section = document.createElement('section');
   section.className = 'item';
-  const carrinho = document.querySelector('ol');
-
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
@@ -38,7 +36,7 @@ function cartItemClickListener(event) {
   // coloque seu código aqui
   // Adiciona evento de click para item no Carrinho
   // Quando o item do carrinho for clickado, o mesmo deve ser removido
-  console.log("That's working Fine!");
+  console.log('That\'s working Fine!');
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -53,7 +51,6 @@ function createCartItemElement({ sku, name, salePrice }) {
 function criarElementos(dados) {
   const resultados = dados;
   const itensContainer = document.querySelector('.items');
-  // console.log(resultados);
   resultados.forEach(({ id, title, thumbnail, price }) => {
     const dadosRecebidos = {
       sku: id,
@@ -61,11 +58,8 @@ function criarElementos(dados) {
       image: thumbnail,
       salePrice: price,
     };
-    // Cria cada item da lista com os dadosRecebidos
     const criaElemento = createProductItemElement(dadosRecebidos);
     criaElemento.addEventListener('click', () => {
-      // eventListener do adicionarCarrinho
-      // console.log(price);
       const itensCarrinho = document.querySelector('.cart__items');
       const novaLi = createCartItemElement(dadosRecebidos);
       itensCarrinho.appendChild(novaLi);
