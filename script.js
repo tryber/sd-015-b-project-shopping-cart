@@ -98,6 +98,10 @@ const buttonToCart = () => {
 
 window.onload = () => { 
   apiMercadoLivre()
+    .then(() => {
+      const load = document.querySelector('.loading');
+      load.remove();
+    })
     .then(() => buttonToCart())
     .then(() => getStorage())
     .then(() => sumPrice())
