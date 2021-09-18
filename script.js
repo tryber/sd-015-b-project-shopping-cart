@@ -89,9 +89,24 @@ function addToCard() {
   });
 }
 
+function screenLoading() {
+  const section = document.querySelector('.items');
+  const loading = document.createElement('h1');
+  loading.classList.add('loading');
+  loading.innerHTML = 'loading...';
+  section.appendChild(loading);
+}
+
+function removeLoading() {
+  const loading = document.querySelector('.loading');
+  loading.remove();
+}
+
 async function fetchComputers() {
+  screenLoading();
   const reponse = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=$computador');
   const computers = await reponse.json();
+  removeLoading();
   const sectionItems = document.querySelector('.items');
   Object.keys(computers.results).forEach((computer) => {
     const objComputer = {
