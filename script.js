@@ -40,7 +40,7 @@ function getSkuFromProductItem(item) {
 }
 
 function saveCart() {
-  const cartItems = [...document.querySelectorAll('.cart__item')];
+  const cartItems = document.querySelectorAll('.cart__item');
   const itemForLocalStorage = [];
 
   cartItems.forEach((item) => {
