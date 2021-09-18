@@ -112,5 +112,14 @@ window.onload = () => {
   mlComputerFetch()
   .then(() => button())
   .then(() => getLocalStorage())
-  .then(() => sumAndRemove());
+  .then(() => sumAndRemove())
+  .then(() => {
+    const eraseButton = document.querySelector('.empty-cart');
+    eraseButton.addEventListener('click', () => {
+    const selectSpan = document.querySelector('.total-price');
+    const selectOl = document.querySelector('ol');
+    selectOl.innerHTML = '';
+    selectSpan.innerHTML = '';
+  });
+  });
 };
