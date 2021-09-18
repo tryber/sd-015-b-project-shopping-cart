@@ -95,18 +95,35 @@ async function addIdComputer(actualId) {
   olCart.appendChild(createCartItemElement(dataComputer));
 }
 
-function addEventButtons() {
+function addCartEventButtons() {
   const items = document.querySelectorAll('.item');
   items.forEach((item) => item.lastChild.addEventListener('click', (() => {
     addIdComputer(item);
   })));
 }
 
+function resetCart() {
+  const fatherCarts = document.querySelector('ol.cart__items');
+  const childCarts = document.querySelectorAll('.cart__item');
+  const totalPrice = document.querySelector('.total-price');
+  const [...allChildCarts] = childCarts;
+
+  allChildCarts.forEach((element) => {
+    fatherCarts.removeChild(element);
+  });
+  totalPrice.innerText = 0;
+}
+
+function addEventButtonReset() {
+  const buttonResetCart = document.querySelector('.empty-cart');
+  buttonResetCart.addEventListener('click', resetCart);
+}
 async function allFunctionsCalled() {
   try {
     const product = await requestComputador();
     addProducts(product);
-    addEventButtons();
+    addCartEventButtons();
+    addEventButtonReset();
   } catch (error) {
     throw new Error(error);
   }
