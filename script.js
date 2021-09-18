@@ -1,9 +1,22 @@
 const site = 'https://api.mercadolibre.com';
+const storage = localStorage.getItem('cardList');
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
   img.src = imageSource;
   return img;
+}
+
+function saveCart() {
+  const cartItems = [...document.querySelectorAll('.cart__item')];
+  const itemForLocalStorage = [];
+
+  cartItems.forEach((item) => {
+    itemForLocalStorage.push(item.innerHTML);
+  });
+
+  localStorage.setItem('cardList', JSON.stringify(itemForLocalStorage));
 }
 
 function createCustomElement(element, className, innerText) {
@@ -22,7 +35,6 @@ function createProductItemElement({ sku, name, image }) {
   section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
   document.querySelector('.items').appendChild(section);
-
   return section;
 }
 
@@ -32,6 +44,7 @@ function createProductItemElement({ sku, name, image }) {
 
 function cartItemClickListener(event) {
   event.target.remove(event);
+  saveCart();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -39,7 +52,21 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
+  saveCart();
   return li;
+}
+
+function retrieveSavedCart() {
+  const listItems = document.querySelector('.cart__items');
+  const previousCart = JSON.parse(localStorage.getItem('cardList'));
+
+  previousCart.forEach((item) => {
+    const li = document.createElement('li');
+    li.innerHTML = item;
+    li.classList.add('cart__item');
+    li.addEventListener('click', cartItemClickListener);
+    listItems.append(li);
+  });
 }
 
 function receiveDataItem(item) {
@@ -81,4 +108,5 @@ window.onload = () => {
         addSectionProduct(result);
       });
     });
+  if (storage) retrieveSavedCart();
 };
