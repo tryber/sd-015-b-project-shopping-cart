@@ -59,8 +59,8 @@ async function payment() {
 
 function cartItemClickListener(event) {
   event.target.remove();
-  saveStorage();
   payment();
+  saveStorage();
 }
 
 function resetButton() {
@@ -68,6 +68,7 @@ function resetButton() {
   const olReset = document.querySelector(cartItems);
   const cartArea = document.querySelector('.cart');
   olReset.remove();
+  payment();
   ol.classList.add('cart__items');
   cartArea.append(ol);
 }
@@ -80,7 +81,7 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-const addToCart = async (item) => {
+const addToCart = (item) => {
   const getId = getSkuFromProductItem(item);
   fetch(`https://api.mercadolibre.com/items/${getId}`)
     .then((response) => response.json())
@@ -105,14 +106,18 @@ const addEventToButtons = () => {
   return allItems;
 };
 
-const requestMercadoLibre = async () => 
+const requestMercadoLibre = () => 
   fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
-  .then((response) => response.json())
-  .then((listItems) => listItems.results.forEach(({ id, title, thumbnail }) => {
-    const itemInfos = { sku: id, name: title, image: thumbnail };
-    const sectionItems = document.querySelector('.items');
-    const itemElement = createProductItemElement(itemInfos);
-    sectionItems.append(itemElement);
+    .then((response) => response.json())
+    .then((listItems) => listItems.results.forEach(({ id, title, thumbnail }) => {
+      const itemInfos = { 
+        sku: id, 
+        name: title, 
+        image: thumbnail,
+      };
+      const sectionItems = document.querySelector('.items');
+      const itemElement = createProductItemElement(itemInfos);
+      sectionItems.append(itemElement);
   }));
 
 function recoverySavedList() {
@@ -130,8 +135,10 @@ function recoverySavedList() {
 
 function loadOrder() {
   requestMercadoLibre()
-  .then(() => addEventToButtons())
-  .catch(() => ('Ops, endereço não encontrado! =('));
+    .then(() => document.querySelector('.loading').remove())
+    .then(() => addEventToButtons())
+    .then(() => payment())
+    .catch(() => ('Ops, endereço não encontrado! =('));
 }
 window.onload = () => { 
   if (retrieveCart) recoverySavedList();
