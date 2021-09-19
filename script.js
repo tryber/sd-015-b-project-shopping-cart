@@ -136,8 +136,7 @@ async function fillPageWithItems(search) {
       sectionItems.append(itemElement);
     });
 
-    await Promise.all(arrData)
-
+    await Promise.all(arrData);
   } catch (error) {
     console.error(error);
   }
@@ -160,7 +159,6 @@ async function addItemIntoCart(element) {
 
     ol.append(createCartItemElement(cartItem));
     calculeTotalAmount();
-    
   } catch (error) {
     console.error(error);
   }
