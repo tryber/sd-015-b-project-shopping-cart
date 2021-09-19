@@ -102,11 +102,12 @@ function createCartItemElement({ name, salePrice, picture }) {
   div.classList.add('cart__item__container');
   img.classList.add('cart__item__picture');
   img.src = picture;
-  p.className = 'cart__item';
+  p.className = 'cart__item__text';
   p.innerText = `${name}\n${salePrice.toLocaleString('pt-BR',
     { style: 'currency', currency: 'BRL' })}`;
   div.append(img);
   div.append(p);
+  li.className = 'cart__item';
   li.append(div);
   li.addEventListener('click', cartItemClickListener);
   return li;

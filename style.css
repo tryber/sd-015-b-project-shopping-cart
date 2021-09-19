@@ -111,17 +111,17 @@ body {
   justify-content: space-evenly;
 }
 
-.cart__items > li .cart__item {
-  text-align: center;
-  max-width: 70%;
-}
-
 .cart__items > li .cart__item__picture {
   max-width: 100%;
   border-radius: 10px;
   width: 80px;
   height: 80px;
   object-fit: cover;
+}
+
+.cart__items > li .cart__item__text {
+  text-align: center;
+  max-width: 70%;
 }
 
 .container-amount {
