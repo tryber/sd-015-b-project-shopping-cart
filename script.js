@@ -44,21 +44,33 @@ const appendItem = (item) => {
 const loadOnLocalStorageTotal = () => {
   const valorTotal = JSON.parse(localStorage.getItem('total'));
   if (valorTotal) {
-const totalHTML = document.querySelector(totalString);
-totalHTML.innerHTML = valorTotal;
+    const totalHTML = document.querySelector(totalString);
+    totalHTML.innerHTML = valorTotal;
   }
-    };
+};
 
-    const somaCompras = ({ price }) => {
-      const total = document.querySelector(totalString);
-      const soma = parseFloat(total.innerText) + price;
-      total.innerHTML = soma;
-      localStorage.setItem('total', JSON.stringify(soma));
-    };
+const somaCompras = ({ price }) => {
+  const total = document.querySelector(totalString);
+  const soma = parseFloat(total.innerText) + price;
+  total.innerHTML = soma;
+  localStorage.setItem('total', JSON.stringify(soma));
+};
 
 function cartItemClickListener(event) {
   // coloque seu código aqui
   const click = event.target;
+  const total = JSON.parse(localStorage.getItem('total'));
+
+  const subtrair = click.getAttribute('preco');
+
+  const result = total - subtrair;
+
+  const valorTotal = document.querySelector(totalString);
+
+  valorTotal.innerHTML = result;
+
+localStorage.setItem('total', JSON.stringify(result));
+
   click.remove();
 }
 
@@ -66,6 +78,10 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+
+  li.setAttribute('preco', salePrice);
+
+  // console.log(li);
 
   li.addEventListener('click', cartItemClickListener);
   return li;
@@ -101,10 +117,10 @@ async function addToCart(event) {
   addToLocalStorage(apiDoProduto);
   adicionaArrayAoLocalStorage();
 
-const totalPrice = document.querySelector(totalString);
-if (totalPrice) {
-  somaCompras(apiDoProduto);
-}
+  const totalPrice = document.querySelector(totalString);
+  if (totalPrice) {
+    somaCompras(apiDoProduto);
+  }
 }
 const loadOnLocalStorage = () => {
   const myItems = JSON.parse(localStorage.getItem('cart'));
