@@ -173,6 +173,12 @@ function creatBodyListeners() {
       console.log('aqui');
       saveCart();
     }
+    if (element.classList.contains('empty-cart')) {
+      const cartItmsOl = document.querySelector(cartItems);
+      cartItmsOl.innerHTML = '';
+      saveCart();
+      attTotalPrice(0);
+    }
   });
 }
 
