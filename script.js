@@ -1,5 +1,35 @@
 const cartItems = '.cart__items';
 
+function attTotalPrice(value) {
+  const totalPriceSpan = document.querySelector('.total-price');
+  localStorage.setItem('cartTotalPrice', JSON.stringify(value));
+  totalPriceSpan.innerText = value;
+}
+
+function removeItemPrice(value) {
+  const localValue = JSON.parse(localStorage.getItem('cartTotalPrice'));
+  const localValueOperation = localValue - value;
+  const newLocalValueText = localValueOperation === 0 ? 0 : localValueOperation.toFixed(2);
+  const newLocalValue = parseFloat(newLocalValueText);
+  console.log(newLocalValue);
+  attTotalPrice(newLocalValue);
+}
+
+function addItemPrice(value) {
+  const localValue = JSON.parse(localStorage.getItem('cartTotalPrice'));
+  const newLocalValue = localValue + value;
+  attTotalPrice(newLocalValue);
+}
+
+function getSavedCartValue() {
+  if (localStorage.cartTotalPrice) {
+    const cartSavedValue = JSON.parse(localStorage.getItem('cartTotalPrice'));
+    attTotalPrice(cartSavedValue);
+  } else {
+    localStorage.setItem('cartTotalPrice', 0);
+  }
+}
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -86,6 +116,10 @@ async function saveCart() {
 function cartItemClickListener(event) {
   // coloque seu código aqui
   const element = event.target;
+  const elementInnerText = element.innerText;
+  const elementPriceText = elementInnerText.split('PRICE: $')[1];
+  const elementPriceValue = parseFloat(elementPriceText);
+  removeItemPrice(elementPriceValue);
   element.remove();
   saveCart();
 }
@@ -101,6 +135,7 @@ async function addItemToCart(id) {
   const productPromise = await getSingleProduct(id);
   const cartItemsSection = document.querySelector(cartItems);
   const cartProductObj = makeObjForCartItem(productPromise);
+  addItemPrice(cartProductObj.salePrice);
   const cartItemElement = createCartItemElement(cartProductObj);
   cartItemsSection.appendChild(cartItemElement);
 }
@@ -125,6 +160,7 @@ function getSavedCart() {
       savedCartProducts.forEach((product) => addSavedProductToCart(product));
     }
   }
+  getSavedCartValue();
 }
 
 function creatBodyListeners() {
@@ -134,6 +170,7 @@ function creatBodyListeners() {
       const productElement = element.parentElement;
       const productId = getSkuFromProductItem(productElement);
       await addItemToCart(productId);
+      console.log('aqui');
       saveCart();
     }
   });
