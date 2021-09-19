@@ -19,15 +19,32 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+// 5. Some o valor total dos itens do carrinho de compras
+function calculeSumPrice() {
+  const allItemsCart = document.querySelectorAll('.cart__item');
+  const amountPrice = document.querySelector('.total-price');
+  let totalPrice = 0;
+
+  for (let index = 0; index < allItemsCart.length; index += 1) {
+    const price = allItemsCart[index];
+    const getPrice = price.getAttribute('price');
+    totalPrice += parseFloat(getPrice);  
+  }
+
+  amountPrice.innerText = totalPrice;
+}
+
 // 3. Remova o item do carrinho de compras ao clicar nele
 function cartItemClickListener(event) {
   // coloque seu código aqui
   event.target.remove(event);
+  calculeSumPrice();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
+  li.setAttribute('price', salePrice);
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   return li;
@@ -49,6 +66,7 @@ async function addProductCart() {
   const productToCart = createCartItemElement(item);
   const cart = document.querySelector(queryCart);
   cart.appendChild(productToCart);
+  calculeSumPrice();
   const searchOl = document.querySelector(queryCart);
   localStorage.setItem('content', searchOl.innerHTML);
   } catch (error) {
@@ -95,6 +113,7 @@ function loadCart() {
     searchOlCart.innerHTML = localStorage.getItem('content');
     searchOlCart.addEventListener('click', cartItemClickListener);
   }
+  calculeSumPrice();
 }
 
 window.onload = () => { 
