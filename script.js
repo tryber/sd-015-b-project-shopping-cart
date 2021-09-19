@@ -1,3 +1,6 @@
+const totalString = '.total-price';
+const arrayDeItems = [];
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -25,9 +28,33 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
+const addToLocalStorage = ({ id, title, price }) => {
+  arrayDeItems.push({ id, title, price });
+};
+
+const adicionaArrayAoLocalStorage = () => {
+  localStorage.setItem('cart', JSON.stringify(arrayDeItems));
+};
+
+const appendItem = (item) => {
+  const cart = document.querySelector('.cart__items');
+  cart.appendChild(item);
+};
+
+const loadOnLocalStorageTotal = () => {
+  const valorTotal = JSON.parse(localStorage.getItem('total'));
+  if (valorTotal) {
+const totalHTML = document.querySelector(totalString);
+totalHTML.innerHTML = valorTotal;
+  }
+    };
+
+    const somaCompras = ({ price }) => {
+      const total = document.querySelector(totalString);
+      const soma = parseFloat(total.innerText) + price;
+      total.innerHTML = soma;
+      localStorage.setItem('total', JSON.stringify(soma));
+    };
 
 function cartItemClickListener(event) {
   // coloque seu código aqui
@@ -39,6 +66,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
@@ -70,11 +98,29 @@ async function addToCart(event) {
   const cart = document.querySelector('.cart__items');
   const cartItem = createCartItemElement(apiDoProduto);
   cart.appendChild(cartItem);
+  addToLocalStorage(apiDoProduto);
+  adicionaArrayAoLocalStorage();
+
+const totalPrice = document.querySelector(totalString);
+if (totalPrice) {
+  somaCompras(apiDoProduto);
 }
+}
+const loadOnLocalStorage = () => {
+  const myItems = JSON.parse(localStorage.getItem('cart'));
+  if (myItems) {
+    myItems.forEach((item) => {
+      const product = createCartItemElement(item);
+      appendItem(product);
+    });
+  }
+};
 
 window.onload = () => {
   fetchProducts('computador').then(() => {
     const botoes = document.querySelectorAll('.item__add');
     botoes.forEach((botao) => botao.addEventListener('click', addToCart));
   });
+  loadOnLocalStorage();
+  loadOnLocalStorageTotal();
 };
