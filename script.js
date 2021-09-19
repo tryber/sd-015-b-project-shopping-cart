@@ -8,6 +8,12 @@ function createProductImageElement(imageSource) {
   return img;
 }
 
+function getBtnEmprtyCart() {
+  const cardItemsElement = document.querySelector('#cart__items');
+  cardItemsElement.innerHTML = '';
+  document.getElementById('tprice').innerText = 0;
+}
+
 function saveCart() {
   const cartItems = [...document.querySelectorAll('.cart__item')];
   const itemForLocalStorage = [];
@@ -128,4 +134,5 @@ window.onload = () => {
       });
     });
   if (storage) retrieveSavedCart();
+  document.querySelector('.empty-cart').addEventListener('click', getBtnEmprtyCart);
 };
