@@ -55,6 +55,7 @@ body {
 .item .item__image {
   width: 80%;
   align-self: center;
+  border-radius: 10px;
 }
 
 .item .item__add {
@@ -95,15 +96,32 @@ body {
   list-style: none;
   margin: 7px 0;
   padding: 5px;
-  border-radius: 5px;
-  background-color: hsl(240, 11%, 98%);
-  transition: 2s;
+  border-radius: 10px;
+  background-color: white;
+  border: 2px solid transparent;
 }
 
 .cart__items > li:hover {
-  background-color: rgb(0, 165, 143);
-  color: white;
-  transition: 1.5s;
+  border: 2px solid rgb(0, 165, 143);
+}
+
+.cart__items > li .cart__item__container {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.cart__items > li .cart__item {
+  text-align: center;
+  max-width: 70%;
+}
+
+.cart__items > li .cart__item__picture {
+  max-width: 100%;
+  border-radius: 10px;
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
 }
 
 .container-amount {

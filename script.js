@@ -59,7 +59,7 @@ function calculeTotalAmount() {
 }
 
 function cartItemClickListener(event) {
-  event.target.remove();
+  event.target.closest('li').remove();
   calculeTotalAmount();
 }
 
@@ -93,10 +93,21 @@ function listenerForBtnReset() {
   resetBtn.addEventListener('click', resetCartItems);
 }
 
-function createCartItemElement({ sku, name, salePrice }) {
+function createCartItemElement({ name, salePrice, picture }) {
   const li = document.createElement('li');
-  li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  const img = document.createElement('img');
+  const div = document.createElement('div');
+  const p = document.createElement('p');
+
+  div.classList.add('cart__item__container');
+  img.classList.add('cart__item__picture');
+  img.src = picture;
+  p.className = 'cart__item';
+  p.innerText = `${name}\n${salePrice.toLocaleString('pt-BR',
+    { style: 'currency', currency: 'BRL' })}`;
+  div.append(img);
+  div.append(p);
+  li.append(div);
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
@@ -153,8 +164,8 @@ async function addItemIntoCart(element) {
   try {
     const response = await checkApiItems(element);
     const data = await response.json();
-    const { id, title, price } = data;
-    const cartItem = { sku: id, name: title, salePrice: price };
+    const { title, price, pictures } = data;
+    const cartItem = { name: title, salePrice: price, picture: pictures[0].url };
     const ol = document.querySelector(OlClass);
 
     ol.append(createCartItemElement(cartItem));
