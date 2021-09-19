@@ -102,9 +102,18 @@ const filterInfoToSendToCart = async (textId) => {
 
 const sendToCart = async (event) => {
   const cartContainer = getCartCointainer();
+  const loading = createCustomElement('p', 'loading', 'loading...');
+  
+  cartContainer.appendChild(loading);
+
+  const listLength = cartContainer.childNodes.length;
+  const lastChild = cartContainer.childNodes[listLength - 1];
   const productContainer = event.target.parentNode;
   const textId = getSkuFromProductItem(productContainer);
   const filtredInfo = await filterInfoToSendToCart(textId);
+
+  cartContainer.removeChild(lastChild);
+
   const cartItem = createCartItemElement(filtredInfo);
 
   cartContainer.appendChild(cartItem);
@@ -137,7 +146,10 @@ const getProductsButtons = () => {
 
 const appendListItems = async () => {
   const container = document.querySelector('.items');
+  const loading = createCustomElement('p', 'loading', 'loading...');
+  container.appendChild(loading);
   const research = await getApiData(searchGroupProducts, 'computador');
+  container.innerHTML = '';
   
   research.results.forEach(({ id, title, thumbnail }) => {
     const productInfo = { sku: id, name: title, image: thumbnail };
