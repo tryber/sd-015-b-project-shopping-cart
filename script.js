@@ -21,7 +21,8 @@ function createProductItemElement({ sku, name, price, image }) {
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
-  section.appendChild(createCustomElement('button', 'item__add', `R$${price}`));
+  section.appendChild(createCustomElement('button', 'item__add',
+    `${price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`));
 
   return section;
 }
