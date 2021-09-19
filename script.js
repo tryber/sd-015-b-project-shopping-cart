@@ -149,15 +149,20 @@ function checkApiItems(element) {
   return fetch(mercadoLivreApiId);
 }
 
-function addItemIntoCart(element) {
-  checkApiItems(element)
-    .then((response) => response.json())
-    .then(({ id, title, price }) => {
-      const output = { sku: id, name: title, salePrice: price };
-      const ol = document.querySelector(OlClass);
-      ol.append(createCartItemElement(output));
-      calculeTotalAmount();
-    });
+async function addItemIntoCart(element) {
+  try {
+    const response = await checkApiItems(element);
+    const data = await response.json();
+    const { id, title, price } = data;
+    const cartItem = { sku: id, name: title, salePrice: price };
+    const ol = document.querySelector(OlClass);
+
+    ol.append(createCartItemElement(cartItem));
+    calculeTotalAmount();
+    
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 function addListenersToBtns() {
