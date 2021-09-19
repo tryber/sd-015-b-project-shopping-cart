@@ -53,7 +53,8 @@ body {
 }
 
 .item .item__image {
-  width: 100%;
+  width: 80%;
+  align-self: center;
 }
 
 .item .item__add {

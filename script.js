@@ -109,46 +109,55 @@ function resetPageItems() {
   const cart = document.querySelector('.cart');
   const items = document.querySelector('.items');
   const section = document.createElement('section');
-  
+
   items.remove();
   section.classList.add('items');
   container.insertBefore(section, cart);
 }
 
-async function checkApiSearch(search) {
+function checkApiSearch(search) {
   const mercadoLivreApi = `https://api.mercadolibre.com/sites/MLB/search?q=${search}`;
 
   return fetch(mercadoLivreApi);
 }
 
 async function fillPageWithItems(search) {
-  await checkApiSearch(search)
-    .then((response) => response.json())
-    .then((request) => request.results.forEach(({ id, title, price, thumbnail }) => {
+  try {
+    const response = await checkApiSearch(search);
+    const data = await response.json();
+    const arrData = data.results.map(async ({ id, title, price }) => {
+      const responseThumbnail = await fetch(`https://api.mercadolibre.com/items/${id}`);
+      const dataThumbnail = await responseThumbnail.json();
+      const thumbnail = dataThumbnail.pictures[0].url;
       const output = { sku: id, name: title, price, image: thumbnail };
       const sectionItems = document.querySelector('.items');
       const itemElement = createProductItemElement(output);
       sectionItems.append(itemElement);
-    }));
+    });
+
+    await Promise.all(arrData)
+
+  } catch (error) {
+    console.error(error);
+  }
 }
 
-async function checkApiItems(element) {
+function checkApiItems(element) {
   const elementId = getSkuFromProductItem(element);
   const mercadoLivreApiId = `https://api.mercadolibre.com/items/${elementId}`;
 
   return fetch(mercadoLivreApiId);
 }
 
-async function addItemIntoCart(element) {
-  await checkApiItems(element)
+function addItemIntoCart(element) {
+  checkApiItems(element)
     .then((response) => response.json())
     .then(({ id, title, price }) => {
       const output = { sku: id, name: title, salePrice: price };
       const ol = document.querySelector(OlClass);
       ol.append(createCartItemElement(output));
       calculeTotalAmount();
-    })
-    .catch(() => console.error('Ops.'));
+    });
 }
 
 function addListenersToBtns() {
@@ -162,12 +171,15 @@ function addListenersToBtns() {
   loading.remove();
 }
 
-function initialExecOrder(search) {
-  fillPageWithItems(search)
-    .then(() => addListenersToBtns())
-    .then(() => calculeTotalAmount())
-    .then(() => listenerForBtnReset())
-    .catch(() => console.error('Opa, esse endereço não foi encontrado.'));
+async function initialExecOrder(search) {
+  try {
+    await fillPageWithItems(search);
+    addListenersToBtns();
+    calculeTotalAmount();
+    listenerForBtnReset();
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 window.onload = () => {
