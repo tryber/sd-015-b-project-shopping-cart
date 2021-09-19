@@ -1,5 +1,6 @@
 const items = document.querySelector('.items');
 const cartItems = document.querySelector('.cart__items');
+const totalPrice = document.querySelector('.total-price');
 
 async function requestComputadores() {
   const response = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
@@ -52,9 +53,17 @@ function saveCartLocal() {
   localStorage.setItem('cart', cartItems.innerHTML);
 }
 
+// soma o preço total dos itens do
+function sumTotalPrice() {
+  const cartItenSum = Array.from(document.getElementsByClassName('cart__item'));
+  const sum = cartItenSum.reduce((acc, ele) => Number(ele.getAttribute('price')) + acc, 0);
+  totalPrice.innerText = sum;
+}
+
+// remove itens do carrinho
 function cartItemClickListener(event) {
-  // coloque seu código aqui
   event.target.remove();
+  sumTotalPrice();
   saveCartLocal();
 }
 
@@ -64,14 +73,16 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.setAttribute('price', salePrice);
+  console.log(li.value);
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
-
 // cria os itens do carrinho de compra
 async function createCartItems(id) {
   const itemById = await requestItemById(id);
   cartItems.appendChild(createCartItemElement(itemById));
+  sumTotalPrice();
   saveCartLocal();
 }
 
