@@ -53,8 +53,6 @@ function removeLoading() {
   document.querySelector('.loading').remove();
 }
 
-let ab = setTimeout(() => console.log('sayro'), 3000);
-
 async function createItems() {
   createLoading();
   const computadores = await requestComputadores();
