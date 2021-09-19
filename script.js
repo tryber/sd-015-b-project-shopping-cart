@@ -112,7 +112,16 @@ function loadCart() {
   calculeSumPrice();
 }
 
+// 6. Crie um botão para limpar carrinho de compras
+const clearButtonList = () => {
+  const itensClear = document.querySelectorAll('.cart__item');
+  itensClear.forEach((item) => item.remove());
+  calculeSumPrice();
+};
+
 window.onload = () => { 
   createProductListing();
   loadCart();
+  const buttonClear = document.querySelector('.empty-cart');
+  buttonClear.addEventListener('click', clearButtonList);
 };
