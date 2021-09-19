@@ -52,7 +52,7 @@ function calculeTotalAmount() {
   });
 
   const sum = allValues.reduce((total, current) => (total + current), 0);
-  amount.innerText = `${sum}`;
+  amount.innerText = `${sum.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`;
 
   saveCart();
 }
