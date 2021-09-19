@@ -48,6 +48,29 @@ const formatItemListProducts = (sku, name, image) =>
 const appendProductItem = (target, element) =>
   target.appendChild(createProductItemElement(element));
 
+const getLocalStorage = () =>
+  JSON.parse(localStorage.getItem('ShoppingCartProject'));
+
+const verifyLocalStorage = () => {
+  let myStorage = getLocalStorage();
+  if (!myStorage) {
+    myStorage = [];
+  }
+  return myStorage;
+};
+
+const setLocalStorage = (sku, name, price) => {
+  const myStorage = verifyLocalStorage();
+  myStorage.push({ sku, name, price });
+  localStorage.setItem('ShoppingCartProject', JSON.stringify(myStorage));
+};
+
+const removeItemLocalStorage = (sku) => {
+  let myStorage = verifyLocalStorage();
+  myStorage = myStorage.filter((storage) => storage.sku !== sku);
+  localStorage.setItem('ShoppingCartProject', JSON.stringify(myStorage));
+};
+
 const setItensOnPage = (response) => {
   const itens = [];
   response.results.forEach((res) =>
@@ -59,6 +82,7 @@ const setItensOnPage = (response) => {
 function cartItemClickListener(event) {
   const parent = event.target.parentElement;
   parent.removeChild(event.target);
+  removeItemLocalStorage(event.target.innerText.split('|')[0].split(':')[1].trim());
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -76,6 +100,16 @@ const setItensOnCart = (response) => {
   const mySection = document.getElementsByClassName('cart__items')[0];
   mySection.appendChild(createCartItemElement(formatItemListCart(response.id,
     response.title, response.price)));
+  setLocalStorage(response.id, response.title, response.price);
+};
+
+const updateCartOnLoadPage = () => {
+  const myStorage = verifyLocalStorage();
+  const mySection = document.getElementsByClassName('cart__items')[0];
+  myStorage.forEach((storage) => {
+  mySection.appendChild(createCartItemElement(formatItemListCart(storage.sku,
+    storage.name, storage.price)));
+  });
 };
 
 const getProductSelected = (event) => {
@@ -96,4 +130,5 @@ window.onload = () => {
   const product = 'computador';
   getProductList(url, product, setItensOnPage, console.log);
   getClickAddButton();
+  updateCartOnLoadPage();
 };
