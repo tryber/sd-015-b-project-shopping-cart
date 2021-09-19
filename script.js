@@ -57,14 +57,14 @@ const getApiData = async (api, product) => {
 const sumProductsPrices = () => {
   const cartItems = getCartItems();
   const priceContainer = document.querySelector('.total-price');
-  const numberPrice = Number(priceContainer.innerText);
-  
-  [...cartItems].forEach(async ({ innerText }) => {
-    const treatedId = filterIdFromLi(innerText);
-    const itemDetails = await getApiData(searchSpecificProduct, treatedId);
-    const { price } = itemDetails;
-    priceContainer.innerText = numberPrice + price;
-  });
+  const sumPrices = [...cartItems].reduce((acc, { innerText }) => {
+    const divideByMoney = innerText.split('$');
+    const price = divideByMoney[1];
+    const numPrice = Number(price);
+    return acc + numPrice;
+  }, 0);
+
+  priceContainer.innerText = sumPrices;
 };
 
 const sendCartIdsToCloud = () => {
@@ -82,6 +82,7 @@ const sendCartIdsToCloud = () => {
 function cartItemClickListener(event) {
   // coloque seu código aqui
   event.target.remove();
+  sumProductsPrices();
   sendCartIdsToCloud();
 }
 
@@ -121,6 +122,7 @@ const loadCloudCart = () => {
       const filtredInfo = await filterInfoToSendToCart(productId);
       const cartItem = createCartItemElement(filtredInfo);
       cartContainer.append(cartItem);
+      sumProductsPrices();
     });
   }
 };
