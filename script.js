@@ -60,17 +60,11 @@ function cartItemClickListener(event) {
   // coloque seu código aqui
   const click = event.target;
   const total = JSON.parse(localStorage.getItem('total'));
-
   const subtrair = click.getAttribute('preco');
-
   const result = total - subtrair;
-
   const valorTotal = document.querySelector(totalString);
-
   valorTotal.innerHTML = result;
-
-localStorage.setItem('total', JSON.stringify(result));
-
+  localStorage.setItem('total', JSON.stringify(result));
   click.remove();
 }
 
