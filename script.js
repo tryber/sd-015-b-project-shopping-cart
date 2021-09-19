@@ -63,11 +63,10 @@ const getItem = () =>
       sectionItems.appendChild(createProductItemElement(item));
   }));
 
-const cartAddItem = (itemID) => {
-  const getItemID = getSkuFromProductItem(itemID);
+const addItemToCart = (item) => {
+  const getItemID = getSkuFromProductItem(item);
   requestApiItems(getItemID)
   .then(({ id, title, price }) => {
-      console.log(getItemID);
       const infoItem = {
         sku: id,
         name: title,
@@ -80,7 +79,7 @@ const cartAddItem = (itemID) => {
 
 const addEventButton = () => {
   const items = document.querySelectorAll('.item');
-  items.forEach((item) => item.lastChild.addEventListener('click', (() => cartAddItem(item))));
+  items.forEach((item) => item.lastChild.addEventListener('click', (() => addItemToCart(item))));
   return items;
 };
 
