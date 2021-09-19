@@ -1,3 +1,5 @@
+// endpoint: "https://api.mercadolibre.com/sites/MLB/search?q=$QUERY"
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
