@@ -55,3 +55,10 @@
   font-size: 16pt;
   text-align: center;
 }
+
+.loading {
+  position: fixed;
+  padding: 50px;
+  border-radius: 10%;
+  background-color: aquamarine;
+}

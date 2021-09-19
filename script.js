@@ -41,9 +41,25 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
+function createLoading() {
+  const container = document.querySelector('.container');
+  const div = document.createElement('div');
+  div.innerText = 'loading...';
+  div.className = 'loading';
+  container.appendChild(div);
+}
+
+function removeLoading() {
+  document.querySelector('.loading').remove();
+}
+
+let ab = setTimeout(() => console.log('sayro'), 3000);
+
 async function createItems() {
+  createLoading();
   const computadores = await requestComputadores();
   computadores.forEach((computador) => items.appendChild(createProductItemElement(computador)));
+  removeLoading();
 }
 
 function getSkuFromProductItem(item) {
