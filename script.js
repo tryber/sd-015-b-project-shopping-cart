@@ -1,3 +1,5 @@
+let totalPrice = 0;
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -13,8 +15,39 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerHTML;
 }
 
+const incrementPrice = (price) => {
+  const elementTotal = document.querySelector('.total-price');
+  totalPrice += price;
+  elementTotal.innerText = totalPrice;
+};
+
+const decrementPrice = (price) => {
+    const elementTotal = document.querySelector('.total-price');
+    totalPrice -= price;
+    elementTotal.innerText = totalPrice;
+};
+
+const getPriceToIncrement = (event) => {
+  const itemId = getSkuFromProductItem(event.target.parentElement);
+  fetch(`https://api.mercadolibre.com/items/${itemId}`)
+  .then((response) => response.json())
+  .then((product) => {
+    incrementPrice(product.price);
+  });
+};
+
+const getPriceToDecrement = (event) => {
+  const itemId = event.target.innerText.substring(5, 18);
+  fetch(`https://api.mercadolibre.com/items/${itemId}`)
+  .then((response) => response.json())
+  .then((product) => {
+    decrementPrice(product.price);
+  });
+};
+
 function cartItemClickListener(event) {
   event.target.remove();
+  getPriceToDecrement(event);
 }
 
 function createCartItemElement({ id, title, price }) {
@@ -43,14 +76,16 @@ function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
   e.className = className;
   e.innerText = innerText;
-  e.addEventListener('click', (event) => getProductID(event));
+  e.addEventListener('click', (event) => {
+    getProductID(event);
+    getPriceToIncrement(event);
+  });
   return e;
 }
 
 function createProductItemElement({ id, title, thumbnail }) {
   const section = document.createElement('section');
   section.className = 'item';
-
   section.appendChild(createCustomElement('span', 'item__sku', id));
   section.appendChild(createCustomElement('span', 'item__title', title));
   section.appendChild(createProductImageElement(thumbnail));
