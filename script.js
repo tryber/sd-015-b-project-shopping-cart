@@ -166,10 +166,10 @@ async function addItemIntoCart(element) {
 }
 
 function addListenersToBtns() {
-  const allItems = document.querySelectorAll('.item');
+  const allButtons = document.querySelectorAll('.item__add');
 
-  allItems.forEach((item) => item.lastChild.addEventListener('click', (() => {
-    addItemIntoCart(item);
+  allButtons.forEach((button) => button.addEventListener('click', (() => {
+    addItemIntoCart(button.parentElement);
   })));
 }
 
