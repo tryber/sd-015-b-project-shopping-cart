@@ -19,7 +19,9 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
-  section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
+  section.appendChild(
+    createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'),
+  );
   return section;
 }
 
@@ -29,9 +31,11 @@ function getSkuFromProductItem(item) {
 
 function cartItemClickListener(event) {
   // coloque seu código aqui
+  const click = event.target;
+  click.remove();
 }
 
-function createCartItemElement({ sku, name, salePrice }) {
+function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
@@ -48,11 +52,29 @@ const insertItems = (array) => {
 };
 
 const fetchProducts = async (product) => {
-  const response = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${product}`);
+  const response = await fetch(
+    `https://api.mercadolibre.com/sites/MLB/search?q=${product}`,
+  );
   const { results } = await response.json();
   insertItems(results);
-  };
+};
 
-window.onload = () => { 
-  fetchProducts('computador');
- };
+async function addToCart(event) {
+  const click = event.target;
+  const sectionDoProduto = click.parentNode;
+  const idDoProduto = sectionDoProduto.querySelector('.item__sku').innerText;
+  const response = await fetch(
+    `https://api.mercadolibre.com/items/${idDoProduto}`,
+  );
+  const apiDoProduto = await response.json();
+  const cart = document.querySelector('.cart__items');
+  const cartItem = createCartItemElement(apiDoProduto);
+  cart.appendChild(cartItem);
+}
+
+window.onload = () => {
+  fetchProducts('computador').then(() => {
+    const botoes = document.querySelectorAll('.item__add');
+    botoes.forEach((botao) => botao.addEventListener('click', addToCart));
+  });
+};
