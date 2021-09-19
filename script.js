@@ -77,8 +77,21 @@ const API_URL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
      const items = document.querySelectorAll('.item');
      items.forEach((item) => item.lastChild.addEventListener('click', () => fetchID(item)));
 }
+     /* const setItemLocal = () => {
+       const saveStorage = document.querySelector('.cart__Item').innerHTML;      
+       localStorage.setItem('chave', JSON.stringify(saveStorage)); const arrSave = [];
+
+     }; */    
+
+      function apagaTudo() {
+      const listaCompleta = document.querySelector('.cart__items');
+      listaCompleta.innerHTML = ' ';
+     }     
 
 window.onload = () => { 
   getProduct()
-  .then(() => botao());  
+  .then(() => botao());
+  const limparCarrinho = document.querySelector('.empty-cart');
+  limparCarrinho.addEventListener('click', apagaTudo);
+  console.log(limparCarrinho);
 };
