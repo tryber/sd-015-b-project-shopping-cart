@@ -167,12 +167,14 @@ async function addItemIntoCart(element) {
 
 function addListenersToBtns() {
   const allItems = document.querySelectorAll('.item');
-  const loading = document.querySelector('.loading');
 
   allItems.forEach((item) => item.lastChild.addEventListener('click', (() => {
     addItemIntoCart(item);
   })));
+}
 
+function removeLoadingMsg() {
+  const loading = document.querySelector('.loading');
   loading.remove();
 }
 
@@ -180,6 +182,7 @@ async function initialExecOrder(search) {
   try {
     await fillPageWithItems(search);
     addListenersToBtns();
+    removeLoadingMsg();
     calculeTotalAmount();
     listenerForBtnReset();
   } catch (error) {
