@@ -1,7 +1,16 @@
+const items = document.querySelector('.items');
+const cartItems = document.querySelector('.cart__items');
+
 async function requestComputadores() {
   const response = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
   const computadores = await response.json();
   return computadores.results;
+}
+
+async function requestItemById(id) {
+  const response = await fetch(`https://api.mercadolibre.com/items/${id}`);
+  const computador = await response.json();
+  return computador;
 }
 
 function createProductImageElement(imageSource) {
@@ -32,19 +41,26 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 
 async function createItems() {
   const computadores = await requestComputadores();
-  const items = document.querySelector('.items');
   computadores.forEach((computador) => items.appendChild(createProductItemElement(computador)));
-}  
+}
 
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-function cartItemClickListener(event) {
-  // coloque seu código aqui
+function saveCartLocal() {
+  localStorage.setItem('cart', cartItems.innerHTML);
 }
 
-function createCartItemElement({ sku, name, salePrice }) {
+function cartItemClickListener(event) {
+  // coloque seu código aqui
+  event.target.remove();
+  saveCartLocal();
+}
+
+cartItems.addEventListener('click', cartItemClickListener);
+
+function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
@@ -52,6 +68,27 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
+// cria os itens do carrinho de compra
+async function createCartItems(id) {
+  const itemById = await requestItemById(id);
+  cartItems.appendChild(createCartItemElement(itemById));
+  saveCartLocal();
+}
+
+// adiciona item ao carrinho
+items.addEventListener('click', (event) => {
+  const ev = event.target;
+  if (ev.classList.contains('item__add')) {
+    const parentBtn = ev.parentElement;
+    createCartItems(getSkuFromProductItem(parentBtn));
+  }
+});
+
+function loadCartLocal() {
+  cartItems.innerHTML = localStorage.getItem('cart');
+}
+
 window.onload = () => { 
   createItems();
+  loadCartLocal();
  };
