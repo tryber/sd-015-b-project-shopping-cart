@@ -58,11 +58,7 @@ async function addProductCart() {
   const url = `https://api.mercadolibre.com/items/${productId}`;
   const myFetch = await fetch(url);
   const searchFetch = await myFetch.json();
-  const item = { 
-    sku: searchFetch.id, 
-    name: searchFetch.title, 
-    salePrice: searchFetch.price,
-  };
+  const item = { sku: searchFetch.id, name: searchFetch.title, salePrice: searchFetch.price };
   const productToCart = createCartItemElement(item);
   const cart = document.querySelector(queryCart);
   cart.appendChild(productToCart);
