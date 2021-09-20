@@ -3,13 +3,18 @@ const cartItems = document.querySelector('.cart__items');
 const totalValueCart = document.createElement('span');
 const cart = document.querySelector('.cart');
 cartItems.insertAdjacentElement('afterend', totalValueCart);
+
 totalValueCart.innerText = '00.00';
 totalValueCart.className = 'total-price';
+
 const loadingText = document.createElement('span');
+
 loadingText.innerText = '...Loading';
 loadingText.className = 'loading';
 loadingText.style.color = 'blue';
 loadingText.style.display = 'block';
+
+const stringTotalCart = 'total-cart';
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -74,6 +79,7 @@ function cartItemClickListener(event) {
   const numberToSub = parseFloat(sentence[1]);
   totalPriceReturn -= numberToSub;
   totalValueCart.innerText = totalPriceReturn;
+  window.localStorage.setItem(stringTotalCart, totalPriceReturn);
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -87,6 +93,7 @@ function createCartItemElement({ sku, name, salePrice }) {
 function sumValue(itemAdd) {
   const { salePrice } = itemAdd;
   totalPriceReturn += salePrice;
+  window.localStorage.setItem(stringTotalCart, totalPriceReturn);
   return totalPriceReturn;
 }
 
@@ -119,7 +126,7 @@ function addToCart(event) {
 function emptyCart() {
   cartItems.innerHTML = '';
   totalValueCart.innerText = '00.00';
-  totalPriceReturn = 0;
+  totalPriceReturn = window.localStorage.setItem(stringTotalCart, 0);
   window.localStorage.setItem('product', cartItems.innerHTML);
 }
 
@@ -127,6 +134,8 @@ function initialize() {
   const localStorageCart = window.localStorage.getItem('product');
   cartItems.innerHTML = localStorageCart;
   const li = document.querySelectorAll('li');
+  const previousTotalCart = window.localStorage.getItem(stringTotalCart);
+  totalValueCart.innerText = previousTotalCart;
   li.forEach((element) => { element.addEventListener('click', cartItemClickListener); });
   fetchApiItems()
   .catch(() => console.error('Could not fetch APIs'))
