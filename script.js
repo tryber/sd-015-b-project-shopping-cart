@@ -24,7 +24,41 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
-async function getProducts() {
+function createCartItemElement({ sku, name, salePrice }) {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  // li.addEventListener('click', cartItemClickListener);
+  return li;
+}
+
+function getProductId(element) {
+  const sectionItem = element.parentElement;
+  return sectionItem.firstElementChild.innerText;
+}
+
+function getProductByIdFromEndpoint(event) {
+  const button = event.target;
+  const itemId = getProductId(button);
+
+  fetch(`https://api.mercadolibre.com/items/${itemId}`)
+    .then((response) => response.json())
+    .then((result) => {
+      const cartItem = document.querySelector('.cart__items');
+      cartItem.appendChild(createCartItemElement(
+        { sku: result.id, name: result.title, salePrice: result.price },
+      ));
+    });
+}
+
+async function handleItemsListButtonEventAdd() {
+  const itemsListButtons = document.querySelectorAll('.item__add');
+  itemsListButtons.forEach((button) => {
+    button.addEventListener('click', getProductByIdFromEndpoint);
+  });
+}
+
+async function getProductsFromEndpoint() {
   fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
     .then((response) => response.json())
     .then((info) => info.results)
@@ -33,7 +67,8 @@ async function getProducts() {
       item.appendChild(createProductItemElement(
         { sku: itemOnSale.id, name: itemOnSale.title, image: itemOnSale.thumbnail },
       ));
-    }));
+    }))
+    .then(() => handleItemsListButtonEventAdd());
 }
 
 function getSkuFromProductItem(item) {
@@ -44,14 +79,10 @@ function cartItemClickListener(event) {
   // coloque seu código aqui
 }
 
-function createCartItemElement({ sku, name, salePrice }) {
-  const li = document.createElement('li');
-  li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
-  return li;
+function handleAll() {
+  getProductsFromEndpoint();
 }
 
 window.onload = () => { 
-  getProducts();
+  handleAll();
 };
