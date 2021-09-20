@@ -1,4 +1,5 @@
 const ol = document.querySelector('.cart__items');
+const loading = document.querySelector('.loading');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -75,6 +76,7 @@ const requestComputer = async () => {
   const fetchComputer = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
   const computer = await fetchComputer.json();
   const result = computer.results;
+  loading.remove();
   result.forEach(({ id, title, thumbnail }) => {
     const productElementItem = createProductItemElement({ 
       sku: id, 
