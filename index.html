@@ -24,25 +24,27 @@
 
     </header>
     
-    <section id="section-btn">
-      <button id="cart-btn">🛒</button>
-    </section>
+    <input type="checkbox" id="cart-btn">
+    <label for="cart-btn">
+      <span id="cart-btn-text">🛒</span>
+    </label>
+
+    <nav class="cart">
+      <span class="cart__title">Carrinho de compras</span>
+      <section id="price-container">
+        <div class="container-amount">
+          <span class="total-price"></span>
+        </div>
+      </section>
+      <button class="empty-cart">Esvaziar carrinho</button>
+      <ol class="cart__items"></ol>
+    </nav>
     
     <section class="container">
       <div class="loading">
         <p>Loading...</p>
       </div>
       <section class="items"></section>
-      <section class="cart" style="display: none;">
-        <span class="cart__title">Carrinho de compras</span>
-        <section id="price-container">
-          <div class="container-amount">
-            <span class="total-price"></span>
-          </div>
-        </section>
-        <button class="empty-cart">Esvaziar carrinho</button>
-        <ol class="cart__items"></ol>
-      </section>
     </section>
   </body>
 </html>

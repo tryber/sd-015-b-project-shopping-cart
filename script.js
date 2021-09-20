@@ -98,15 +98,13 @@ function createCartItemElement({ name, salePrice, picture }) {
   const img = document.createElement('img');
   const div = document.createElement('div');
   const p = document.createElement('p');
-
   div.classList.add('cart__item__container');
   img.classList.add('cart__item__picture');
   img.src = picture;
   p.className = 'cart__item__text';
   p.innerText = `${name}\n${salePrice.toLocaleString('pt-BR',
-    { style: 'currency', currency: 'BRL' })}`;
-  div.append(img);
-  div.append(p);
+  { style: 'currency', currency: 'BRL' })}`;
+  div.append(img, p);
   li.className = 'cart__item';
   li.append(div);
   li.addEventListener('click', cartItemClickListener);
@@ -217,4 +215,5 @@ window.onload = () => {
       initialExecOrder(getSearchValue());
     }
   });
+
 };
