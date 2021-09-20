@@ -1,34 +1,58 @@
 const APIMercadoLibre = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
 const APIItems = 'https://api.mercadolibre.com/items/';
+const olCartItems = '.cart__items';
+const spanTotalPrice = '.total-price';
+let sum = 0;
 
 // Requisito 4 - Carregue o carrinho de compras através do LocalStorage ao iniciar a página
 
 const saveCart = () => {
-  const cartItems = document.querySelector('.cart__items');
+  const cartItems = document.querySelector(olCartItems);
   localStorage.setItem('cartItems', cartItems.innerHTML);
 };
 
-const getCart = () => {
-  document.querySelector('.cart__items')
-    .innerHTML = localStorage.getItem('cartItems');
+const saveTotalPrice = () => { // Adição requisito 5
+  const span = document.querySelector(spanTotalPrice);
+  localStorage.setItem('totalPrice', span.innerHTML);
 };
 
-const cartAddEventListener = () => {
-  const listCart = document.querySelectorAll('.cart__item');
-  listCart.forEach((li) => {
-    li.addEventListener('click', (event) => {
-      event.target.remove();
-      saveCart();
-    });
-  });
+const getCart = () => {
+  document.querySelector(olCartItems)
+    .innerHTML = localStorage.getItem('cartItems');
+  // Adição requisito 5
+  document.querySelector('.total-price')
+    .innerHTML = localStorage.getItem('totalPrice');
 };
 
 // Requisito 3 - Remova o item do carrinho de compras ao clicar nele
 
 function cartItemClickListener(event) {
+  const span = document.querySelector(spanTotalPrice);
+  const price = parseFloat(event.target.innerHTML.split('$')[1], 10);
   event.target.remove();
+  sum -= price;
+  span.innerHTML = sum;
+  saveTotalPrice();
   saveCart();
 }
+
+// Requisito 4 - Carregue o carrinho de compras através do LocalStorage ao iniciar a página
+const cartAddEventListener = () => {
+  const listCart = document.querySelectorAll('.cart__item');
+  listCart.forEach((li) => {
+    li.addEventListener('click', (event) => {
+      cartItemClickListener(event);
+    });
+  });
+};
+
+// Requisito 5 - Some o valor total dos itens do carrinho de compras
+
+const cartTotalPrice = (infoItem) => {
+  const span = document.querySelector(spanTotalPrice);
+  sum += infoItem.salePrice;
+  span.innerHTML = sum;
+};
 
 // Requisito 2 - Adicione o produto ao carrinho de compras
 
@@ -37,9 +61,11 @@ const requestApiItems = async (itemID) => {
   return response.json();
 };
 
+/* 
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
-}
+} 
+*/
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
@@ -57,9 +83,11 @@ const addItemToCart = (itemID) => {
         name: title,
         salePrice: price,
       };
-      document.querySelector('.cart__items')
+      document.querySelector(olCartItems)
         .appendChild(createCartItemElement(infoItem));
-      saveCart();
+      cartTotalPrice(infoItem); // Requisito 5
+      saveCart(); // Requisito 4
+      saveTotalPrice();
     });
 };
 
@@ -82,7 +110,6 @@ function createCustomElement(element, className, innerText) {
 function createProductItemElement({ sku, name, image }) {
   const section = document.createElement('section');
   section.className = 'item';
-
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
@@ -112,8 +139,12 @@ const productList = async () => {
   });
 };
 
-window.onload = () => {
-  productList();
+window.onload = async () => {
+  await productList();
+  const getTotalPrice = localStorage.getItem('totalPrice');
+  if (getTotalPrice) {
+    sum = parseFloat(getTotalPrice);
+  }
   getCart();
   cartAddEventListener();
 };
