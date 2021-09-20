@@ -1,11 +1,8 @@
 .container {
   display: flex;
+  flex-direction: row;
   justify-content: space-around;
   width: 100%;
-}
-
-.loading {
-  display: none;
 }
 
 .items {

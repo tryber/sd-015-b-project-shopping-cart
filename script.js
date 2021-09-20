@@ -1,11 +1,14 @@
 const showLoading = () => {
+  if (document.querySelector('.loading')) return;
   const loading = document.createElement('span');
   loading.classList.add('loading');
+  loading.style.textAlign = 'center';
   loading.innerText = 'Loading...';
   loading.style.display = 'block';
-  document.querySelector('.container').appendChild(loading);
+  document.body.insertBefore(loading, document.querySelector('.container'));
 };
 const hideLoading = () => {
+  if (!document.querySelector('.loading')) return;
   const loading = document.querySelector('.loading');
   loading.remove();
 };
@@ -110,6 +113,9 @@ const createCartItemElement = ({ sku, name, salePrice }) => {
 const insertItemInCart = async (itemSku) => {
   const item = await getProductBySku(itemSku);
   const cartItem = createCartItemElement(item);
+  const price = document.createAttribute('price');
+  price.value = item.salePrice;
+  cartItem.setAttributeNode(price);
   document.querySelector('.cart__items').appendChild(cartItem);
   updateTotal();
 };
