@@ -116,14 +116,18 @@ function createProductItemElement({ id, title, thumbnail }) {
 }
 
 const getProductsFromAPI = (product = 'computador') => {
+  const loading = createCustomElement('p', 'loading', 'carregando...');
+  const section = document.querySelector('.items');
+  section.appendChild(loading);
   const API_URL = `https://api.mercadolibre.com/sites/MLB/search?q=${product}`;
   fetch(API_URL)
   .then((response) => response.json())
   .then((data) => {
+    section.removeChild(loading);
     const products = data.results;
     products.forEach((productItem) => {
       const item = createProductItemElement(productItem);
-      document.querySelector('.items').appendChild(item);
+      section.appendChild(item);
     });
   })
   .catch(() => alert('Error - Product is not found!'));
