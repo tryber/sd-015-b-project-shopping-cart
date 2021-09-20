@@ -112,7 +112,11 @@ function requestProductAsync() {
     .then((response) => response.json())
     .then((dados) => dados.results)
     .then((dados) => createProductOjbect(dados))
-    .then(() => handleAddBtn());
+    .then(() => handleAddBtn())
+    .then(() => {
+      const loading = document.querySelector('.loading');
+      loading.remove();
+    });
 }
 
 function loadItems() {
