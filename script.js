@@ -91,8 +91,17 @@ function removeLocal() {
   });
 }
 
+function limparTudo() {
+  const botaoLimpar = document.querySelector('.empty-cart');
+  botaoLimpar.addEventListener('click', function () {
+    const carrinho = document.getElementById('cart__item');
+    carrinho.innerHTML = '';
+  });
+}
+
 window.onload = () => {
   criaItens();
   puxandoDados();
   removeLocal();
+  limparTudo();
 };
