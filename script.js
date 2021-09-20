@@ -3,8 +3,6 @@ const API_URL = `https://api.mercadolibre.com/sites/MLB/search?q=${Query}`;
 
 const cartList = document.querySelector('.cart__items');
 const sumPlace = document.querySelector('.total-price');
-console.log(sumPlace);
-const cartPrice = [];
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -33,20 +31,9 @@ function createProductItemElement({ sku, name, image }) {
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
-// requisito 3
-// function cartItemClickListener() {
-//  this.remove();
-//  sumCart();
-// }
-// requisito 5
-// function sumCart(priceItem) {
-//    const sum = priceItem.reduce((acc, curr) => acc + curr);
-//    sumPlace.innerText = `${sum}`;
-// }
 
 function sumCart() {
   const arrayCartItems = [...document.querySelectorAll('.cart__item')];
-  console.log(arrayCartItems);
   const arrayPrice = arrayCartItems.map((cartItem) => {
     const resultSplited = cartItem.innerText.split('$')[1];
     const numberConvert = parseFloat(resultSplited, 10);
@@ -55,11 +42,23 @@ function sumCart() {
   const finalSum = arrayPrice.reduce((acc, curr) => acc + curr, 0);
   sumPlace.innerText = `${finalSum}`;
 }
-
-function cartItemClickListener() {
-  this.remove();
+function saveLocalStorage() {
+  const olCartItem = document.querySelector('.cart__items').innerHTML;
+  console.log(olCartItem);
+  localStorage.setItem('cartItems', JSON.stringify(olCartItem));
+}
+function cartItemClickListener(event) {
+  event.target.remove();
   sumCart();
+  saveLocalStorage();
  }
+
+function getSaveLocalStorage() {
+  const savedItems = JSON.parse(localStorage.getItem('cartItems'));
+  const olCartItem = document.querySelector('ol');
+  olCartItem.innerHTML = savedItems;
+  olCartItem.addEventListener('click', cartItemClickListener);
+}
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
@@ -81,7 +80,8 @@ const startButtonAddCart = () => {
         { sku: data.id, name: data.title, salePrice: data.price },
       ))
       .then((cartItem) => cartList.appendChild(cartItem))
-      .then(() => sumCart());
+      .then(() => sumCart())
+      .then(() => saveLocalStorage());
   }));
 };
 // requisito 6
@@ -114,8 +114,8 @@ async function callApi(url) {
       image: thumbnail,
      };
      const sessaoItems = document.querySelector('.items');
-     const produtoCriado = createProductItemElement(computerObj);
-     sessaoItems.appendChild(produtoCriado);
+     const finalProduct = createProductItemElement(computerObj);
+     sessaoItems.appendChild(finalProduct);
   }));
 }
 
@@ -124,5 +124,7 @@ window.onload = () => {
   callApi(API_URL)
   .then(() => removeClassList())
   .then(() => startButtonAddCart())
-  .then(() => clearCartItems());
+  .then(() => clearCartItems())
+  .then(() => getSaveLocalStorage())
+  .then(() => sumCart());
 };
