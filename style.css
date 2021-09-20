@@ -55,3 +55,12 @@
   font-size: 16pt;
   text-align: center;
 }
+
+.cart__item {
+  user-select: none;
+  cursor: pointer;
+}
+
+.cart__item:hover {
+  color: green;
+}
