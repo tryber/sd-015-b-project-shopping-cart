@@ -1,6 +1,4 @@
 const urlApi = 'https://api.mercadolibre.com/sites/MLB';
-// elementos do HTML que não rodam pq o script no index é chamado antes do body.
-// const totalPrice = document.querySelector('.total-price');
 
 function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
@@ -8,10 +6,23 @@ function createCustomElement(element, className, innerText) {
   e.innerText = innerText;
   return e;
 }
-function cartItemClickListener(event) {
-  // console.log(event) //- daqui se ve que retorna o event.target que tem target: <li class="cart__item">
-  event.target.remove(); // aqui pega o evento selecionado e remove ele!!!! 
+
+function totalPrice(price, status) {
+  const priceTotal = document.querySelector('.total-price');
+  let valor = parseFloat(priceTotal.innerText);
+  if (status === 'adicionado') valor += price;
+  if (status === 'removido') valor -= price;
+  if (status === 'removeTudo') valor = 0;
+  priceTotal.innerText = valor;
 }
+
+function cartItemClickListener(event) {
+  // console.log(event); // daqui se ve que retorna o event.target que tem target: <li class="cart__item">
+  event.target.remove(); // aqui pega o evento selecionado e remove ele!!!! 
+  const salePrice = parseFloat(event.target.innerText.split('$').pop());
+  totalPrice(salePrice, 'removido');
+}
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -38,7 +49,9 @@ async function addCarrinho(sku) {
   const carrinho = createCartItemElement({ sku, name, salePrice }); // função safada que retorna feião, pq era melhor o nome primeiro. 
   // console.log(carrinho)
   document.querySelector('.cart__items').appendChild(carrinho); // ai 'apenda' o item no carrinho, que é como se adiciona.
+  totalPrice(salePrice, 'adicionado');
 }
+
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   // as variáveis sku, no código fornecido, se referem aos campos id retornados pela API. o tile e thumbnail eu fiz com a ajuda dos colegas - não testado ainda.
     const section = document.createElement('section');
@@ -67,7 +80,7 @@ async function getComputer() {
     });
     document.querySelector('.loading').remove();
 }
-  
+
 // function getSkuFromProductItem(item) {
 // return item.querySelector('span.item__sku').innerText;}
 
@@ -76,6 +89,7 @@ function apagarTudao() {
   // console.log(cartItems.innerHTML);
   cartItems.innerHTML = ''; // gambiarra que substitui tudo q tá no cart e subistitiu por vazio...
   // innerhtml são os componentes da tag selecionada.
+  totalPrice(0, 'removeTudo');
 }
 
 window.onload = async () => {
