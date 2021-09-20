@@ -34,6 +34,7 @@ async function sumItems(param) {
     totalPrice.innerText = acc + totalValue;
     return acc + totalValue;
   }, 0);
+  return calculaTotal;
 }
 
 function createProductItemElement({ sku, name, image }) {
@@ -115,7 +116,7 @@ function limpaLista() {
       produto.remove();
     });
     moneyValue.innerText = 0;
-    setTimeout(function(){ sumItems(); }, 1000);
+    setTimeout(function() { sumItems(); }, 1000);
   });  
 }
 
