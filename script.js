@@ -17,14 +17,17 @@ function createCustomElement(element, className, innerText) {
   e.innerText = innerText;
   return e;
 }
-function sumItems(price) {
-  // Somar Todos os Itens
-  // Percorrer o Array do carrinho de compras,
-  // verificando o valor de cada Item e somando, a cada iteração
-  const totalPrice = document.querySelector('.total-price');
-  
+
+function sumItems(param) {
+  const totalPrice = document.querySelector('.total-price'); // Verifica o Preço
+  if (totalPrice === 0) { // Se for 0
+    totalPrice.innerHTML = param; // Altera o valor do preço para o de param
+  } else { // Senão
+    // Converte a string para número e soma o param
+    totalPrice.innerHTML = parseFloat(totalPrice.innerHTML) + param;
+  }
+  return totalPrice.innerHTML; // Retorna a nova variável atribuída
 }
-sumItems();
 
 function createProductItemElement({ sku, name, image }) {
   // Recebe os parâmetros sku, name & image do JSON da API
@@ -57,7 +60,7 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
-  li.addEventListener('click', sumItems());
+  // li.addEventListener('click', sumItems());
   // Chama função saveItems
   return li;
 }
@@ -76,7 +79,7 @@ function criarElementos(dados) {
       const itensCarrinho = document.querySelector('.cart__items');
       const novaLi = createCartItemElement(dadosRecebidos);
       itensCarrinho.appendChild(novaLi);
-      sumItems();
+      sumItems(price);
     });
     itensContainer.appendChild(criaElemento);
     });
