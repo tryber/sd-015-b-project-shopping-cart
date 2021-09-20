@@ -1,4 +1,5 @@
 const OlClass = '.cart__items';
+const constainerClass = '.container';
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -9,8 +10,11 @@ function createProductImageElement(imageSource) {
 
 function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
+  const span = document.createElement('span');
+
   e.className = className;
-  e.innerText = innerText;
+  span.innerText = innerText;
+  e.append(span);
   return e;
 }
 
@@ -116,13 +120,21 @@ function getSearchValue() {
 }
 
 function resetPageItems() {
-  const container = document.querySelector('.container');
+  const container = document.querySelector(constainerClass);
   const items = document.querySelector('.items');
   const section = document.createElement('section');
 
   items.remove();
   section.classList.add('items');
   container.append(section);
+}
+
+function removeLoadingMsg() {
+  const loading = document.querySelector('.loading');
+  if (loading) {
+    loading.remove();
+    document.querySelector(constainerClass).style.display = 'flex';
+  }
 }
 
 function checkApiSearch(search) {
@@ -133,6 +145,9 @@ function checkApiSearch(search) {
 
 async function fillPageWithItems(search) {
   try {
+    const div = document.createElement('div');
+    div.classList.add('lds-hourglass', 'loading');
+    document.body.insertBefore(div, document.querySelector(constainerClass));
     const response = await checkApiSearch(search);
     const data = await response.json();
     const arrData = data.results.map(async ({ id, title, price }) => {
@@ -144,11 +159,9 @@ async function fillPageWithItems(search) {
       const itemElement = createProductItemElement(output);
       sectionItems.append(itemElement);
     });
-
     await Promise.all(arrData);
-  } catch (error) {
-    console.error(error);
-  }
+    removeLoadingMsg();
+  } catch (error) { console.error(error); }
 }
 
 function checkApiItems(element) {
@@ -181,16 +194,10 @@ function addListenersToBtns() {
   })));
 }
 
-function removeLoadingMsg() {
-  const loading = document.querySelector('.loading');
-  if (loading) loading.remove();
-}
-
 async function initialExecOrder(search) {
   try {
     await fillPageWithItems(search);
     addListenersToBtns();
-    removeLoadingMsg();
     calculeTotalAmount();
     listenerForBtnReset();
   } catch (error) {
