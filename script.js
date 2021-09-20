@@ -86,7 +86,7 @@ function removeLoading() {
   const parentNode = document.querySelector('.items');
   // console.log(parentNode);
   const textToRemove = document.querySelector('#text-loading');
-  const {firstChild} = parentNode;
+  const { firstChild } = parentNode;
   // console.log(firstChild);
   firstChild.removeChild(textToRemove);
   // document.querySelector()
