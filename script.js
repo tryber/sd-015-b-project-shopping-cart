@@ -29,6 +29,10 @@ async function sumItems(param) {
   return totalPrice.innerHTML; // Retorna a nova variável atribuída
 }
 
+asycn function subItems(param) {
+  return 0;
+}
+
 function createProductItemElement({ sku, name, image }) {
   // Recebe os parâmetros sku, name & image do JSON da API
   const section = document.createElement('section');
