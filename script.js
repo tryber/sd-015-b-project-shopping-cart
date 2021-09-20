@@ -29,7 +29,7 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
+
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -41,21 +41,59 @@ function createCartItemElement({ sku, name, salePrice }) {
 }
 
 async function requestProduct() {
+  const response = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
   try {
-    const response = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
     const items = await response.json();
     items.results.forEach(({ id, thumbnail, title }) => {
-      const itensParameter = { sku: id, name: title, image: thumbnail };
+      const itensObjects = { sku: id, name: title, image: thumbnail };
       const classItems = document.querySelector('.items');
-      const element = createProductItemElement(itensParameter);
+      const element = createProductItemElement(itensObjects);
       classItems.appendChild(element);
+      // cardButton();
+      // console.log(itensObjects);
     });
-    // console.log(items.results);
+  } catch (error) {
+    console.log('Error requestProduct');
+  }
+}
+
+async function requestCartProduct(idItem) {
+  const itemID = getSkuFromProductItem(idItem);
+  try {
+    const response = await fetch(`https://api.mercadolibre.com/items/${itemID}`);
+    const { id, title, price } = await response.json();
+
+    const itensObject = { sku: id, name: title, salePrice: price };
+  //  console.log(itensObject);
+
+    const liElement = createCartItemElement(itensObject);
+    const olElement = document.querySelector('.cart__items');
+    olElement.append(liElement);
   } catch (error) {
     console.log(error);
   }
 }
+function cardButton() {
+  const buttons = document.querySelectorAll('.item__add');
+  console.log(buttons);
+  buttons.forEach((but) => but.addEventListener('click', () => {
+    requestCartProduct(but.parentElement);
+  }));
+}
+
+const requestsAsincronos = async () => {
+  try {
+    await requestProduct();
+    cardButton();
+    await requestCartProduct();
+  } catch (error) {
+    console.log('Erro na função async');
+  }
+};
 
 window.onload = () => { 
-  requestProduct();
+  requestsAsincronos();
 };
+
+// const [...nodeListArray] = nodeList;
+// nodeListArray.map
