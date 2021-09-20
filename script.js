@@ -1,3 +1,4 @@
+const cart = '.cart__items';
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -15,24 +16,26 @@ function createCustomElement(element, className, innerText) {
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
+// FONTE: Consultei o repositório do Nicolas Franzolin para resolver a questao 4, utilizei sua função loadLocalStorage(), apenas adaptei a mesma de arrow para função padrão
+// Link: https://github.com/tryber/sd-015-b-project-shopping-cart/blob/nicolas-franzolin-shopping-cart/script.js
 
-function attCart() {
-  const cart = document.querySelector('.cart__items');
-  return cart;
+function saveLocalStorage() {
+  const cartList = document.querySelector(cart);
+  localStorage.setItem('products', cartList.innerHTML);
 }
 
-function cartItemClickListener() {
-    const cart = attCart();
-    const li = this;
-    cart.removeChild(li);
+function cartItemClickListener(event) {
+    event.target.remove();
+    saveLocalStorage();
 }
 
 function clearCart() {
-  const cart = attCart();
+  const cartList = document.querySelector(cart);
   const itens = document.querySelectorAll('.cart__item');
   itens.forEach((element) => {
-    cart.removeChild(element);
+    cartList.removeChild(element);
   });
+  saveLocalStorage();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -43,6 +46,13 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
+function loadLocalStorage() {
+    const cartProductList = document.querySelector(cart);
+    const loadingLS = localStorage.getItem('products');
+    cartProductList.innerHTML = loadingLS;
+    cartProductList.addEventListener('click', cartItemClickListener);
+}
+
 function addToCart() {
   const id = getSkuFromProductItem(this);
 
@@ -50,10 +60,13 @@ function addToCart() {
   fetch(itemAPI)
   .then((response) => response.json())
   .then(({ title, price }) => {
-    const cart = document.querySelector('.cart__items');
-    cart.appendChild(createCartItemElement(
+    const cartList = document.querySelector(cart);
+    cartList.appendChild(createCartItemElement(
       { sku: id, name: title, salePrice: price },
       ));
+    })
+    .then(() => {
+      saveLocalStorage();
     })
     .catch((erro) => console
     .error(`${erro}: Possivelmente erro no link da API`));
@@ -91,7 +104,7 @@ function findItems(product) {
     .error(`${erro}: Possivelmente erro no link da API`));
   }
 
-  async function loadScreen() {
+async function loadScreen() {
     const loadText = document.createElement('h1');
     const itemsContainer = document.querySelector('.items');
     loadText.className = 'loading';
@@ -108,5 +121,6 @@ function findItems(product) {
   const clearButton = document.querySelector('.empty-cart');
 
     loadScreen();
+    loadLocalStorage();
     clearButton.addEventListener('click', clearCart);
 };
