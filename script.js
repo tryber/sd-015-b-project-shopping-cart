@@ -29,10 +29,6 @@ async function sumItems(param) {
   return totalPrice.innerHTML; // Retorna a nova variável atribuída
 }
 
-async function subItems(param) {
-  return 0;
-}
-
 function createProductItemElement({ sku, name, image }) {
   // Recebe os parâmetros sku, name & image do JSON da API
   const section = document.createElement('section');
@@ -51,11 +47,10 @@ function getSkuFromProductItem(item) {
 
 function cartItemClickListener(event) {
   // coloque seu código aqui
-  // Adiciona evento de click para item no Carrinho
-  // Quando o item do carrinho for clickado, o mesmo deve ser removido
-  // console.log('That\'s working Fine!');
+  // QUando um elemento for removido, à funçao sumItems deve ser chamada com
+  // o valor do elemento multiplicado por -1, para aí subtrair o valor
+  sumItems();
   this.remove();
-  subItems();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -64,7 +59,6 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
-  // li.addEventListener('click', sumItems());
   // Chama função saveItems
   return li;
 }
