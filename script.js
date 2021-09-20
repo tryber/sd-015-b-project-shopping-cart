@@ -57,6 +57,8 @@ function createCartTotal() {
   section.appendChild(createCustomElement('p', 'total-price', `Preço total: $ ${cartTotal}`));
 }
 
+const test = document.querySelector('.loading');
+console.log(test);
 function generateList() {
    const listData = fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
     .then((response) => response.json())
@@ -77,7 +79,7 @@ function generateList() {
 function increaseCart(item) {
   const itemId = getSkuFromProductItem(item);
   fetch(`https://api.mercadolibre.com/items/${itemId}`)
-  .then((response) => response.json())
+  .then((response) => response.json()
   .then(({ id, title, price }) => {
     const itemObject = {
       sku: id,
@@ -88,9 +90,9 @@ function increaseCart(item) {
   addItem.append(createCartItemElement(itemObject));
   cartTotal += itemObject.salePrice;
   cartSum();
-  });
-  }
-
+  }));
+} 
+  
   function clearCart() {
     const fullCart = document.querySelectorAll('.cart__item');
     fullCart.forEach((element) => {
@@ -103,11 +105,13 @@ function increaseCart(item) {
 function prepareButtons() {
   const allItems = document.querySelectorAll('.item');
   const removeItems = document.querySelector('.empty-cart');
+  const loading = document.querySelector('.loading');
   allItems.forEach((item) => {
     const button = item.querySelector('.item__add');
     button.addEventListener('click', () => increaseCart(item));
   });
   removeItems.addEventListener('click', clearCart);
+  loading.remove();
 }
 
 function load() {

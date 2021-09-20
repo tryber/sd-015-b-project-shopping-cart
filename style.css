@@ -4,6 +4,12 @@
   width: 100%;
 }
 
+.loading{
+  display: flex;
+  background-color: red;
+  padding: 100px
+}
+
 .items {
   display: flex;
   flex-basis: 70%;
