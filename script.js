@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/no-duplicate-string */
 /* eslint-disable sonarjs/no-use-of-empty-return-value */
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
