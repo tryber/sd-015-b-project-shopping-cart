@@ -37,6 +37,7 @@ async function addItemsCart(element) {
   const createCartItem = createCartItemElement({ id: resultId.id,
     name: resultId.title,
     salePrice: resultId.price });
+    console.log(createCartItem);
     const olCart = document.getElementsByClassName('cart__items');
     olCart[0].appendChild(createCartItem);
     saveLocalStorage();
@@ -66,6 +67,8 @@ function createProductItemElement({ id, name, image }) {
 async function requestAPIComputer() {
   const fetchAPI = await fetch(URL_API);
   const result = await fetchAPI.json();
+  const loading = document.querySelector('.loading');
+  loading.remove();
   return result;
 }
 
@@ -88,7 +91,6 @@ function clearAll() {
 function initCart() {
   if (localStorage.getItem('savedLocalStorage')) {
     const cartItemSaved = JSON.parse(localStorage.getItem('savedLocalStorage'));
-    console.log(cartItemSaved);
     cartItemSaved.forEach((evento) => {
       const ol = document.querySelector('.cart__items');
       const li = document.createElement('li');
@@ -100,16 +102,16 @@ function initCart() {
   }
 }
 
-function finalPrice() {
-  
-}
+// function finalPrice() {
+//   const price = document.querySelector('.total-price');
+//   price.innerHTML = `Preço final: ${}`;
+// }
 window.onload = async () => { 
   try {
     const product = await requestAPIComputer();
     addProduct(product);
     clearAll();
     initCart();
-    finalPrice();
   } catch (error) {
     console.log(error);
   }
