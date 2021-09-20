@@ -103,8 +103,15 @@ function handleClick() {
   buttons.forEach((button) => button.addEventListener('click', addToCart));
 }
 
+function removeLoading() {
+  const loading = document.querySelector('.loading');
+
+  loading.remove();
+}
+
 window.onload = async () => {
   await productList();
+  removeLoading();
   handleClick();
   findId();
   getItems();
