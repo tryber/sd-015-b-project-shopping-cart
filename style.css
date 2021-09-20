@@ -60,3 +60,7 @@
 .cart .total-price-span {
   text-align: center;
 }
+
+.cart .price {
+  display: none;
+}

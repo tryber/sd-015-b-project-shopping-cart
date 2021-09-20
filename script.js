@@ -79,8 +79,8 @@ const updateTotal = async () => {
 const clearCart = () => {
   const cart = document.querySelector('.cart__items');
   cart.innerHTML = '';
-  saveCartOnLocalStorage();
   updateTotal();
+  saveCartOnLocalStorage();
 };
 
 const createImageElement = (imageSource) => {
@@ -104,8 +104,8 @@ const createCartItemElement = ({ sku, name, salePrice }) => {
   li.id = sku;
   li.addEventListener('click', (event) => {
     event.target.remove();
-    saveCartOnLocalStorage();
     updateTotal();
+    saveCartOnLocalStorage();
   });
   return li;
 };
@@ -113,11 +113,10 @@ const createCartItemElement = ({ sku, name, salePrice }) => {
 const insertItemInCart = async (itemSku) => {
   const item = await getProductBySku(itemSku);
   const cartItem = createCartItemElement(item);
-  const price = document.createAttribute('price');
-  price.value = item.salePrice;
-  cartItem.setAttributeNode(price);
-  document.querySelector('.cart__items').appendChild(cartItem);
+  const cart = document.querySelector('.cart__items');
+  cart.appendChild(cartItem);
   updateTotal();
+  saveCartOnLocalStorage();
 };
 
 const createProductItemElement = ({ sku, name, image }) => {
@@ -132,11 +131,17 @@ const createProductItemElement = ({ sku, name, image }) => {
   addItemBtn.addEventListener('click', async (event) => {
     const itemSku = event.target.parentElement.querySelector('span.item__sku').innerText;
     await insertItemInCart(itemSku);
-    saveCartOnLocalStorage();
   });
 
   itemSection.appendChild(addItemBtn);
   return itemSection;
+};
+
+const renderPreviousCartItems = (previousCart) => {
+  const previousItemsSkus = JSON.parse(previousCart);
+  previousItemsSkus.forEach((itemSku) => {
+    insertItemInCart(itemSku);
+  });
 };
 
 const renderItemsList = async (product) => {
@@ -144,13 +149,6 @@ const renderItemsList = async (product) => {
   const allItemsSection = document.querySelector('.items');
   itemList.forEach((item) => {
     allItemsSection.appendChild(createProductItemElement(item));
-  });
-};
-
-const renderPreviousCartItems = (previousCart) => {
-  const previousItemsSkus = JSON.parse(previousCart);
-  previousItemsSkus.forEach((itemSku) => {
-    insertItemInCart(itemSku);
   });
 };
 
