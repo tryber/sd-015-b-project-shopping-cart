@@ -7,9 +7,7 @@ function createProductImageElement(imageSource) {
 
 function cartItemClickListener(event) {
   const Li = event.target;
-  const marker = event.target;
-  marker.innerText = '';
-  Li.innerText = '';
+  Li.remove();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
