@@ -1,3 +1,36 @@
+function totalValuesCount() {
+  const values = this.items.reduce((acc, elemento) => {
+    let actual = acc;
+    actual += Object.values(elemento)[0];
+    return actual;
+  }, 0);
+  return parseFloat(values.toFixed(2));
+}
+
+function removeItemsObj(id) {
+  const el = this.items.find((elemento) => Object.keys(elemento)[0] === id);
+  const elementPosition = this.items.indexOf(el);
+  this.items.splice(elementPosition, 1);
+}
+
+const totalPriceObj = {
+  items: [],
+  totalValue: totalValuesCount,
+  removeItem: removeItemsObj,
+};
+
+function showTotalValue() {
+  const spanElement = document.querySelector('.total-price');
+  spanElement.innerText = `${totalPriceObj.totalValue()}`;
+}
+
+function finalValue({ id, price }) {
+  const productPrice = parseFloat(price.toPrecision(5));
+  totalPriceObj.items.push({ [id]: productPrice });
+  
+  showTotalValue();
+}
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -32,6 +65,10 @@ function cartItemClickListener(event) {
   const eventTarget = event.target;
 
   orderedList[0].removeChild(eventTarget);
+  const id = eventTarget.innerText.split(' ')[1];
+  totalPriceObj.removeItem(id);
+
+  showTotalValue();
 }
 
 function createCartItemElement({ id, title, price }) {
@@ -55,6 +92,7 @@ async function addToCart(clickedElement) {
   const response = await fetchResponse.json();
 
   insertCartElement(response);
+  finalValue(response);
 }
 
 function createEventListenner(element) {
