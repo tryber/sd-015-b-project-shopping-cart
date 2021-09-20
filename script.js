@@ -107,14 +107,18 @@ async function getTotalPrice() {
   const cartItems = getCartItemsOl().children;
   const len = cartItems.length;
   let totalPrice = 0;
+  const promises = [];
 
   for (let i = 0; i < len; i += 1) {
     const { sku } = cartItems[i].dataset;
-
-    await getMercadoLivreItem(sku).then(({ price }) => {
-      totalPrice += price;
-    });
+    promises.push(getMercadoLivreItem(sku).then(({ price }) => price));
   }
+
+  await Promise.all(promises).then((values) =>
+    values.forEach((value) => {
+      totalPrice += value;
+    }));
+    
   return totalPrice;
 }
 
