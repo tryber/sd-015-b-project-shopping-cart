@@ -98,11 +98,11 @@ body {
   padding: 5px;
   border-radius: 10px;
   background-color: white;
-  border: 2px solid transparent;
+  border: 2px solid rgb(0, 165, 143);
 }
 
 .cart__items > li:hover {
-  border: 2px solid rgb(0, 165, 143);
+  box-shadow: 0 0 13px 7px rgba(0, 0, 0, 0.47);
 }
 
 .cart__items > li .cart__item__container {
