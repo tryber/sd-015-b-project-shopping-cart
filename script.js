@@ -27,13 +27,24 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
-//                                                                    ---> ACHO Q PODE DELETAR ESSA FUNÇÃO:
-// function getSkuFromProductItem(item) {
-//   console.log(item.querySelector('span.item__sku').innerText);
-//   return item.querySelector('span.item__sku').innerText;
-// }
+function saveItemsInLocalStorage() {
+  const itemsHTMLCollection = document.querySelectorAll('.cart__item');
+  const items = [...itemsHTMLCollection];
+  const cartItemsInLocalStorage = [];
+  items.forEach((item) => {
+    const itemObj = {
+      className: item.className,
+      innerText: item.innerText,
+    };
+    cartItemsInLocalStorage.push(itemObj);
+  });
+  localStorage.setItem('items', JSON.stringify(cartItemsInLocalStorage));
+}
 
 function cartItemClickListener(event) {
+  // const itemInnerText = event.path[1].firstChild.innerText;
+  // removeItemsInLocalStorage(itemInnerText);
+  saveItemsInLocalStorage();
   return event.path[0].remove();
 }
 
@@ -41,7 +52,6 @@ function createCartItemElement({ id, title, price }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${id} | NAME: ${title} | PRICE: $${price}`;
-  console.log(`li é ${li.innerText}`);
   li.addEventListener('click', cartItemClickListener);
   olCartSection.appendChild(li);
   return li;
@@ -54,6 +64,7 @@ async function addToCartCallback(e) {
     const response = await fetch(`https://api.mercadolibre.com/items/${itemId}`);
     const itemData = await response.json();
     createCartItemElement(itemData);
+    saveItemsInLocalStorage();
   } catch (error) {
     console.log('Erro ao repassar itens para o carrinho!');
   }  
@@ -81,6 +92,63 @@ const getItems = async () => {
   getAddToCartBtnListener();
 };
 
+function loadLocalStorage() {
+  if (localStorage.getItem('items')) {
+    const itemsInLocalStorageCart = JSON.parse(localStorage.getItem('items'));
+    itemsInLocalStorageCart.forEach((item) => {
+      const li = document.createElement('li');
+      li.className = 'cart__item';
+      li.innerText = item.innerText;
+      li.addEventListener('click', cartItemClickListener);
+      olCartSection.appendChild(li);
+    });
+  // return li;
+  }
+}
 window.onload = () => { 
   getItems();
+  loadLocalStorage();
 };
+
+// window.onload = () => {
+//   if (localStorage.getItem('savedTasks') === null) {
+  //     localStorage.setItem('savedTasks', JSON.stringify([]));
+  //   } else {
+    //     const savedTasks = JSON.parse(localStorage.getItem('savedTasks'));
+//     for (let i = 0; i < savedTasks.length; i += 1) {
+  //       const oldLi = document.createElement('li');
+  //       oldLi.innerText = savedTasks[i].innerText;
+  //       oldLi.className = savedTasks[i].className;
+  //       oldLi.addEventListener('click', addSelectedClass);
+  //       oldLi.addEventListener('dblclick', addCompletedClass);
+  //       ol.appendChild(oldLi);
+  //     }
+  //   }
+  // };
+  
+//                                                                              ----> falta a 'appendar' o LI na OL ao iniciar a página
+// function createCartItemElement({ id, title, price }) {
+  // const li = document.createElement('li');
+  // li.className = 'cart__item';
+  // li.innerText = `SKU: ${id} | NAME: ${title} | PRICE: $${price}`;
+  // li.addEventListener('click', cartItemClickListener);
+  // olCartSection.appendChild(li);
+  // return li;
+// }
+
+// const localStorageCart = JSON.parse(localStorage.getItem('ObjetoParaGuardar'));
+// let ObjetoParaGuardar = localStorage.getItem('ObjetoParaGuardar') ? localStorageCart : [];
+
+// const updateLocalStorageCart = () => {
+//   localStorage.getItem('ObjetoParaGuardar', JSON.stringify(ObjetoParaGuardar));
+// };
+
+// function removeItemsInLocalStorage(itemInnerText) {
+//   if (localStorage.getItem('items') !== null) {
+//     const items = JSON.parse(localStorage.getItem('items'));
+//     items.forEach((item, i) => {
+//       console.log('ITEM É:', item);
+//     if (item.innerText === itemInnerText) return localStorage.removeItem(`items[${i}]`);
+//     });
+//   }
+// }
