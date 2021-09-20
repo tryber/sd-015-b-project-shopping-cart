@@ -46,8 +46,8 @@ function getSkuFromProductItem(item) {
 function cartItemClickListener(event) {
   // adiciona evento ao clicar no item no carrinho
   // vai remover o item do carrinho
-  const li = document.querySelectorAll('cart__item');
-  console.log(event, li);
+  const ol = document.querySelector('.cart__items');
+  ol.removeChild(event.target);
 }
 // espera como parametro o retorno de requestProductDetails
 function createCartItemElement({ sku, name, salePrice }) {
