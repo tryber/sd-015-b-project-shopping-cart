@@ -1,3 +1,5 @@
+const p = document.querySelector('.total-price');
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -7,13 +9,11 @@ function createProductImageElement(imageSource) {
 
 function cartItemClickListener(event, price) {
   const clicked = event.target;
-  const p = document.querySelector('.total-price');
   p.innerText = parseFloat(p.innerText) - price;
   clicked.remove();
 }
 
 function totalPrice(value) {
-  const p = document.querySelector('.total-price');
   let momentPrice = parseFloat(p.innerText);
   momentPrice += value;
   p.innerText = momentPrice;
@@ -79,7 +79,6 @@ function getProducts() {
 
 function cleanCart() {
   const ol = document.querySelector('.cart__items');
-  const p = document.querySelector('.total-price');
   ol.innerHTML = '';
   p.innerText = 0;
 }
