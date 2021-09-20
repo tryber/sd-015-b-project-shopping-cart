@@ -5,6 +5,23 @@ function createProductImageElement(imageSource) {
   return img;
 }
 
+// feito durante mentoria com passo a passo da carol
+// recolher e requerer api
+function getAPI() {
+  fetch("https://api.mercadolibre.com/sites/MLB/search?q=$computador")
+  .then((response) => response.json())
+  .then((obj) => createObjectProduct(obj.results))  
+}
+
+function createObjectProduct(dados) {
+  let divHTML = document.querySelector('.items');
+  //coletar o objeto da api
+  for (let key in dados) {
+    let item = createProductItemElement(dados[key]);
+    divHTML.appendChild(item);
+  }
+}
+
 function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
   e.className = className;
@@ -12,7 +29,7 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({ sku, name, image }) {
+function createProductItemElement({ id:sku, title:name, thumbnail:image }) {
   const section = document.createElement('section');
   section.className = 'item';
 
@@ -40,4 +57,7 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-window.onload = () => { };
+window.onload = () => { 
+  getAPI();
+
+};
