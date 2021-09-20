@@ -99,7 +99,7 @@ function createCartItemElement({ id, name, salePrice }) {
   const ol = document.querySelector('.cart__items');
   const li = document.createElement('li');
   li.className = 'cart__item';
-  li.innerText = `SKU: ${id} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.innerText = `ID: ${id} | PRODUTO: ${name} | PREÇO: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   ol.appendChild(li);
   saveCartItems();
