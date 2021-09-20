@@ -19,18 +19,48 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+function getCartItemsOl() {
+  return document.querySelector('.cart__items');
+}
+
 function saveCartItems(ol) {
   localStorage.cartItems = ol.innerHTML;
+}
+function getMercadoLivreItem(id) {
+  return fetch(ITEM_BASE_URL + id).then((response) => response.json());
+}
+
+async function getTotalPrice() {
+  const cartItems = getCartItemsOl().children;
+  const len = cartItems.length;
+  let totalPrice = 0;
+  const promises = [];
+
+  for (let i = 0; i < len; i += 1) {
+    const { sku } = cartItems[i].dataset;
+    promises.push(getMercadoLivreItem(sku).then(({ price }) => price));
+  }
+
+  await Promise.all(promises).then((values) =>
+    values.forEach((value) => {
+      totalPrice += value;
+    }));
+
+  return totalPrice;
+}
+
+async function showTotalPrice() {
+  getTotalPrice().then((totalPrice) => {
+    const span = document.querySelector('.total-price');
+    span.innerText = `Total R$${totalPrice.toFixed(2)}`;
+  });
 }
 
 function cartItemClickListener(event) {
   const cartItemsOl = event.target.parentElement;
   cartItemsOl.removeChild(event.target);
+  showTotalPrice();
   saveCartItems(cartItemsOl);
-}
-
-function getCartItemsOl() {
-  return document.querySelector('.cart__items');
 }
 
 function loadCartItems() {
@@ -63,6 +93,7 @@ function handleAddButton(event) {
       const cartItemsOl = getCartItemsOl();
       const product = { sku: id, name: title, salePrice: price };
       cartItemsOl.appendChild(createCartItemElement(product));
+      showTotalPrice();
       saveCartItems(cartItemsOl);
     });
 }
@@ -82,10 +113,6 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
-function getMercadoLivreItem(id) {
-  return fetch(ITEM_BASE_URL + id).then((response) => response.json());
-}
-
 function fillItemsSection(products) {
   const itemsSection = document.querySelector('.items');
   products.forEach(async ({ id, title }) => {
@@ -103,27 +130,8 @@ function searchMercadoLivreProducts() {
     .then(({ results: products }) => fillItemsSection(products));
 }
 
-async function getTotalPrice() {
-  const cartItems = getCartItemsOl().children;
-  const len = cartItems.length;
-  let totalPrice = 0;
-  const promises = [];
-
-  for (let i = 0; i < len; i += 1) {
-    const { sku } = cartItems[i].dataset;
-    promises.push(getMercadoLivreItem(sku).then(({ price }) => price));
-  }
-
-  await Promise.all(promises).then((values) =>
-    values.forEach((value) => {
-      totalPrice += value;
-    }));
-    
-  return totalPrice;
-}
-
 window.onload = () => {
   searchMercadoLivreProducts();
   loadCartItems();
-  getTotalPrice().then((total) => console.log('total ', total));
+  showTotalPrice();
 };
