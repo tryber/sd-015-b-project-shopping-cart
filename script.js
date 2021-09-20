@@ -1,6 +1,6 @@
 const products = document.querySelector('.items');
 const emptyCart = document.querySelector('.empty-cart');
-let userItems = [];
+const userItems = [];
 const skuLength = 18;
 let total = 0;
 
@@ -54,12 +54,9 @@ function removeItem(origin) {
 
 // clear cart function, sets local storage, total, cart to 0
 function doEmptyCart() {
-  const productList = document.querySelector('.cart__items');
-  productList.innerText = '';
-  userItems = [];
-  localStorage.setItem('userItems', userItems);
-  total = 0;
-  updateTotal(total);
+  document.querySelector('.cart__items').innerText = '';
+  localStorage.setItem('userItems', []);
+  updateTotal(0);
 }
 
 // creates cart item element
