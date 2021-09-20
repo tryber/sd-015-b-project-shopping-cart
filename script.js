@@ -32,16 +32,21 @@ const getProductBySku = async (sku) => {
   }
 };
 
-const updateCartTotal = async () => {
+const getCarItemsPrices = async () => {
   const cartItemsElements = document.querySelectorAll('.cart__item');
   const cartItems = Array.from(cartItemsElements);
-  const prices = [];
-  console.log('atualizarei');
-  await cartItems.forEach(async ({ id: sku }) => {
-    const { salePrice: itemPrice } = await getProductBySku(sku);
-    prices.push(itemPrice);
-  });
-  console.log(prices);
+  const prices = await Promise.all(cartItems.map(async ({ id: sku }) => {
+    const { salePrice } = await getProductBySku(sku);
+    return salePrice;
+  }));
+  return prices;
+};
+
+const updateTotal = async () => {
+  const prices = await getCarItemsPrices();
+  const totalPriceElement = document.querySelector('.total-price');
+  const total = prices.reduce((acc, price) => acc + price, 0);
+  totalPriceElement.innerText = `${total}`;
 };
 
 const saveCartOnLocalStorage = () => {
@@ -58,7 +63,6 @@ const clearCart = () => {
   const cart = document.querySelector('.cart__items');
   cart.innerHTML = '';
   saveCartOnLocalStorage();
-  updateCartTotal();
 };
 
 const createImageElement = (imageSource) => {
@@ -83,7 +87,7 @@ const createCartItemElement = ({ sku, name, salePrice }) => {
   li.addEventListener('click', (event) => {
     event.target.remove();
     saveCartOnLocalStorage();
-    updateCartTotal();
+    updateTotal();
   });
   return li;
 };
@@ -92,6 +96,7 @@ const insertItemInCart = async (itemSku) => {
   const item = await getProductBySku(itemSku);
   const cartItem = createCartItemElement(item);
   document.querySelector('.cart__items').appendChild(cartItem);
+  updateTotal();
 };
 
 const createProductItemElement = ({ sku, name, image }) => {
@@ -107,37 +112,34 @@ const createProductItemElement = ({ sku, name, image }) => {
     const itemSku = event.target.parentElement.querySelector('span.item__sku').innerText;
     await insertItemInCart(itemSku);
     saveCartOnLocalStorage();
-    updateCartTotal();
   });
 
   itemSection.appendChild(addItemBtn);
   return itemSection;
 };
 
-const renderItemsList = async (itemList) => {
+const renderItemsList = async () => {
+  const itemList = await getProductsList();
   const allItemsSection = document.querySelector('.items');
   itemList.forEach((item) => {
     allItemsSection.appendChild(createProductItemElement(item));
   });
 };
 
-const renderPreviousCartItems = async (previousCart) => {
+const renderPreviousCartItems = (previousCart) => {
   const previousItemsSkus = JSON.parse(previousCart);
-  await previousItemsSkus.forEach(async (itemSku) => {
-    await insertItemInCart(itemSku);
+  previousItemsSkus.forEach((itemSku) => {
+    insertItemInCart(itemSku);
   });
 };
 
-window.onload = async () => {
-  const clearCartBtn = document.querySelector('.empty-cart');
-  clearCartBtn.addEventListener('click', () => clearCart());
-
-  const list = await getProductsList();
-  renderItemsList(list);
-
+window.onload = () => {
+  renderItemsList();
   const previousCart = localStorage.getItem('shoppingCart');
   if (previousCart) {
-    await renderPreviousCartItems(previousCart);
-    updateCartTotal();
+    renderPreviousCartItems(previousCart);
   }
+  
+  const clearCartBtn = document.querySelector('.empty-cart');
+  clearCartBtn.addEventListener('click', () => clearCart());
 };
