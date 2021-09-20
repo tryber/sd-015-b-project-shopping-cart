@@ -16,9 +16,10 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-// add 'event' as parameter
 function cartItemClickListener() {
-  // coloque seu código aqui
+    const ul = document.querySelector('.cart__items');
+    const li = this;
+    ul.removeChild(li);
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -39,10 +40,10 @@ function addToCart() {
     const cartItem = document.querySelector('.cart__items');
     cartItem.appendChild(createCartItemElement(
       { sku: id, name: title, salePrice: price },
-    ));
-  })
-  .catch((erro) => console
-  .error(`${erro}: Possivelmente erro no link da API`));
+      ));
+    })
+    .catch((erro) => console
+    .error(`${erro}: Possivelmente erro no link da API`));
 }
 
 function createProductItemElement({ sku, name, image }) {
