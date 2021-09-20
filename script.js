@@ -15,11 +15,22 @@ function createCustomElement(element, className, innerText) {
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
-
+function attCart() {
+  const cart = document.querySelector('.cart__items');
+  return cart;
+}
 function cartItemClickListener() {
-    const ul = document.querySelector('.cart__items');
+    const cart = attCart();
     const li = this;
-    ul.removeChild(li);
+    cart.removeChild(li);
+}
+
+function clearCart() {
+  const cart = attCart();
+  const itens = document.querySelectorAll('.cart__item');
+  itens.forEach((element) => {
+    cart.removeChild(element);
+  });
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -37,8 +48,8 @@ function addToCart() {
   fetch(itemAPI)
   .then((response) => response.json())
   .then(({ title, price }) => {
-    const cartItem = document.querySelector('.cart__items');
-    cartItem.appendChild(createCartItemElement(
+    const cart = document.querySelector('.cart__items');
+    cart.appendChild(createCartItemElement(
       { sku: id, name: title, salePrice: price },
       ));
     })
@@ -72,7 +83,9 @@ function findItems(product) {
     .catch((erro) => console
     .error(`${erro}: Possivelmente erro no link da API`));
   }
+  window.onload = () => {
+  const clearButton = document.querySelector('.empty-cart');
 
-window.onload = () => {
     findItems('computador');
+    clearButton.addEventListener('click', clearCart);
 };
