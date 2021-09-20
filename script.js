@@ -1,3 +1,6 @@
+function createOl() {
+  return document.querySelector('.cart__items');
+}
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -13,9 +16,9 @@ function createCustomElement(element, className, innerText) {
 }
 
 const requireApi = async (QUERY) => 
-  fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${QUERY}`)
-  .then((response) => response.json()).then((value) => value.results)
-  .catch((error) => console.log(error));
+fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${QUERY}`)
+.then((response) => response.json()).then((value) => value.results)
+.catch((error) => console.log(error));
 
 function createProductItemElement({ id, name, image }) {
   const section = document.createElement('section');
@@ -31,10 +34,6 @@ function createProductItemElement({ id, name, image }) {
 
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
-}
-
-function createOl() {
-  return document.querySelector('.cart__items');
 }
 
 function saveCartItems() {
@@ -55,6 +54,11 @@ function removeItemFromLocalStorage(evento) {
 
 function totalSumOfPrices(price) {
   const total = document.querySelector('.total-price');
+  if (parseFloat(total.innerHTML) < 0) {
+    total.innerHTML = 0;
+  } if (createOl().length === 0) {
+    total.innerHTML = 0;
+  }
   let { sum } = sessionStorage;
   sum = parseFloat(sum);
   sum += price;
@@ -86,6 +90,7 @@ function retriveCartItems() {
     const li = document.createElement('li');
     li.innerHTML = localStorage.getItem(`line${i}`);
     li.addEventListener('click', cartItemClickListener);
+    li.className = 'cart__item';
     ol.appendChild(li);
   }
 }
@@ -128,8 +133,17 @@ async function requireAndCreateEachProduct() {
   addEventListenerToButtons();
 }
 
+function deleteAllTheCart() {
+  const ol = document.querySelectorAll('.cart__item');
+  for (let i = ol.length - 1; i >= 0; i -= 1) {
+    removeItemFromLocalStorage(ol[i]);
+    ol[i].remove();
+  }
+}
+
 window.onload = () => {
   requireAndCreateEachProduct();
   retriveCartItems();
   sessionStorage.sum = 0;
- };
+  document.querySelector('.empty-cart').addEventListener('click', deleteAllTheCart);
+};
