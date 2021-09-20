@@ -44,8 +44,7 @@ async function getTotalPrice() {
   await Promise.all(promises).then((values) =>
     values.forEach((value) => {
       totalPrice += value;
-    })
-  );
+    }));
 
   return totalPrice;
 }
