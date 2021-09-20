@@ -48,7 +48,7 @@ function getSkuFromProductItem(item) {
 
 // MLB1790675058
 function cartItemClickListener(event) {
-  
+  event.target.remove();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
