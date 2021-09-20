@@ -90,7 +90,20 @@ const requestComputer = async () => {
   buttonAddToCart();
 };
 
+function btClearEvent() {
+  const cartList = document.querySelectorAll('.cart__item');
+  cartList.forEach((li) => {
+    li.remove();
+  });
+}
+
+function btClearAllItems() {
+  const clearBT = document.querySelector('.empty-cart');
+  clearBT.addEventListener('click', btClearEvent);
+}
+
 window.onload = () => { 
   requestComputer();
   loadLocalStorage();
+  btClearAllItems();
 };
