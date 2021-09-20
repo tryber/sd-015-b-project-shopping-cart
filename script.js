@@ -1,4 +1,5 @@
 const itemsSection = document.querySelector('.items');
+const cartSection = document.querySelector('.cart');
 const olCartSection = document.querySelector('.cart__items');
 
 function createProductImageElement(imageSource) {
@@ -27,6 +28,27 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
+const totalPrice = document.createElement('span');
+totalPrice.className = 'total-price';
+cartSection.appendChild(totalPrice);
+
+// Font: https://stackoverflow.com/questions/3612744/remove-insignificant-trailing-zeros-from-a-number
+const getTotalPrice = () => {
+  const itemsHTMLCollection = document.querySelectorAll('.cart__item');
+  const items = [...itemsHTMLCollection];
+  const prices = [];
+  items.forEach((item) => {
+    const findPrice = item.innerText.split('$');
+    prices.push(parseFloat(findPrice[1]));
+  });
+  if (items.length === 0) {
+    totalPrice.innerText = '';
+  } else {
+    const price = prices.reduce((acc, curr) => acc + curr, 0);
+    totalPrice.innerText = parseFloat(price);
+  }
+};
+
 function saveItemsInLocalStorage() {
   const itemsHTMLCollection = document.querySelectorAll('.cart__item');
   const items = [...itemsHTMLCollection];
@@ -35,6 +57,7 @@ function saveItemsInLocalStorage() {
     const itemObj = {
       className: item.className,
       innerText: item.innerText,
+      id: item.id,
     };
     cartItemsInLocalStorage.push(itemObj);
   });
@@ -42,15 +65,15 @@ function saveItemsInLocalStorage() {
 }
 
 function cartItemClickListener(event) {
-  // const itemInnerText = event.path[1].firstChild.innerText;
-  // removeItemsInLocalStorage(itemInnerText);
   saveItemsInLocalStorage();
-  return event.path[0].remove();
+  event.path[0].remove();
+  getTotalPrice();
 }
 
 function createCartItemElement({ id, title, price }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
+  li.id = id;
   li.innerText = `SKU: ${id} | NAME: ${title} | PRICE: $${price}`;
   li.addEventListener('click', cartItemClickListener);
   olCartSection.appendChild(li);
@@ -59,7 +82,6 @@ function createCartItemElement({ id, title, price }) {
 
 async function addToCartCallback(e) {
   const itemId = e.path[1].firstChild.innerText;
-  console.log(itemId);
   try {
     const response = await fetch(`https://api.mercadolibre.com/items/${itemId}`);
     const itemData = await response.json();
@@ -67,7 +89,8 @@ async function addToCartCallback(e) {
     saveItemsInLocalStorage();
   } catch (error) {
     console.log('Erro ao repassar itens para o carrinho!');
-  }  
+  }
+  getTotalPrice();
 }
 
 function getAddToCartBtnListener() {
@@ -99,12 +122,14 @@ function loadLocalStorage() {
       const li = document.createElement('li');
       li.className = 'cart__item';
       li.innerText = item.innerText;
+      li.id = item.id;
       li.addEventListener('click', cartItemClickListener);
       olCartSection.appendChild(li);
+      getTotalPrice();
     });
-  // return li;
   }
 }
+
 window.onload = () => { 
   getItems();
   loadLocalStorage();
@@ -152,3 +177,17 @@ window.onload = () => {
 //     });
 //   }
 // }
+
+//              --> tentando pegar os preços de forma mais dinâmica e falhando miseravelmente:
+// totalPrice.innerText = prices.reduce((acc, curr) => acc + curr);
+  // try {
+  //   const itensInCart = document.querySelectorAll('.cart__item');
+  //   itensInCart.forEach(async (item) => {
+  //     const response = await fetch(`https://api.mercadolibre.com/items/${item.id}`);
+  //     const itemData = await response.json();
+  //     prices.push(itemData.price);
+  //     console.log(prices);
+  //   });
+  // } catch (error) {
+  //   console.log('Erro ao calcular o preço total!');
+  // }  
