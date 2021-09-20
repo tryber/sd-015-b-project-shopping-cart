@@ -50,8 +50,22 @@ const cartAddEventListener = () => {
 
 const cartTotalPrice = (infoItem) => {
   const span = document.querySelector(spanTotalPrice);
-  sum += infoItem.salePrice;
+  sum += parseFloat(infoItem.salePrice);
   span.innerHTML = sum;
+};
+
+// Requisito 6 - Crie um botão para limpar carrinho de compras
+
+const emptyCart = () => {
+  const btnEmptyCart = document.querySelector('.empty-cart');
+  const ol = document.querySelector(olCartItems);
+  const priceTotal = document.querySelector(spanTotalPrice);
+  btnEmptyCart.addEventListener('click', () => {
+    ol.innerHTML = '';
+    priceTotal.innerHTML = 0;
+    saveCart();
+    saveTotalPrice();
+  });
 };
 
 // Requisito 2 - Adicione o produto ao carrinho de compras
@@ -146,5 +160,6 @@ window.onload = async () => {
     sum = parseFloat(getTotalPrice);
   }
   getCart();
+  emptyCart();
   cartAddEventListener();
 };
