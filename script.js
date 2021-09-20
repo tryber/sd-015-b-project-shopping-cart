@@ -15,10 +15,12 @@ function createCustomElement(element, className, innerText) {
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
+
 function attCart() {
   const cart = document.querySelector('.cart__items');
   return cart;
 }
+
 function cartItemClickListener() {
     const cart = attCart();
     const li = this;
@@ -80,12 +82,31 @@ function findItems(product) {
       { sku: item.id, name: item.title, image: item.thumbnail },
       ));
     }))
+    .then(() => {
+    const itemsContainer = document.querySelector('.items');
+    const loading = document.querySelector('.loading');
+    itemsContainer.removeChild(loading);
+    })
     .catch((erro) => console
     .error(`${erro}: Possivelmente erro no link da API`));
   }
+
+  async function loadScreen() {
+    const loadText = document.createElement('h1');
+    const itemsContainer = document.querySelector('.items');
+    loadText.className = 'loading';
+    loadText.innerText = 'LOADING...';
+    itemsContainer.appendChild(loadText);
+    try {
+      await findItems('computador');
+    } catch (erro) {
+      console.error(`${erro}: Erro na loadScreen`);
+    }
+  } 
+
   window.onload = () => {
   const clearButton = document.querySelector('.empty-cart');
 
-    findItems('computador');
+    loadScreen();
     clearButton.addEventListener('click', clearCart);
 };
