@@ -123,22 +123,13 @@ function addEventListenerToButtons() {
   });
 }
 
-function createLoadingScreen() {
-  const loading = document.createElement('h1');
-  loading.innerText = 'loading';
-  loading.className = 'loading';
-  document.body.appendChild(loading);
-}
-
 async function requireAndCreateEachProduct() {
   const requisicao = requireApi('computador');
-  createLoadingScreen();
   const done = await requisicao;
   done.forEach((product) => {
     const { title: name, id, thumbnail: image } = product;
     createProductItemElement({ id, name, image });
   });
-  document.querySelector('.loading').remove();
   addEventListenerToButtons();
 }
 
