@@ -52,7 +52,7 @@ async function getTotalPrice() {
 async function showTotalPrice() {
   getTotalPrice().then((totalPrice) => {
     const span = document.querySelector('.total-price');
-    span.innerText = `Total R$${totalPrice.toFixed(2)}`;
+    span.innerText = totalPrice;
   });
 }
 
@@ -115,11 +115,7 @@ function createProductItemElement({ sku, name, image }) {
 
 function fillItemsSection(products) {
   const itemsSection = document.querySelector('.items');
-  products.forEach(async ({ id, title }) => {
-    let thumbnail;
-    await getMercadoLivreItem(id).then(({ pictures }) => {
-      thumbnail = pictures[0].url;
-    });
+  products.forEach(({ id, title, thumbnail }) => {    
     itemsSection.appendChild(createProductItemElement({ sku: id, name: title, image: thumbnail }));
   });
 }
