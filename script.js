@@ -68,6 +68,18 @@ const emptyCart = () => {
   });
 };
 
+// Requisito 7 - Adicione um texto de "loading" durante uma requisição à API
+
+const loadingAPI = () => {
+  const loading = document.querySelector('.loading');
+  loading.innerHTML = 'loading...';
+};
+
+const removeLoadingAPI = () => {
+  const loading = document.querySelector('.loading');
+  loading.remove();
+};
+
 // Requisito 2 - Adicione o produto ao carrinho de compras
 
 const requestApiItems = async (itemID) => {
@@ -154,7 +166,9 @@ const productList = async () => {
 };
 
 window.onload = async () => {
+  loadingAPI();
   await productList();
+  removeLoadingAPI();
   const getTotalPrice = localStorage.getItem('totalPrice');
   if (getTotalPrice) {
     sum = parseFloat(getTotalPrice);
