@@ -19,9 +19,7 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
-  section.appendChild(
-    createCustomElement('button', 'item__add', 'Adicionar ao carrinho!')
-  );
+  section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
 
   return section;
 }
@@ -44,16 +42,18 @@ function createCartItemElement({ sku, name, salePrice }) {
 
 const API_URL_MLCOMPUTER = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
 
+const fetchML = async (url) => (await fetch(url)).json();
+
 async function requestMLComputer(url) {
   try {
-    return fetch(url)
-      .then((response) => response.json())
-      .then((data) => data.results.map(({ id, title, thumbnail }) => {
+      const fetchingMLComputer = await fetchML(url);
+      fetchingMLComputer.results  
+      .map(({ id, title, thumbnail }) => {
           const objt = { id, title, thumbnail };
           const sectionItems = document.querySelector('.items'); // pegando o items pra poder jogar o objt como filho dele.
-          const eachComputer = createProductItemElement(objt); // usando a função previamente criada para fazer um produto. 
+          const eachComputer = createProductItemElement(objt); // usando a função previamente criada para fazer um produto.
           return sectionItems.append(eachComputer); // colocando cada produto criado na seção de items.
-        }));        
+        });
   } catch (error) {
     console.log(error);
   }
