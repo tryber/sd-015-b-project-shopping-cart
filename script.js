@@ -2,7 +2,7 @@ const APIMercadoLibre = 'https://api.mercadolibre.com/sites/MLB/search?q=computa
 const APIItems = 'https://api.mercadolibre.com/items/';
 const olCartItems = '.cart__items';
 const spanTotalPrice = '.total-price';
-let sum = 0;
+let sumTotalCart = 0;
 
 // Requisito 4 - Carregue o carrinho de compras através do LocalStorage ao iniciar a página
 
@@ -30,8 +30,8 @@ function cartItemClickListener(event) {
   const span = document.querySelector(spanTotalPrice);
   const price = parseFloat(event.target.innerHTML.split('$')[1], 10);
   event.target.remove();
-  sum -= price;
-  span.innerHTML = sum;
+  sumTotalCart -= price;
+  span.innerHTML = Math.abs(parseFloat(sumTotalCart).toFixed(2));
   saveTotalPrice();
   saveCart();
 }
@@ -50,8 +50,8 @@ const cartAddEventListener = () => {
 
 const cartTotalPrice = (infoItem) => {
   const span = document.querySelector(spanTotalPrice);
-  sum += parseFloat(infoItem.salePrice);
-  span.innerHTML = sum;
+  sumTotalCart += infoItem.salePrice;
+  span.innerHTML = Math.abs(parseFloat(sumTotalCart).toFixed(2));
 };
 
 // Requisito 6 - Crie um botão para limpar carrinho de compras
@@ -171,7 +171,7 @@ window.onload = async () => {
   removeLoadingAPI();
   const getTotalPrice = localStorage.getItem('totalPrice');
   if (getTotalPrice) {
-    sum = parseFloat(getTotalPrice);
+    sumTotalCart = parseFloat(getTotalPrice);
   }
   getCart();
   emptyCart();
