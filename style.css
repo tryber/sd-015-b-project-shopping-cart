@@ -43,6 +43,14 @@
   margin: 0;
   padding: 5px;
 }
+.item .item__add:hover {
+  background-color: rgb(71, 206, 71);
+  border: 0;
+  cursor: pointer;
+  margin: 0;
+  color: white;
+  padding: 5px;
+}
 
 .cart {
   display: flex;
