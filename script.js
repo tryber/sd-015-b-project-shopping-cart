@@ -1,6 +1,6 @@
 const requestURL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
-const arrayTeste = new Array();
-localStorage.setItem("arrayCarrinho", JSON.stringify(arrayTeste));
+const arrayTeste = [];
+localStorage.setItem('arrayCarrinho', JSON.stringify(arrayTeste));
 
 function createProductImageElement(imageSource) {
   // Cria elemento com os dados do createProductItemElement
@@ -18,7 +18,7 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function sumItems(param) {
+async function sumItems(param) {
   const totalPrice = document.querySelector('.total-price'); // Verifica o Preço
   if (totalPrice === 0) { // Se for 0
     totalPrice.innerHTML = param; // Altera o valor do preço para o de param
@@ -51,7 +51,7 @@ function cartItemClickListener(event) {
   // Quando o item do carrinho for clickado, o mesmo deve ser removido
   // console.log('That\'s working Fine!');
   this.remove();
-  // sumItems();
+  subItems();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -94,13 +94,13 @@ async function apiRequest(calledURL) {
 }
 
 function salvarCarrinho() {
-  let listaOrdenada = document.querySelectorAll('li');
-  let arrayCarrinho = new Array();
-  listaOrdenada.forEach( (elemento) => {
+  const listaOrdenada = document.querySelectorAll('li');
+  const arrayCarrinho = [];
+  listaOrdenada.forEach((elemento) => {
     arrayCarrinho.push(elemento);
-  })
+  });
   // console.log(arrayCarrinho);
-  localStorage.setItem("arrayCarrinho", JSON.stringify(arrayCarrinho));
+  localStorage.setItem('arrayCarrinho', JSON.stringify(arrayCarrinho));
 }
 
 function limpaLista() {
