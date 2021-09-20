@@ -84,11 +84,11 @@ function criarElementos(dados) {
 }
 function removeLoading() {
   const parentNode = document.querySelector('.items');
-  console.log(parentNode);
+  // console.log(parentNode);
   const textToRemove = document.querySelector('#text-loading');
-  const firstChild = parentNode.firstChild; 
-  console.log(firstChild);
-  parentNode.removeChild(textToRemove);
+  const {firstChild} = parentNode;
+  // console.log(firstChild);
+  firstChild.removeChild(textToRemove);
   // document.querySelector()
   // textToRemove.style.visibility = "hidden";
 }
