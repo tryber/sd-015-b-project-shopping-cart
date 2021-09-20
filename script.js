@@ -60,13 +60,14 @@ async function getComputer() {
   // console.log(results) // só pra ver como retorna 
   const listComp = await results.results;
   // console.log(listComp) // retorna lista de objetos 
-  for (const key in listComp) { // for in usa a chave do objeto como indice no percorrimento 
-    // console.log(listComp[key]) // pra ver como ele separa cada objeto em um elemento, que será percorrido com o indice chave
-    document.querySelector('.items').appendChild(createProductItemElement(listComp[key])); // faz o apend qdo a função é executada, fazendo assim a lista de produtos.
-  }
-  document.querySelector('.loading').remove();
+  // for (const key in listComp) { // for in usa a chave do objeto como indice no percorrimento 
+    // console.log(listComp[key]) // pra ver como ele separa cada objeto em um elemento, que será percorrido com o indice chave - nao passou no lint , tive q mudar pra objeto.key
+    Object.keys(listComp).forEach((key) => {
+      document.querySelector('.items').appendChild(createProductItemElement(listComp[key])); // faz o apend qdo a função é executada, fazendo assim a lista de produtos.
+    });
+    document.querySelector('.loading').remove();
 }
-
+  
 // function getSkuFromProductItem(item) {
 // return item.querySelector('span.item__sku').innerText;}
 
