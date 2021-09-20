@@ -4,14 +4,12 @@ function createProductImageElement(imageSource) {
   img.src = imageSource;
   return img;
 }
-
 function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
   e.className = className;
   e.innerText = innerText;
   return e;
 }
-
 function createProductItemElement({ sku, name, image }) {
   const section = document.createElement('section');
   section.className = 'item';
@@ -22,18 +20,6 @@ function createProductItemElement({ sku, name, image }) {
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
   
   return section;
-}
-
-function cartItemClickListener(event) {
-  // coloque seu código aqui
-}
-
-function createCartItemElement({ sku, name, salePrice }) {
-  const li = document.createElement('li');
-  li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
-  return li;
 }
 
 const requestProducts = () => {
@@ -49,11 +35,48 @@ const requestProducts = () => {
     const getClassItems = document.querySelector('.items');
     getClassItems.appendChild(itemElement);
   }));
-}; // ref.: https://github.com/tryber/sd-015-b-project-shopping-cart/pull/33/commits/6974a393bc7f5f84e2300355ead2200545238289
+}; // ref rerquisito 1 .: https://github.com/tryber/sd-015-b-project-shopping-cart/pull/33/commits/6974a393bc7f5f84e2300355ead2200545238289
 
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
+  
+  function cartItemClickListener(event) {
+    
+  }
+  
+  function createCartItemElement({ id: sku, title: name, price: salePrice }) {
+    const li = document.createElement('li');
+
+    li.className = 'cart__item';
+    li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+    li.addEventListener('click', cartItemClickListener);
+    return li;
+  }
+
+  async function addItemInTheCart(event) {
+    const itemID = event.target.parentNode.firstChild.innerText;
+    console.log(event);
+  const itemUrl = `https://api.mercadolibre.com/items/${itemID}`;
+  const getCart = document.querySelector('.cart__items');
+  return fetch(itemUrl)
+   .then((response) => response.json())
+   .then((data) => {
+      const cartItem = createCartItemElement(data);
+      getCart.appendChild(cartItem);
+   })
+    .catch(() => console.error('Error: invalid ID'));
+}
+function addToCart() {
+  const buttonAddInCart = document.querySelector('section.items');
+  buttonAddInCart.addEventListener('click', (event) => {
+    if (event.target.classList.contains('item__add')) {
+      return addItemInTheCart(event);
+    }
+  });
+}
+
 window.onload = () => {  
   requestProducts();
+  addToCart();
 };
