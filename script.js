@@ -32,7 +32,7 @@ const sumPrices = () => {
     totalPrice.style.display = 'none';
   } else {
     totalPrice.style.display = 'inline';
-    totalPrice.innerText = sum;
+    totalPrice.innerHTML = `<b>VALOR TOTAL: R$ </b>${sum.toFixed(2)}`;
   }
 };
 
@@ -117,8 +117,8 @@ const reloadScreen = () => {
 
 const createItemProductSection = async () => {
   loadingScreen();
-
-  const url = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
+  
+  const url = 'https://api.mercadolibre.com/sites/MLB/search?q=motos';
   try {
     const { results } = await fetchAPI(url);
     const itemsSection = document.querySelector('.items');
