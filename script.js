@@ -75,11 +75,26 @@ function getElements(arrayResult) {
   });
 }
 
+function loadingText() {
+  const sectionItems = document.getElementsByClassName('items')[0];
+  const h1 = document.createElement('h1');
+  h1.innerText = 'loading...';
+  h1.className = 'loading';
+  sectionItems.appendChild(h1);
+}
+
+function loadingTextDelete() {
+  const loadingScreen = document.querySelector('.loading');
+  loadingScreen.remove();
+}
+
 async function getData() {
+  loadingText();
   try {
     const fetchResponse = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
     const response = await fetchResponse.json();
 
+    loadingTextDelete();
     const { results } = response;
     getElements(results);
   } catch (error) {
