@@ -67,6 +67,7 @@ function updatePrice(option) {
   } else {
   getTotalItemValue(items);
   }
+  saveItems();
 }
 
 function cartItemClickListener(event) {
@@ -124,7 +125,15 @@ function loadItems() {
   itemList.forEach((item) => item.addEventListener('click', cartItemClickListener));
 }
 
+function emptyCart() {
+  const cart = document.querySelector('.cart__items');
+  cart.innerHTML = '';
+  updatePrice();
+}
+
 window.onload = () => {
   requestProductAsync();
   loadItems();
+  const emptyButton = document.querySelector('.empty-cart');
+  emptyButton.addEventListener('click', emptyCart);
 };
