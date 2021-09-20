@@ -1,22 +1,23 @@
 const cardItems = '.cart__items';
+const totalPrice = document.querySelector('.total-price');
+
 // const cardItems = document.querySelector('.cart__items');
 
-const saveStorage = () => {
+function saveStorage() {
   const list = document.querySelector(cardItems).innerHTML;
   localStorage.list = list;
-};
+}
 
-const loadStorage = () => {
+function loadStorage() {
   if (localStorage.list) {
     document.querySelector(cardItems).innerHTML = localStorage.list;
   }
-};
+}
 
 function sumTotalPrice() {
-  // const totalPrice = document.querySelector('.total-price');
-  // const sum = .reduce((acumulator, currency) => 
-  // currency.getAttribute('price') + acumulator, 0);
-  // totalPrice.innerText = sum;
+  // const price = cardItems.reduce((acc, curr) => 
+  // acc + Number(curr.innerHTML.split('PRICE: $')[1]), 0);
+  // totalPrice.innerHTML = price;
 }
 
 function createProductImageElement(imageSource) {
