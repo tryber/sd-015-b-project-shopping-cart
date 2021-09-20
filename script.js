@@ -82,12 +82,25 @@ function criarElementos(dados) {
     itensContainer.appendChild(criaElemento);
     });
 }
+function removeLoading() {
+  const parentNode = document.querySelector('.items');
+  console.log(parentNode);
+  const textToRemove = document.querySelector('#text-loading');
+  const firstChild = parentNode.firstChild; 
+  console.log(firstChild);
+  parentNode.removeChild(textToRemove);
+  // document.querySelector()
+  // textToRemove.style.visibility = "hidden";
+}
 
 async function apiRequest(calledURL) {
   // console.log("CONECTANDO A API DO MERCADO LIVRE...");
   fetch(calledURL) // Requisita URL
   .then((response) => response.json()) // Converte Binário para JSON
-  .then((element) => criarElementos(element.results))
+  .then((element) => {
+    criarElementos(element.results);
+    removeLoading();
+  })
   .catch((erro) => console.log(':::ERRO::: >>', erro));
 }
 
