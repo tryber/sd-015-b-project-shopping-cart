@@ -56,8 +56,7 @@ function sumCart() {
     return numbers;
   });
     const sum = arrayCart.reduce((acc, current) => (acc + current), 0);
-    document.querySelector(totalPrice).innerText = `${sum
-    .toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`;
+    document.querySelector(totalPrice).innerText = `${sum}`;
 }
 
 function cartItemClickListener(event) {
