@@ -40,7 +40,6 @@ function getSkuFromProductItem(item) {
 function savedCar() {
   const carItems = [...document.querySelectorAll(cartItem)];
   const localStorageItem = [];
-
   carItems.forEach((item) => {
     localStorageItem.push(item.innerHTML);
   });
@@ -50,14 +49,15 @@ function savedCar() {
 const totalPrice = ('.total-price');
 function sumCart() {
   const itemsCart = [...document.querySelectorAll(cartItem)];
-//  document.querySelector(totalPrice).innerText = 0;  
-  const arrayCart = itemsCart.map((item) => {
+  document.querySelector(totalPrice).innerText = 0;  
+    const arrayCart = itemsCart.map((item) => {
     const valueString = item.innerText.split('$').reverse()[0];
     const numbers = parseFloat(valueString, 10);
     return numbers;
   });
-  const sum = arrayCart.reduce((acc, current) => (acc + current), 0);
-  document.querySelector(totalPrice).innerText = `${sum}`;
+    const sum = arrayCart.reduce((acc, current) => (acc + current), 0);
+    document.querySelector(totalPrice).innerText = `${sum
+    .toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`;
 }
 
 function cartItemClickListener(event) {
@@ -122,7 +122,7 @@ function recoveryCar() {
     const itemsCar = document.querySelector(classeCartItens);
     const li = document.createElement('li');
     li.innerHTML = item;
-    li.classList.add(cartItem);
+    li.classList.add('cart__item');
     li.addEventListener('click', cartItemClickListener);
     itemsCar.append(li);
   });
