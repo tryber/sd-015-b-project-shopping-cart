@@ -26,15 +26,37 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+let cartItems;
+const myClassNames = ['.cart__items'];
+
+const createLoading = () => {
+  cartItems = document.querySelector(myClassNames[0]);
+  const loading = document.createElement('p');
+  loading.className = 'loading';
+  loading.innerText = 'Loading...';
+  cartItems.appendChild(loading);
+};
+
+const removeLoading = () => {
+  cartItems = document.querySelector(myClassNames[0]);
+  const loading = document.querySelector('.loading');
+  cartItems.removeChild(loading);
+};
+
 const getFetch = (url, onSucess, onFail) => {
-  fetch(url)
+  const myFetch = fetch(url)
     .then((response) => response.json())
-    .then((response) => onSucess(response))
+    .then((response) => {
+      removeLoading();  
+      onSucess(response);
+    })
     .catch((error) => onFail(error));
+  return myFetch;
 };
 
 async function getProductList(url, product, onSucess, onFail) {
   try {
+    createLoading();
     const urlSearch = `${url}${product}`;
     return await getFetch(urlSearch, onSucess, onFail);
   } catch (error) {
@@ -60,7 +82,7 @@ const verifyLocalStorage = () => {
 };
 
 const createFieldTotalPrice = () => {
-  const parent = document.getElementsByClassName('cart')[0];
+  const parent = document.querySelector('.cart');
   const divTotalPrice = document.createElement('div');
   divTotalPrice.className = 'div-total-price';
   const LabelTotalPrice = document.createElement('span');
@@ -74,7 +96,7 @@ const createFieldTotalPrice = () => {
 };
 
 const updateTotalPrice = () => {
-  const totalPrice = document.getElementsByClassName('total-price')[0];
+  const totalPrice = document.querySelector('.total-price');
   const myStorage = verifyLocalStorage();
   totalPrice.innerText = myStorage.reduce((acc, storage) => acc + storage.price, 0);
 };
@@ -95,7 +117,7 @@ const setItensOnPage = (response) => {
   const itens = [];
   response.results.forEach((res) =>
     itens.push(formatItemListProducts(res.id, res.title, res.thumbnail)));
-  const mySection = document.getElementsByClassName('items')[0];
+  const mySection = document.querySelector('.items');
   itens.forEach((element) => appendProductItem(mySection, element));
 };
 
@@ -118,8 +140,8 @@ const formatItemListCart = (sku, name, salePrice) =>
   ({ sku, name, salePrice });
 
 const setItensOnCart = (response) => {
-  const mySection = document.getElementsByClassName('cart__items')[0];
-  mySection.appendChild(createCartItemElement(formatItemListCart(response.id,
+  cartItems = document.querySelector(myClassNames[0]);
+  cartItems.appendChild(createCartItemElement(formatItemListCart(response.id,
     response.title, response.price)));
   setLocalStorage(response.id, response.title, response.price);
   updateTotalPrice();
@@ -127,9 +149,9 @@ const setItensOnCart = (response) => {
 
 const updateCartOnLoadPage = () => {
   const myStorage = verifyLocalStorage();
-  const mySection = document.getElementsByClassName('cart__items')[0];
+  cartItems = document.querySelector(myClassNames[0]);
   myStorage.forEach((storage) => {
-  mySection.appendChild(createCartItemElement(formatItemListCart(storage.sku,
+  cartItems.appendChild(createCartItemElement(formatItemListCart(storage.sku,
     storage.name, storage.price)));
   });
   updateTotalPrice();
@@ -144,19 +166,19 @@ const getProductSelected = (event) => {
 };
 
 const getClickAddButton = () => {
-  const items = document.getElementsByClassName('items')[0];
+  const items = document.querySelector('.items');
   items.addEventListener('click', getProductSelected);
 };
 
 const cleanCart = () => {
-  const cartItems = document.getElementsByClassName('cart__items')[0];
+  cartItems = document.querySelector(myClassNames[0]);
   cartItems.innerHTML = '';
   localStorage.removeItem('ShoppingCartProject');
   updateCartOnLoadPage();
 };
 
 const clickCleanCart = () => {
-  const emptyCart = document.getElementsByClassName('empty-cart')[0];
+  const emptyCart = document.querySelector('.empty-cart');
   emptyCart.addEventListener('click', cleanCart);
 };
 
