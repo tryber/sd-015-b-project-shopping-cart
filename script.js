@@ -1,5 +1,5 @@
 const API_URL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
-const cartContainer = document.querySelector('.cart__items');
+
 let totalPrice = 0;
 
 function createProductImageElement(imageSource) {
@@ -40,6 +40,10 @@ function calculatePrice(price, type) {
   priceCointainer.innerText = parseFloat((totalPrice).toFixed(2));
 }
 
+function clearStorage() {
+  localStorage.clear();
+}
+
 function cartItemClickListener(event) {
   // coloque seu código aqui
   const itemID = event.target.classList[1];
@@ -48,7 +52,6 @@ function cartItemClickListener(event) {
     .then((response) => response.json())
     .then((data) => calculatePrice(data.price, 'sub'));
   // Remove o elemento do localStorage
-  window.localStorage.removeItem(itemID);
   event.target.remove();
 }
 
@@ -57,9 +60,12 @@ function emptyCart(event) {
   const totalPriceReset = document.querySelector('.total-price');
   totalPriceReset.innerText = 0;
   // remove os items do cart
-  while (cartContainer.firstChild) {
-    cartContainer.removeChild(cartContainer.firstChild);
+  const cartOl = document.querySelector('ol');
+  while (cartOl.firstChild) {
+    cartOl.removeChild(cartOl.firstChild);
   }
+  // remove todos os items do localStorage
+  clearStorage();
 }
 
 function createListenerCartItem(li) {
@@ -72,12 +78,14 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.className = `cart__item, ${sku}`;
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   createListenerCartItem(li);
+  // Adiciona item ao localStorage
   saveItem(sku, li);
   return li;
 }
 async function addElementToCart(event) {
   const itemID = event.target.parentNode.firstChild.innerText;
   const itemUrl = `https://api.mercadolibre.com/items/${itemID}`;
+  const cartContainer = document.querySelector('.cart .cart__items');
   fetch(itemUrl, { method: 'GET' })
   .then((response) => response.json())
   .then((data) => {
@@ -125,15 +133,16 @@ function restoreCart() {
   for (let i = 0; i < localStorageLength; i += 1) {
     const localKey = window.localStorage.key(i);
     const itemUrl = `https://api.mercadolibre.com/items/${localKey}`;
+    const ol = document.querySelector('.cart__items');
     const item = document.createElement('li');
     item.className = `cart__item, ${localKey}`;
     item.innerText = window.localStorage.getItem(localKey);
-    cartContainer.appendChild(item);
+    ol.appendChild(item);
     // chama função que calcula preço
     fetch(itemUrl, { method: 'GET' })
     .then((response) => response.json())
     .then((data) => calculatePrice(data.price, 'plus'));
-    // chama função que adiciona eventos
+    // chama função que adiciona eventos aos items do carrinho
     createListenerCartItem(item);
   }
 }
