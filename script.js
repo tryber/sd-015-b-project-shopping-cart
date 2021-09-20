@@ -4,6 +4,7 @@ let userItems = [];
 const skuLength = 18;
 let total = 0;
 
+// creates image element
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -11,6 +12,7 @@ function createProductImageElement(imageSource) {
   return img;
 }
 
+// creates custom element (custom class + custom innerText)
 function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
   e.className = className;
@@ -19,14 +21,12 @@ function createCustomElement(element, className, innerText) {
 }
 
 // Source: https://stackoverflow.com/a/32229831
-function toFixedIfNecessary(value, dp) {
-  return +parseFloat(value).toFixed(dp);
-}
-
+// updates total price and displays on screen
 function updateTotal(totalPrice) {
-  const carTotal = document.querySelector('.total-price');
-  const correctTotalPrice = toFixedIfNecessary(totalPrice, 2);
-  carTotal.innerText = correctTotalPrice;
+  const cartTotal = document.querySelector('.total-price');
+  // adds decimals if needed (+), maximum of 2 decimals allowed (truncates)
+  const correctTotalPrice = +totalPrice.toFixed(2);
+  cartTotal.innerText = correctTotalPrice;
 }
 
 function removeItemFromStorage(origin) {
@@ -40,16 +40,19 @@ function removeItemFromStorage(origin) {
   const price = elementText.slice(initialPosPrice, elementTextLength);
   total -= price;
   updateTotal(total);
+  // removes item from array
   userItems.splice(userItems.indexOf(sku), 1);
   localStorage.setItem('userItems', JSON.stringify(userItems));
 }
 
+// calls to remove item from local storage and removes element from HTML
 function removeItem(origin) {
   removeItemFromStorage(origin);
   const element = origin.target;
   element.remove();
 }
 
+// clear cart function, sets local storage, total, cart to 0
 function doEmptyCart() {
   const productList = document.querySelector('.cart__items');
   productList.innerText = '';
@@ -59,6 +62,7 @@ function doEmptyCart() {
   updateTotal(total);
 }
 
+// creates cart item element
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
@@ -136,10 +140,12 @@ function resultsForEach(results) {
   results.forEach((result) => mapToDesiredObj(result));
 }
 
+// loads cart on initialization, if user has data in local storage
 async function loadCart(userData) {
   await userData.forEach((item) => fetchProduct(item));
 }
 
+// checks local storage
 function retrieveUserData() {
   const userData = localStorage.getItem('userItems');
   if (userData) {
