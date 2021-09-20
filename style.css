@@ -8,7 +8,7 @@
   display: flex;
   flex-basis: 70%;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: center; 
 }
 
 .item {
@@ -19,7 +19,7 @@
   flex-direction: column;
   height: auto;
   margin: 5px;
-  width: 200px;
+  width: 200px; 
 }
 
 .item .item__sku {
@@ -29,7 +29,7 @@
 .item .item__title {
   flex-grow: 1;
   padding: 10px;
-  text-align: center;
+  text-align: center;  
 }
 
 .item .item__image {
@@ -53,5 +53,21 @@
 .cart .cart__title {
   flex-basis: 1;
   font-size: 16pt;
-  text-align: center;
+  text-align: center; 
 }
+.cart__item {
+  padding: 1rem;
+  width: 90%; 
+  border: 0.10rem solid gray;
+  margin: 1rem 0;
+  border-radius: 0.2rem;
+  list-style: none;
+  text-align: justify;
+}
+.empty-cart{
+  cursor: pointer;
+}
+
+
+
+
