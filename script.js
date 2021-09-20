@@ -95,10 +95,12 @@ function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
   e.className = className;
   e.innerText = innerText;
-  e.addEventListener('click', (event) => {
-    getProductID(event);
-    getPriceToIncrement(event);
-  });
+  if (element === 'button') {
+    e.addEventListener('click', (event) => {
+      getProductID(event);
+      getPriceToIncrement(event);
+    });
+  }
   return e;
 }
 
