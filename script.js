@@ -1,5 +1,6 @@
 const products = document.querySelector('.items');
 const userItems = [];
+const skuLength = 18;
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -15,7 +16,17 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
+function removeItemFromStorage(origin) {
+  const elementText = origin.target.innerText;
+  const initialPos = elementText.search(' ') + 1;
+  const sku = elementText.slice(initialPos, skuLength);
+  userItems.splice(userItems.indexOf(sku), 1);
+  localStorage.setItem('userItems', JSON.stringify(userItems));
+  // console.log('userItems:', userItems);
+}
+
 function removeItem(origin) {
+  removeItemFromStorage(origin);
   const element = origin.target;
   element.remove();
 }
@@ -28,14 +39,20 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
+function addCartItemToStorage(item) {
+  const { sku } = item;
+  userItems.push(sku);
+  localStorage.setItem('userItems', JSON.stringify(userItems));
+  // console.log('userItems:', userItems);
+}
+
 function createCartItemObj(item) {
   const cartItemObj = {
     sku: item.id,
     name: item.title,
     salePrice: item.price,
   };
-  userItems.push(cartItemObj.sku);
-  localStorage.setItem('userItems', userItems);
+  addCartItemToStorage(cartItemObj);
   const cart = document.querySelector('.cart__items');
   const listItem = createCartItemElement(cartItemObj);
   cart.appendChild(listItem);
@@ -87,6 +104,19 @@ function resultsForEach(results) {
   results.forEach((result) => mapToDesiredObj(result));
 }
 
+function loadCart(userData) {
+  userData.forEach((item) => fetchProduct(item));
+}
+
+function retrieveUserData() {
+  const userData = JSON.parse(localStorage.getItem('userItems'));
+  if (userData) {
+    loadCart(userData);
+  } else {
+    localStorage.setItem('userItems', JSON.stringify(userItems));
+  }
+}
+
 // gets list of computers
 window.onload = () => {
   async function get(url) {
@@ -99,11 +129,6 @@ window.onload = () => {
     }
     throw new Error('endpoint não existe');
   }
-  get('https://api.mercadolibre.com/sites/MLB/search?q=computador');
-
-  function retrieveUserData() {
-    const userData = localStorage.getItem('userItems');
-    console.log(userData);
-  }
+  get('https://api.mercadolibre.com/sites/MLB/search?q=computador');    
   retrieveUserData();
 };
