@@ -59,6 +59,28 @@ const verifyLocalStorage = () => {
   return myStorage;
 };
 
+const createFieldTotalPrice = () => {
+  const parent = document.getElementsByClassName('cart')[0];
+  const divTotalPrice = document.createElement('div');
+  divTotalPrice.className = 'div-total-price';
+  const LabelTotalPrice = document.createElement('span');
+  LabelTotalPrice.innerText = 'Preço total: $';
+  const fieldTotalPrice = document.createElement('span');
+  fieldTotalPrice.className = 'total-price';
+  fieldTotalPrice.innerText = '0';
+  parent.appendChild(divTotalPrice);
+  divTotalPrice.appendChild(LabelTotalPrice);
+  divTotalPrice.appendChild(fieldTotalPrice);
+};
+
+const updateTotalPrice = () => {
+  const totalPrice = document.getElementsByClassName('total-price')[0];
+  console.log(totalPrice);
+  const myStorage = verifyLocalStorage();
+  console.log(myStorage);
+  totalPrice.innerText = myStorage.reduce((acc, storage) => acc + storage.price, 0);
+};
+
 const setLocalStorage = (sku, name, price) => {
   const myStorage = verifyLocalStorage();
   myStorage.push({ sku, name, price });
@@ -83,6 +105,7 @@ function cartItemClickListener(event) {
   const parent = event.target.parentElement;
   parent.removeChild(event.target);
   removeItemLocalStorage(event.target.innerText.split('|')[0].split(':')[1].trim());
+  updateTotalPrice();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -101,6 +124,7 @@ const setItensOnCart = (response) => {
   mySection.appendChild(createCartItemElement(formatItemListCart(response.id,
     response.title, response.price)));
   setLocalStorage(response.id, response.title, response.price);
+  updateTotalPrice();
 };
 
 const updateCartOnLoadPage = () => {
@@ -131,4 +155,5 @@ window.onload = () => {
   getProductList(url, product, setItensOnPage, console.log);
   getClickAddButton();
   updateCartOnLoadPage();
+  createFieldTotalPrice();
 };
