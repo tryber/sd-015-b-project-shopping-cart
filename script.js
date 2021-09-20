@@ -126,8 +126,17 @@ function searchMercadoLivreProducts() {
     .then(({ results: products }) => fillItemsSection(products));
 }
 
+function clearCartItems() {
+  const cartItemsOl = getCartItemsOl();
+  cartItemsOl.innerHTML = '';
+  showTotalPrice();
+}
+
 window.onload = () => {
+  const clearCartItemsButton = document.querySelector('.empty-cart');
+
   searchMercadoLivreProducts();
   loadCartItems();
   showTotalPrice();
+  clearCartItemsButton.addEventListener('click', clearCartItems);
 };
