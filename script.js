@@ -1,5 +1,3 @@
-// endpoint: "https://api.mercadolibre.com/sites/MLB/search?q=$QUERY"
-
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -42,4 +40,19 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-window.onload = () => { };
+async function getProducts() {
+  const response = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
+  const data = await response.json();
+
+  const divHTMl = document.querySelector('.items');
+
+  return (data.results).map((productObj) => {
+    const result = { sku: '', name: '', image: '' };
+    result.sku = productObj.id; result.name = productObj.title; result.image = productObj.thumbnail;
+    return divHTMl.appendChild(createProductItemElement(result));
+  });
+}
+
+window.onload = async () => {
+  await getProducts();
+};
