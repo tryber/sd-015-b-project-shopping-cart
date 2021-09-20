@@ -49,7 +49,7 @@ function cartItemClickListener(event) {
   // coloque seu código aqui
   // QUando um elemento for removido, à funçao sumItems deve ser chamada com
   // o valor do elemento multiplicado por -1, para aí subtrair o valor
-  sumItems();
+  // sumItems();
   this.remove();
 }
 
@@ -83,14 +83,10 @@ function criarElementos(dados) {
     });
 }
 function removeLoading() {
-  const parentNode = document.querySelector('.items');
-  // console.log(parentNode);
-  const textToRemove = document.querySelector('#text-loading');
-  const { firstChild } = parentNode;
-  // console.log(firstChild);
-  firstChild.removeChild(textToRemove);
-  // document.querySelector()
-  // textToRemove.style.visibility = "hidden";
+  // Seleciona elemento contendo o texto 'loading...'
+  const loadingNode = document.querySelector('.loading');
+  // Remove elemento
+  loadingNode.remove();
 }
 
 async function apiRequest(calledURL) {
@@ -99,7 +95,7 @@ async function apiRequest(calledURL) {
   .then((response) => response.json()) // Converte Binário para JSON
   .then((element) => {
     criarElementos(element.results);
-    removeLoading();
+    setTimeout(function() {removeLoading();}, 3000);
   })
   .catch((erro) => console.log(':::ERRO::: >>', erro));
 }
@@ -113,14 +109,16 @@ function salvarCarrinho() {
   // console.log(arrayCarrinho);
   localStorage.setItem('arrayCarrinho', JSON.stringify(arrayCarrinho));
 }
-
 function limpaLista() {
   const botaoLimpar = document.querySelector('.empty-cart');
+  const moneyValue = document.querySelector('.total-price');
   botaoLimpar.addEventListener('click', function () {
     const listaCompras = document.querySelectorAll('li');
     listaCompras.forEach((produto) => {
       produto.remove();
     });
+    moneyValue.innerText = 0;
+    
     // salvaCarrinho();
   });
 }
