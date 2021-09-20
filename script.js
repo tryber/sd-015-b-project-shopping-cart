@@ -64,6 +64,8 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
+  // console.log(event) //- daqui se ve que retorna o event.target que tem target: <li class="cart__item">
+  event.target.remove(); // aqui pega o evento selecionado e remove ele!!!! 
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
