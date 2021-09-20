@@ -125,8 +125,14 @@ const clearCart = () => {
   saveItemLocal();
 };
 
+const removeLoading = () => {
+  const getLoading = document.querySelector('.loading');
+  getLoading.remove();
+};
+
 window.onload = () => {
   getApi()
+  .then(() => removeLoading())
   .then(() => button());
   getItemLocal();
   const getButton = document.querySelector('.empty-cart');
