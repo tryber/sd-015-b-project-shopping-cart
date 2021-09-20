@@ -1,5 +1,6 @@
 const fetchML = async (url) => (await fetch(url)).json(); // função genérica do fetch para usar quando necessário
 
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -91,7 +92,15 @@ async function requestMLComputer(url) {
   }
 }
 
+const clearCart = () => {
+  const cartProductList = document.querySelector(cartOl); // R6 - pegando a lista de produtos
+  cartProductList.innerHTML = ''; // R6 - limpando o hmtl da lista de produtos
+  localStorage.clear(); // R6 - limpando o "historico" da lista de produtos
+};
+
 window.onload = () => {
   requestMLComputer(API_URL_MLCOMPUTER);
   loadingLocalStorage();
+  const clearCartButton = document.querySelector('.empty-cart');
+  clearCartButton.addEventListener('click', clearCart);
 };
