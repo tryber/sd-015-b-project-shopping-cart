@@ -21,24 +21,20 @@ function createCustomElement(element, className, innerText) {
 async function sumItems(param) {
   const totalPrice = document.querySelector('.total-price'); // Verifica o Preço
   const cartItems = document.querySelectorAll('.cart__item');
+  const arrayElementos = [...cartItems];
   // console.log(cartItems);
-
-  cartItems.forEach((item) => {
+  // console.log(arrayElementos);
+  if (arrayElementos.length === 0) {
+    totalPrice.innerText = 0;
+  }
+  const calculaTotal = arrayElementos.reduce((acc, item) => {
     const elementoItem = item.innerText;
     const posicaoElemento = elementoItem.match(/(PRICE: \W)/).index + 8;
     const totalValue = Number(elementoItem.slice(posicaoElemento));
-    // console.log(elementoEncontrado);
-    console.log(totalValue);
-  });
-
-  // if (totalPrice === 0) { // Se for 0
-  //   totalPrice.innerHTML = param; // Altera o valor do preço para o de param
-  // } else { // Senão
-  //   // Converte a string para número e soma o param
-  //   totalPrice.innerHTML = (Number(totalPrice.innerHTML) + param).toFixed(2);
-  // }
-  // return totalPrice.innerHTML; // Retorna a nova variável atribuída
-
+    totalPrice.innerText = acc + totalValue;
+    return acc + totalValue;
+  }, 0);
+  // console.log(calculaTotal);
   // Implementar função Reduce
   // O reduce deve percorrer o texto dos itens da lista do carrinho
   // Deverá ser usado a funçao que procura pelo parâmetro buscado e retorna o index do primeiro caractere
@@ -67,8 +63,8 @@ function cartItemClickListener(event) {
   // coloque seu código aqui
   // QUando um elemento for removido, à funçao sumItems deve ser chamada com
   // o valor do elemento multiplicado por -1, para aí subtrair o valor
-  sumItems();
   this.remove();
+  sumItems();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -137,8 +133,10 @@ function limpaLista() {
       produto.remove();
     });
     moneyValue.innerText = 0;
+    setTimeout(function(){ sumItems(); }, 1000);
     // salvaCarrinho();
   });
+  
 }
 
 window.onload = () => {
