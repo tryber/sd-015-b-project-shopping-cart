@@ -1,3 +1,5 @@
+let price;
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -29,23 +31,38 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
+  const removePrice = event.target.getAttribute('price');
+  const resultado = parseFloat(price.innerHTML) - removePrice;
+  price.innerHTML = parseFloat(resultado.toFixed(2));
   event.target.remove();
 }
 
 async function sumPrices(param) {
-  const p = document.querySelector('.total-price');
-  p.innerHTML = (p.innerHTML === '') ? p.innerHTML = param
-  : p.innerHTML = parseFloat(p.innerHTML) + param;
-  return p.innerHTML;
+  const result = (price.innerHTML === '') ? price.innerHTML = param
+  : price.innerHTML = parseFloat(price.innerHTML) + param;
+  price.innerHTML = parseFloat(result.toFixed(2));
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.setAttribute('price', salePrice);
   li.addEventListener('click', cartItemClickListener);
   sumPrices(salePrice);
   return li;
+}
+
+function loadingAppearing() {
+  const loading = document.createElement('p');
+  loading.className = 'loading';
+  loading.innerHTML = 'loading...';
+  document.querySelector('.cart').appendChild(loading);
+}
+
+function loadingDisappearing() {
+  const loading = document.querySelector('.loading');
+  document.querySelector('.cart').removeChild(loading);
 }
 
 const requestAndAddToCart = async (event) => {
@@ -76,8 +93,10 @@ function addListnerToButton() {
 
 const requestProducts = async (product) => {
   try {
+    loadingAppearing();
     const response = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${product}`);
     const productJson = await response.json();
+    loadingDisappearing();
     const finalResult = productJson.results;
 
     finalResult.forEach((element) => {
@@ -95,6 +114,8 @@ const requestProducts = async (product) => {
 function cleanShopCart(event) {
   const result = event.target.nextElementSibling;
   result.innerHTML = '';
+  const p = document.querySelector('.total-price');
+  p.innerHTML = 0;
   return result;
 }
 
@@ -112,4 +133,6 @@ window.onload = () => {
   finalPrice.className = 'total-price';
   const sectionCart = document.querySelector('.cart');
   sectionCart.appendChild(finalPrice);
+  price = document.querySelector('.total-price');
+  console.log(price);
 };
