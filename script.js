@@ -29,7 +29,7 @@ async function sumItems(param) {
   return totalPrice.innerHTML; // Retorna a nova variável atribuída
 }
 
-asycn function subItems(param) {
+async function subItems(param) {
   return 0;
 }
 
