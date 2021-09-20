@@ -1,8 +1,22 @@
+const showLoading = () => {
+  const loading = document.createElement('span');
+  loading.classList.add('loading');
+  loading.innerText = 'Loading...';
+  loading.style.display = 'block';
+  document.querySelector('.container').appendChild(loading);
+};
+const hideLoading = () => {
+  const loading = document.querySelector('.loading');
+  loading.remove();
+};
+
 const getProductsList = async (wantedProduct) => {
   const API_URL = `https://api.mercadolibre.com/sites/MLB/search?q=${wantedProduct}`;
   try { 
+    showLoading();
     const data = await fetch(API_URL);
     const translatedData = await data.json();
+    hideLoading();
     const productsList = translatedData.results;
     const treatedProductsList = productsList.map((product) => ({
         sku: product.id,
@@ -18,8 +32,10 @@ const getProductsList = async (wantedProduct) => {
 const getProductBySku = async (sku) => {
   const API_URL = `https://api.mercadolibre.com/items/${sku}`;
   try {
+    showLoading();
     const data = await fetch(API_URL);
     const translatedData = await data.json();
+    hideLoading();
     const productItem = {
       sku: translatedData.id,
       name: translatedData.title,
@@ -52,8 +68,8 @@ const getCartItemsPrices = async () => {
 
 const updateTotal = async () => {
   const prices = await getCartItemsPrices();
-  const totalPriceElement = document.querySelector('.total-price');
   const total = prices.reduce((acc, price) => acc + price, 0);
+  const totalPriceElement = document.querySelector('.total-price');
   totalPriceElement.innerText = `${total}`;
 };
 
