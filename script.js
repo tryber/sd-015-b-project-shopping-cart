@@ -1,4 +1,15 @@
 const apiProducts = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
+const cartItems = document.querySelector('.cart__items');
+const totalValueCart = document.createElement('span');
+const cart = document.querySelector('.cart');
+cartItems.insertAdjacentElement('afterend', totalValueCart);
+totalValueCart.innerText = '00.00';
+totalValueCart.className = 'total-price';
+const loadingText = document.createElement('span');
+loadingText.innerText = '...Loading';
+loadingText.className = 'loading';
+loadingText.style.color = 'blue';
+loadingText.style.display = 'block';
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -28,20 +39,22 @@ function createProductItemElement({ sku, name, image }) {
 
 async function fetchApiItems() {
   try {
+    totalValueCart.insertAdjacentElement('beforebegin', loadingText);
     const result = await fetch(apiProducts);
     const data = await result.json();
-    return data.results.forEach(({ id, title, thumbnail }) => {
-      const itemElement = {
-        sku: id,
-        name: title,
-        image: thumbnail,
-      };
-      const itemsClass = document.querySelector('.items');
-      const itemElementToAppend = createProductItemElement(itemElement);
-      itemsClass.appendChild(itemElementToAppend);
+    data.results.forEach(({ id, title, thumbnail }) => {
+    const itemElement = {
+      sku: id,
+      name: title,
+      image: thumbnail,
+    };
+    const itemsClass = document.querySelector('.items');
+    const itemElementToAppend = createProductItemElement(itemElement);
+    itemsClass.appendChild(itemElementToAppend);
     });
+    cart.removeChild(loadingText);
   } catch (e) {
-    return console.error('Não foi possível carregar os items da página');
+    return console.error('Não foi possível carregar os items da página', e);
   }
 }
 
@@ -49,11 +62,6 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-const cartItems = document.querySelector('.cart__items');
-const totalValueCart = document.createElement('span');
-cartItems.insertAdjacentElement('afterend', totalValueCart);
-totalValueCart.innerText = '00.00';
-totalValueCart.className = 'total-price';
 let totalPriceReturn = 0;
 function cartItemClickListener(event) {
   const targetedLi = event.target;
@@ -96,17 +104,22 @@ function addToCartResponse(id, title, price) {
 }
 
 function addToCart(event) {
+  totalValueCart.insertAdjacentElement('beforebegin', loadingText);
   const sectionSelected = event.target.parentNode;
   const idToApi = sectionSelected.firstChild.innerText;
   const apiWithId = `https://api.mercadolibre.com/items/${idToApi}`;
   return fetch(apiWithId)
     .then((result) => result.json())
-    .then(({ id, title, price }) => addToCartResponse(id, title, price));
+    .then(({ id, title, price }) => { 
+      addToCartResponse(id, title, price);
+      cart.removeChild(loadingText);
+    });
 }
 
 function emptyCart() {
   cartItems.innerHTML = '';
   totalValueCart.innerText = '00.00';
+  totalPriceReturn = 0;
   window.localStorage.setItem('product', cartItems.innerHTML);
 }
 
@@ -116,14 +129,17 @@ function initialize() {
   const li = document.querySelectorAll('li');
   li.forEach((element) => { element.addEventListener('click', cartItemClickListener); });
   fetchApiItems()
+  .catch(() => console.error('Could not fetch APIs'))
   .then(() => { 
     const itemAddButton = document.querySelectorAll('.item__add');
     itemAddButton.forEach((btn) => btn.addEventListener('click', addToCart));
   })
+  .catch(() => console.error('Could not add item to cart'))
   .then(() => {
     const emptyBtn = document.querySelector('.empty-cart');
     emptyBtn.addEventListener('click', emptyCart);
-  });
+  })
+  .catch(() => console.error('Could not clear cart'));
 }
 
 window.onload = () => { 
