@@ -31,6 +31,9 @@ function createObjectProduct(dados) {
     const item = createProductItemElement(element);
     divHTML.appendChild(item);
   });
+  let buttons = document.querySelectorAll('.item__add');
+  console.log(buttons);
+  getButton();
   return getDados;
 }
 // feito durante mentoria com passo a passo da carol
@@ -38,7 +41,7 @@ function createObjectProduct(dados) {
 function getAPI() {
   fetch('https://api.mercadolibre.com/sites/MLB/search?q=$computador')
   .then((response) => response.json())
-  .then((obj) => createObjectProduct(obj.results));  
+  .then((obj) => createObjectProduct(obj.results));
 }
 
 // function getSkuFromProductItem(item) {
@@ -49,13 +52,24 @@ function getAPI() {
 //   // coloque seu código aqui
 // }
 
-// function createCartItemElement({ sku, name, salePrice }) {
-//   const li = document.createElement('li');
-//   li.className = 'cart__item';
-//   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-//   li.addEventListener('click', cartItemClickListener);
-//   return li;
-// }
+// evento
+function addItem (event) {
+  const button = document.querySelector('button');
+  const selecting = () => {
+    let sectionItems = document.querySelector('.items');
+    sectionItems.className = 'item__add selected';
+  }
+  button.addEventListener('click', selecting)
+
+}
+
+function createCartItemElement({ id: sku, title: name, price: salePrice }) {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.addEventListener('click', cartItemClickListener);
+  return li;
+}
 
 window.onload = () => { 
   getAPI();
