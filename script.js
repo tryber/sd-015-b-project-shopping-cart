@@ -1,5 +1,4 @@
-const getProductsList = async () => {
-  const wantedProduct = 'computador';
+const getProductsList = async (wantedProduct) => {
   const API_URL = `https://api.mercadolibre.com/sites/MLB/search?q=${wantedProduct}`;
   try { 
     const data = await fetch(API_URL);
@@ -32,23 +31,6 @@ const getProductBySku = async (sku) => {
   }
 };
 
-const getCarItemsPrices = async () => {
-  const cartItemsElements = document.querySelectorAll('.cart__item');
-  const cartItems = Array.from(cartItemsElements);
-  const prices = await Promise.all(cartItems.map(async ({ id: sku }) => {
-    const { salePrice } = await getProductBySku(sku);
-    return salePrice;
-  }));
-  return prices;
-};
-
-const updateTotal = async () => {
-  const prices = await getCarItemsPrices();
-  const totalPriceElement = document.querySelector('.total-price');
-  const total = prices.reduce((acc, price) => acc + price, 0);
-  totalPriceElement.innerText = `${total}`;
-};
-
 const saveCartOnLocalStorage = () => {
   const cartItems = Array.from(document.getElementsByClassName('cart__item'));
   if (cartItems.length > 0) {
@@ -59,10 +41,27 @@ const saveCartOnLocalStorage = () => {
   }
 };
 
+const getCartItemsPrices = async () => {
+  const cartItems = Array.from(document.querySelectorAll('.cart__item'));
+  const prices = await Promise.all(cartItems.map(async ({ id: sku }) => {
+    const { salePrice } = await getProductBySku(sku);
+    return salePrice;
+  }));
+  return prices;
+};
+
+const updateTotal = async () => {
+  const prices = await getCartItemsPrices();
+  const totalPriceElement = document.querySelector('.total-price');
+  const total = prices.reduce((acc, price) => acc + price, 0);
+  totalPriceElement.innerText = `${total}`;
+};
+
 const clearCart = () => {
   const cart = document.querySelector('.cart__items');
   cart.innerHTML = '';
   saveCartOnLocalStorage();
+  updateTotal();
 };
 
 const createImageElement = (imageSource) => {
@@ -118,8 +117,8 @@ const createProductItemElement = ({ sku, name, image }) => {
   return itemSection;
 };
 
-const renderItemsList = async () => {
-  const itemList = await getProductsList();
+const renderItemsList = async (product) => {
+  const itemList = await getProductsList(product);
   const allItemsSection = document.querySelector('.items');
   itemList.forEach((item) => {
     allItemsSection.appendChild(createProductItemElement(item));
@@ -134,7 +133,7 @@ const renderPreviousCartItems = (previousCart) => {
 };
 
 window.onload = () => {
-  renderItemsList();
+  renderItemsList('computador');
   const previousCart = localStorage.getItem('shoppingCart');
   if (previousCart) {
     renderPreviousCartItems(previousCart);
