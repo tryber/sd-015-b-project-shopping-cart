@@ -44,7 +44,8 @@ async function getTotalPrice() {
   await Promise.all(promises).then((values) =>
     values.forEach((value) => {
       totalPrice += value;
-    }));
+    })
+  );
 
   return totalPrice;
 }
@@ -115,15 +116,30 @@ function createProductItemElement({ sku, name, image }) {
 
 function fillItemsSection(products) {
   const itemsSection = document.querySelector('.items');
-  products.forEach(({ id, title, thumbnail }) => {    
+  products.forEach(({ id, title, thumbnail }) => {
     itemsSection.appendChild(createProductItemElement({ sku: id, name: title, image: thumbnail }));
   });
 }
+function deleteLoading() {
+  const loading = document.querySelector('.loading');
+  loading.remove();
+}
+
+function showLoading() {
+  const loading = document.createElement('span');
+  loading.className = 'loading';
+  loading.innerText = 'Loading...';
+  document.body.appendChild(loading);
+}
 
 function searchMercadoLivreProducts() {
+  showLoading();
   fetch(PC_SEARCH_URL)
     .then((response) => response.json())
-    .then(({ results: products }) => fillItemsSection(products));
+    .then(({ results: products }) => {
+      deleteLoading();
+      fillItemsSection(products);
+    });
 }
 
 function clearCartItems() {
