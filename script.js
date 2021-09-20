@@ -36,11 +36,25 @@ function cartItemClickListener(event) {
   }
 }
 
+// function valorTotalDaCompra(valor) {
+//   const preco = Number(valor);
+//   const carrinho = document.querySelector('.cart');
+//   let valorTotal = 0;
+//   valorTotal += preco;
+//   console.log(valorTotal);
+//   const spamValor = document.createElement('spam');
+//   spamValor.innerText = valorTotal;
+//   carrinho.appendChild(spamValor);
+// }
+
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
+  // const informacoesProduto = li.innerText;
+  // const valorProduto = informacoesProduto.split('$')[1];
+  // // valorTotalDaCompra(valorProduto);
   return li;
 }
 
@@ -70,9 +84,10 @@ function buscarInfomacaoAppiPeloId(id) {
   }
 }
 
+// Função que vai retornar o id do produto clicando no butão adicionar  ao carrinho;
 function buscarIdQuandoClick() {
-  const buttonDeAdicionar = document.querySelector('.items');
-  buttonDeAdicionar.addEventListener('click', function buscarId(event) {
+  const sectionItems = document.querySelector('.items');
+  sectionItems.addEventListener('click', function buscarId(event) {
     const eventos = event.target;
     if (eventos.className === 'item__add') {
       const sectionInformacaoProduto = event.target.parentElement;
@@ -83,8 +98,23 @@ function buscarIdQuandoClick() {
   });
 } 
 
+// Função que vai deletar todos os items do carrinho de compra
+function deletarTodosProdutosCarrinho() {
+  const buttonEsvariarCarrinho = document.querySelector('.empty-cart');
+  buttonEsvariarCarrinho.addEventListener('click', function buscarInformacao() {
+    const ol = document.querySelector('.cart__items');
+    const listaLi = ol.childNodes;
+    for (let index = 0; index < listaLi.length; index += 1 * 0) {
+      if (listaLi[index].className === 'cart__item') {
+        listaLi[index].remove();
+      }
+    }
+  });
+}
+
 window.onload = () => { 
   buscarInfomacaoAppi('computador');
   buscarIdQuandoClick();
   buscarInfomacaoAppiPeloId();
+  deletarTodosProdutosCarrinho();
 };
