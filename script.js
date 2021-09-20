@@ -6,7 +6,8 @@ function createProductImageElement(imageSource) {
 }    
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
+  const itemToRemove = event.target;
+  itemToRemove.parentElement.removeChild(itemToRemove);
 }  
 
 function getSkuFromProductItem(item) {
