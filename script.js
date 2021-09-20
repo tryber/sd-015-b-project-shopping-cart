@@ -29,9 +29,13 @@ function cartItemClickListener(event) {
   saveCartItems(cartItemsOl);
 }
 
+function getCartItemsOl() {
+  return document.querySelector('.cart__items');
+}
+
 function loadCartItems() {
   if (typeof localStorage.cartItems !== 'undefined') {
-    const cartItemsOl = document.querySelector('.cart__items');
+    const cartItemsOl = getCartItemsOl();
     cartItemsOl.innerHTML = localStorage.cartItems;
 
     // transforma HTMLColection em array
@@ -43,6 +47,7 @@ function loadCartItems() {
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
+  li.dataset.sku = sku;
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   return li;
@@ -55,7 +60,7 @@ function handleAddButton(event) {
   fetch(ITEM_BASE_URL + sku)
     .then((response) => response.json())
     .then(({ id, title, price }) => {
-      const cartItemsOl = document.querySelector('.cart__items');
+      const cartItemsOl = getCartItemsOl();
       const product = { sku: id, name: title, salePrice: price };
       cartItemsOl.appendChild(createCartItemElement(product));
       saveCartItems(cartItemsOl);
@@ -77,7 +82,7 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
-function getThumbnailUrl(id) {
+function getMercadoLivreItem(id) {
   return fetch(ITEM_BASE_URL + id).then((response) => response.json());
 }
 
@@ -85,20 +90,36 @@ function fillItemsSection(products) {
   const itemsSection = document.querySelector('.items');
   products.forEach(async ({ id, title }) => {
     let thumbnail;
-    await getThumbnailUrl(id).then(({ pictures }) => {
+    await getMercadoLivreItem(id).then(({ pictures }) => {
       thumbnail = pictures[0].url;
     });
     itemsSection.appendChild(createProductItemElement({ sku: id, name: title, image: thumbnail }));
   });
 }
 
-function fetchMercadoLivre() {
+function searchMercadoLivreProducts() {
   fetch(PC_SEARCH_URL)
     .then((response) => response.json())
     .then(({ results: products }) => fillItemsSection(products));
 }
 
+async function getTotalPrice() {
+  const cartItems = getCartItemsOl().children;
+  const len = cartItems.length;
+  let totalPrice = 0;
+
+  for (let i = 0; i < len; i += 1) {
+    const { sku } = cartItems[i].dataset;
+
+    await getMercadoLivreItem(sku).then(({ price }) => {
+      totalPrice += price;
+    });
+  }
+  return totalPrice;
+}
+
 window.onload = () => {
-  fetchMercadoLivre();
+  searchMercadoLivreProducts();
   loadCartItems();
+  getTotalPrice().then((total) => console.log('total ', total));
 };
