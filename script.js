@@ -20,7 +20,7 @@ function createProductItemElement({ sku, name, image }) {
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
   section.appendChild(
-    createCustomElement('button', 'item__add', 'Adicionar ao carrinho!')
+    createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'),
   );
 
   return section;
@@ -32,8 +32,8 @@ function getSkuFromProductItem(item) {
 
 function cartItemClickListener(event) {
   // coloque seu código aqui
-  let target = event.target.innerText;
-  let cart = document.getElementsByClassName('cart__item');
+  const target = event.target.innerText;
+  const cart = document.getElementsByClassName('cart__item');
   for (let index = 0; index < cart.length; index++) {
     const element = cart[index];
     if (target == element.innerText) {
@@ -52,14 +52,14 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////////////////////////////
 
 let IDList = [];
 
 async function fetchPCs() {
   try {
     const res = await fetch(
-      'https://api.mercadolibre.com/sites/MLB/search?q=computador'
+      'https://api.mercadolibre.com/sites/MLB/search?q=computador',
     );
     const data = await res.json();
     return data;
@@ -70,9 +70,9 @@ async function fetchPCs() {
 async function setupProductList() {
   const itemList = document.querySelector('.items');
 
-  data = await fetchPCs();
+  const data = await fetchPCs();
   data.results.forEach((e) => {
-    let product = {
+    const product = {
       sku: e.id,
       name: e.title,
       image: e.thumbnail,
@@ -80,7 +80,6 @@ async function setupProductList() {
     const item = createProductItemElement(product);
     itemList.append(item);
   });
-
   const addButton = document.querySelectorAll('.item__add');
   addButton.forEach((e) => {
     e.addEventListener('click', (e) => {
@@ -104,6 +103,14 @@ async function getProductFromID(ID) {
     console.log(error);
   }
 }
+async function GetSumOfPrice(array) {
+  const prices = [];
+  await array.forEach(async (element) => {
+    const data = await getProductFromID(element);
+    prices.push(data.price);
+  });
+  const res = prices.reduce((acc, price) => acc + price, 0);
+}
 
 function createCardItems(array) {
   const card = document.querySelector('.cart__items');
@@ -116,20 +123,8 @@ function createCardItems(array) {
       salePrice: data.price,
     };
     card.append(createCartItemElement(product));
-    GetSumOfPrice(IDList);
   });
-}
-
-async function GetSumOfPrice(array) {
-  let sum = 0;
-  console.log('Setting Price');
-  array.forEach(async (element) => {
-    const data = await getProductFromID(element);
-    console.log(data);
-    sum += data.price;
-    console.log(sum);
-    document.querySelector('.total-price').innerHTML = sum;
-  });
+  GetSumOfPrice(IDList);
 }
 
 window.onload = () => {
