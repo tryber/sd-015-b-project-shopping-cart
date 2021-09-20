@@ -109,10 +109,19 @@ function removeLoading() {
   loading.remove();
 }
 
+function emptyCart() {
+  const removeBtn = document.querySelector('.empty-cart');
+
+  removeBtn.addEventListener('click', () => {
+    cartElement.innerHTML = '';
+  });
+}
+
 window.onload = async () => {
   await productList();
   removeLoading();
   handleClick();
   findId();
   getItems();
+  emptyCart();
 };
