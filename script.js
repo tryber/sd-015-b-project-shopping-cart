@@ -35,7 +35,7 @@ function calculatePrice(price, type) {
   const priceCointainer = document.querySelector('.total-price');
   if (type === 'plus') { totalPrice += price; }
   if (type === 'sub') { totalPrice -= price; }
-  // Fonte: https://pt.stackoverflow.com/questions/114740/como-arredondar-com-2-casas-decimais-no-javascript-utilizando-uma-regra-espec%C3%ADfi
+  // Fonte: https://www.ti-enxame.com/pt/javascript/como-lidar-com-precisao-do-numero-de-ponto-flutuante-em-javascript/967093093/
   priceCointainer.innerText = parseFloat((totalPrice).toFixed(2));
 }
 
@@ -49,6 +49,17 @@ function cartItemClickListener(event) {
     .then((data) => calculatePrice(data.price, 'sub'));
   
   event.target.remove();
+}
+
+function emptyCart(event) {
+  // reseta o preço para 0 
+  const totalPriceReset = document.querySelector('.total-price');
+  totalPriceReset.innerText = 0;
+  // remove os items do cart
+  const cartContainer = document.querySelector('.cart__items');
+  while (cartContainer.firstChild) {
+    cartContainer.removeChild(cartContainer.firstChild);
+  }
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -82,8 +93,10 @@ async function addElementToCart(event) {
 function addEvents() {
   const buttons = document.querySelectorAll('.item__add');
   for (let i = 0; i < buttons.length; i += 1) {
-    buttons[i] = document.addEventListener('click', addElementToCart);
+    buttons[i].addEventListener('click', addElementToCart);
    }
+  const clearButton = document.querySelector('.empty-cart');
+  clearButton.addEventListener('click', emptyCart);
  }
 
 function fetchMercadoLivreAPI() {
