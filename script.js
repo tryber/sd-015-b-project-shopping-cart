@@ -77,6 +77,18 @@ function getProducts() {
   }));
 }
 
+function cleanCart() {
+  const ol = document.querySelector('.cart__items');
+  const p = document.querySelector('.total-price');
+  ol.innerHTML = '';
+  p.innerText = 0;
+}
+
+function buttonCleanListener() {
+  const buttonCleanCart = document.querySelector('.empty-cart');
+  buttonCleanCart.addEventListener('click', cleanCart);
+}
 window.onload = () => {
   getProducts();
+  buttonCleanListener();
 };
