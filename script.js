@@ -8,7 +8,6 @@ async function requestProductDetails(ids) {
     name: title,
     salePrice: price,
   };
-  // console.log(objectInfosRequest);
   return objectInfosRequest;
 }
 
@@ -46,9 +45,10 @@ function getSkuFromProductItem(item) {
 function cartItemClickListener(event) {
   // adiciona evento ao clicar no item no carrinho
   // vai remover o item do carrinho
-  const ol = document.querySelector('.cart__items');
+  const ol = document.getElementsByClassName('cart__items');
   ol.removeChild(event.target);
 }
+
 // espera como parametro o retorno de requestProductDetails
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
@@ -58,9 +58,16 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
+function getTotalPrice({ salePrice }) {
+  const totalPriceConteiner = document.querySelector('.total-price');
+  const totalPrice = (Number(totalPriceConteiner.innerText) + salePrice).toFixed(2);
+  totalPriceConteiner.innerText = totalPrice;
+  return totalPrice;
+}
+
 async function addElementsCreated(infos) {
-  const items = await document.querySelector('.items');
   const ol = document.querySelector('.cart__items');
+  const items = await document.querySelector('.items');
   infos.forEach((info) => {
     const elementCreated = createProductItemElement(info);
     items.appendChild(elementCreated);
@@ -72,13 +79,15 @@ async function addElementsCreated(infos) {
       const objectProduct = await requestProductDetails(itemSku);
       const cartItem = createCartItemElement(objectProduct);
       ol.appendChild(cartItem);
+      getTotalPrice(objectProduct);
     });
   });
 }
+
 // requisicao a api do mlb 
 async function requestProductMlb(product) {
   const API_URL = 'https://api.mercadolibre.com/sites/MLB/search?q=';
-  // filho do body span loading...
+  // filho do body span loading..arrayItems.
   const response = await fetch(`${API_URL}${product}`);
   const computers = await response.json();
   const results = await computers.results;
@@ -94,4 +103,10 @@ async function requestProductMlb(product) {
 
 window.onload = () => {
   requestProductMlb('computador');
+  const buttonEmptyCart = document.querySelector('.empty-cart');
+  buttonEmptyCart.addEventListener('click', () => {
+    const ol = document.querySelector('.cart__items');
+    ol.innerHTML = '';
+    console.log(ol);
+  });
 };
