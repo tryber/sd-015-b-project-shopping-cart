@@ -5,7 +5,7 @@ const urlApi = 'https://api.mercadolibre.com/sites/MLB';
 //const cart__items = document.querySelector('.cart__items');
 //const totalPrice = document.querySelector('.total-price');
 //const emptyCart= document.querySelector('.empty-cart');
-//const loading = document.querySelector('.loading');
+//
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -31,6 +31,7 @@ async function getComputer() {
     //console.log(listComp[key]) // pra ver como ele separa cada objeto em um elemento, que será percorrido com o indice chave
     document.querySelector('.items').appendChild(createProductItemElement(listComp[key])); // faz o apend qdo a função é executada, fazendo assim a lista de produtos.
   }
+  document.querySelector('.loading').remove();
 }
 /* REQUISITO 2 -  Cada produto na página HTML possui um botão com o nome Adicionar ao carrinho!. Ao clicar nesse botão você deve realizar uma requisição para o endpoint: "https://api.mercadolibre.com/items/$ItemID" onde $ItemID deve ser o valor id do item selecionado.*/
 async function addCarrinho(sku){
@@ -77,9 +78,6 @@ function createCartItemElement({ sku, name, salePrice }) {
     return li;
 }
 
-window.onload = () => { 
-  
-};
 window.onload = async () => {
   try { // faz o try / catch da API - pra ver se retorna mesmo os computadores 
     const computer = await getComputer();
