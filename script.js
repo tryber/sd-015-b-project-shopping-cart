@@ -99,7 +99,7 @@ function createCartItemElement({ id, name, salePrice }) {
   const ol = document.querySelector('.cart__items');
   const li = document.createElement('li');
   li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.innerText = `SKU: ${id} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   ol.appendChild(li);
   saveCartItems();
@@ -123,13 +123,22 @@ function addEventListenerToButtons() {
   });
 }
 
+function createLoadingScreen() {
+  const loading = document.createElement('h1');
+  loading.innerText = 'loading';
+  loading.className = 'loading';
+  document.body.appendChild(loading);
+}
+
 async function requireAndCreateEachProduct() {
   const requisicao = requireApi('computador');
+  createLoadingScreen();
   const done = await requisicao;
   done.forEach((product) => {
     const { title: name, id, thumbnail: image } = product;
     createProductItemElement({ id, name, image });
   });
+  document.querySelector('.loading').remove();
   addEventListenerToButtons();
 }
 
