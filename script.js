@@ -116,7 +116,7 @@ function limpaLista() {
       produto.remove();
     });
     moneyValue.innerText = 0;
-    setTimeout (function () { sumItems(); }, 1000);
+    sumItems();
   });  
 }
 
