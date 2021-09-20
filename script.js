@@ -103,7 +103,7 @@ function createCartItemElement({ name, salePrice, picture }) {
   img.src = picture;
   p.className = 'cart__item__text';
   p.innerText = `${name}\n${salePrice.toLocaleString('pt-BR',
-  { style: 'currency', currency: 'BRL' })}`;
+    { style: 'currency', currency: 'BRL' })}`;
   div.append(img, p);
   li.className = 'cart__item';
   li.append(div);
@@ -117,13 +117,12 @@ function getSearchValue() {
 
 function resetPageItems() {
   const container = document.querySelector('.container');
-  const cart = document.querySelector('.cart');
   const items = document.querySelector('.items');
   const section = document.createElement('section');
 
   items.remove();
   section.classList.add('items');
-  container.insertBefore(section, cart);
+  container.append(section);
 }
 
 function checkApiSearch(search) {
@@ -184,7 +183,7 @@ function addListenersToBtns() {
 
 function removeLoadingMsg() {
   const loading = document.querySelector('.loading');
-  loading.remove();
+  if (loading) loading.remove();
 }
 
 async function initialExecOrder(search) {
@@ -199,21 +198,25 @@ async function initialExecOrder(search) {
   }
 }
 
+function refillWithNewSearchWithClick() {
+  resetPageItems();
+  initialExecOrder(getSearchValue());
+}
+
+function refillWithNewSearchWithEnter(event) {
+  if (event.key === 'Enter') {
+    resetPageItems();
+    initialExecOrder(getSearchValue());
+  }
+}
+
 window.onload = () => {
   const retrieveCart = localStorage.getItem('currentCart');
   const btnSearch = document.querySelector('#button-search');
   const inputField = document.querySelector('#input-search');
   if (retrieveCart) retrieveSavedCart();
   initialExecOrder();
-  btnSearch.addEventListener('click', () => {
-    resetPageItems();
-    initialExecOrder(getSearchValue());
-  });
-  inputField.addEventListener('keydown', (event) => {
-    if (event.key === 'Enter') {
-      resetPageItems();
-      initialExecOrder(getSearchValue());
-    }
-  });
+  btnSearch.addEventListener('click', refillWithNewSearchWithClick);
 
+  inputField.addEventListener('keydown', refillWithNewSearchWithEnter);
 };
