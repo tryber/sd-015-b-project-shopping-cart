@@ -91,12 +91,23 @@ function increaseCart(item) {
   });
   }
 
+  function clearCart() {
+    const fullCart = document.querySelectorAll('.cart__item');
+    fullCart.forEach((element) => {
+      (element).remove();
+    });
+    cartTotal = 0;
+    cartSum();
+  }
+
 function prepareButtons() {
   const allItems = document.querySelectorAll('.item');
+  const removeItems = document.querySelector('.empty-cart');
   allItems.forEach((item) => {
     const button = item.querySelector('.item__add');
     button.addEventListener('click', () => increaseCart(item));
   });
+  removeItems.addEventListener('click', clearCart);
 }
 
 function load() {
