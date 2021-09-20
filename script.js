@@ -89,10 +89,15 @@ async function addElementsCreated(infos) {
 async function requestProductMlb(product) {
   const API_URL = 'https://api.mercadolibre.com/sites/MLB/search?q=';
   // filho do body span loading..arrayItems.
+  const { body } = document;
+  // console.log(body);
+  const span = createCustomElement('span', 'loading', 'loading...');
+  body.appendChild(span);
   const response = await fetch(`${API_URL}${product}`);
   const computers = await response.json();
   const results = await computers.results;
   // remover o filho de body com loading...
+  body.removeChild(span);
   const infosComputer = results.map(({ id, title, thumbnail }) => ({
     sku: id,
     name: title,
