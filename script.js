@@ -1,45 +1,45 @@
-function createProductImageElement(imageSource) {
-  const img = document.createElement('img');
+const myClassNames = ['.cart__items', '.loading', '.cart', '.total-price', '.items',
+  '.empty-cart', 'item__sku', 'item__title', 'item__add'];
+const myTags = ['p', 'div', 'span', 'li', 'img', 'section', 'button'];
+
+const createProductImageElement = (imageSource) => {
+  const img = document.createElement(myTags[4]);
   img.className = 'item__image';
   img.src = imageSource;
   return img;
-}
+};
 
-function createCustomElement(element, className, innerText) {
-  const e = document.createElement(element);
-  e.className = className;
-  e.innerText = innerText;
-  return e;
-}
+const createCustomElement = (element, className, innerText) => {
+  const elem = document.createElement(element);
+  elem.className = className;
+  elem.innerText = innerText;
+  return elem;
+};
 
-function createProductItemElement({ sku, name, image }) {
-  const section = document.createElement('section');
+const createProductItemElement = ({ sku, name, image }) => {
+  const section = document.createElement(myTags[5]);
   section.className = 'item';
-  section.appendChild(createCustomElement('span', 'item__sku', sku));
-  section.appendChild(createCustomElement('span', 'item__title', name));
+  section.appendChild(createCustomElement(myTags[2], myClassNames[6], sku));
+  section.appendChild(createCustomElement(myTags[2], myClassNames[7], name));
   section.appendChild(createProductImageElement(image));
-  section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
+  section.appendChild(createCustomElement(myTags[6], myClassNames[8], 'Adicionar ao carrinho!'));
   return section;
-}
+};
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
-
-let cartItems;
-const myClassNames = ['.cart__items'];
+const getSkuFromProductItem = (item) =>
+  item.querySelector(`${myTags[2]}.${myClassNames[6]}`).innerText;
 
 const createLoading = () => {
-  cartItems = document.querySelector(myClassNames[0]);
-  const loading = document.createElement('p');
+  const cartItems = document.querySelector(myClassNames[0]);
+  const loading = document.createElement(myTags[0]);
   loading.className = 'loading';
   loading.innerText = 'Loading...';
   cartItems.appendChild(loading);
 };
 
 const removeLoading = () => {
-  cartItems = document.querySelector(myClassNames[0]);
-  const loading = document.querySelector('.loading');
+  const cartItems = document.querySelector(myClassNames[0]);
+  const loading = document.querySelector(myClassNames[1]);
   cartItems.removeChild(loading);
 };
 
@@ -54,7 +54,7 @@ const getFetch = (url, onSucess, onFail) => {
   return myFetch;
 };
 
-async function getProductList(url, product, onSucess, onFail) {
+const getProductList = async (url, product, onSucess, onFail) => {
   try {
     createLoading();
     const urlSearch = `${url}${product}`;
@@ -62,7 +62,7 @@ async function getProductList(url, product, onSucess, onFail) {
   } catch (error) {
     console.log(`Erro encontrado no bloco getProductList(): ${error}`);
   }
-}
+};
 
 const formatItemListProducts = (sku, name, image) =>
   ({ sku, name, image });
@@ -82,12 +82,12 @@ const verifyLocalStorage = () => {
 };
 
 const createFieldTotalPrice = () => {
-  const parent = document.querySelector('.cart');
-  const divTotalPrice = document.createElement('div');
+  const parent = document.querySelector(myClassNames[2]);
+  const divTotalPrice = document.createElement(myTags[1]);
   divTotalPrice.className = 'div-total-price';
-  const LabelTotalPrice = document.createElement('span');
+  const LabelTotalPrice = document.createElement(myTags[2]);
   LabelTotalPrice.innerText = 'Preço total: $';
-  const fieldTotalPrice = document.createElement('span');
+  const fieldTotalPrice = document.createElement(myTags[2]);
   fieldTotalPrice.className = 'total-price';
   fieldTotalPrice.innerText = '0';
   parent.appendChild(divTotalPrice);
@@ -96,7 +96,7 @@ const createFieldTotalPrice = () => {
 };
 
 const updateTotalPrice = () => {
-  const totalPrice = document.querySelector('.total-price');
+  const totalPrice = document.querySelector(myClassNames[3]);
   const myStorage = verifyLocalStorage();
   totalPrice.innerText = myStorage.reduce((acc, storage) => acc + storage.price, 0);
 };
@@ -114,33 +114,33 @@ const removeItemLocalStorage = (sku) => {
 };
 
 const setItensOnPage = (response) => {
-  const itens = [];
+  const arrayItems = [];
   response.results.forEach((res) =>
-    itens.push(formatItemListProducts(res.id, res.title, res.thumbnail)));
-  const mySection = document.querySelector('.items');
-  itens.forEach((element) => appendProductItem(mySection, element));
+    arrayItems.push(formatItemListProducts(res.id, res.title, res.thumbnail)));
+  const itemResponse = document.querySelector(myClassNames[4]);
+  arrayItems.forEach((element) => appendProductItem(itemResponse, element));
 };
 
-function cartItemClickListener(event) {
+const cartItemClickListener = (event) => {
   const parent = event.target.parentElement;
   parent.removeChild(event.target);
   removeItemLocalStorage(event.target.innerText.split('|')[0].split(':')[1].trim());
   updateTotalPrice();
-}
+};
 
-function createCartItemElement({ sku, name, salePrice }) {
-  const li = document.createElement('li');
+const createCartItemElement = ({ sku, name, salePrice }) => {
+  const li = document.createElement(myTags[3]);
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   return li;
-}
+};
 
 const formatItemListCart = (sku, name, salePrice) =>
   ({ sku, name, salePrice });
 
 const setItensOnCart = (response) => {
-  cartItems = document.querySelector(myClassNames[0]);
+  const cartItems = document.querySelector(myClassNames[0]);
   cartItems.appendChild(createCartItemElement(formatItemListCart(response.id,
     response.title, response.price)));
   setLocalStorage(response.id, response.title, response.price);
@@ -149,7 +149,7 @@ const setItensOnCart = (response) => {
 
 const updateCartOnLoadPage = () => {
   const myStorage = verifyLocalStorage();
-  cartItems = document.querySelector(myClassNames[0]);
+  const cartItems = document.querySelector(myClassNames[0]);
   myStorage.forEach((storage) => {
   cartItems.appendChild(createCartItemElement(formatItemListCart(storage.sku,
     storage.name, storage.price)));
@@ -166,26 +166,25 @@ const getProductSelected = (event) => {
 };
 
 const getClickAddButton = () => {
-  const items = document.querySelector('.items');
+  const items = document.querySelector(myClassNames[4]);
   items.addEventListener('click', getProductSelected);
 };
 
 const cleanCart = () => {
-  cartItems = document.querySelector(myClassNames[0]);
+  const cartItems = document.querySelector(myClassNames[0]);
   cartItems.innerHTML = '';
   localStorage.removeItem('ShoppingCartProject');
   updateCartOnLoadPage();
 };
 
 const clickCleanCart = () => {
-  const emptyCart = document.querySelector('.empty-cart');
+  const emptyCart = document.querySelector(myClassNames[5]);
   emptyCart.addEventListener('click', cleanCart);
 };
 
 window.onload = () => {
-  const url = 'https://api.mercadolibre.com/sites/MLB/search?q=';
-  const product = 'computador';
-  getProductList(url, product, setItensOnPage, console.log);
+  getProductList('https://api.mercadolibre.com/sites/MLB/search?q=',
+    'computador', setItensOnPage, console.log);
   getClickAddButton();
   createFieldTotalPrice();
   updateCartOnLoadPage();
