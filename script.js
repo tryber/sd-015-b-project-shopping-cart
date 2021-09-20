@@ -1,4 +1,5 @@
 const itemsSection = document.querySelector('.items');
+const olCartSection = document.querySelector('.cart__items');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -26,20 +27,42 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
+//                                                                    ---> ACHO Q PODE DELETAR ESSA FUNÇÃO:
+// function getSkuFromProductItem(item) {
+//   console.log(item.querySelector('span.item__sku').innerText);
+//   return item.querySelector('span.item__sku').innerText;
+// }
 
 function cartItemClickListener(event) {
-
+  console.log('AQUI É PRA FAZER O REQUISITO 3 DE DELETAR O ITEM AO CLICAR NELE');
 }
 
-function createCartItemElement({ sku, name, salePrice }) {
+function createCartItemElement({ id, title, price }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.innerText = `SKU: ${id} | NAME: ${title} | PRICE: $${price}`;
+  console.log(`li é ${li.innerText}`);
   li.addEventListener('click', cartItemClickListener);
+  olCartSection.appendChild(li);
   return li;
+}
+
+async function addToCartCallback(e) {
+  const itemId = e.path[1].firstChild.innerText;
+  console.log(itemId);
+  try {
+    const response = await fetch(`https://api.mercadolibre.com/items/${itemId}`);
+    const itemData = await response.json();
+    createCartItemElement(itemData);
+  } catch (error) {
+    console.log('Erro ao repassar itens para o carrinho!');
+  }  
+}
+
+function getAddToCartBtnListener() {
+  const addBtn = document.getElementsByClassName('item__add');
+  const addToCartBtnArray = [...addBtn];
+  addToCartBtnArray.forEach((btn) => btn.addEventListener('click', (e) => addToCartCallback(e)));
 }
 
 const getItems = async () => {
@@ -47,20 +70,17 @@ const getItems = async () => {
     const response = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=$computador');
     const computers = await response.json();
     computers.results.forEach(({ id, title, thumbnail }) => {
-      const item = {
-        sku: id,
-        name: title,
-        image: thumbnail,
-      };
+      const item = { sku: id, name: title, image: thumbnail };
       const createItem = createProductItemElement(item);
+  
       itemsSection.appendChild(createItem);
     });
-    console.log(computers);
   } catch (error) {
-    console.log('Erro nas requisições');
-  }  
+    console.log('Erro ao receber os dados dos Itens');
+  }
+  getAddToCartBtnListener();
 };
 
 window.onload = () => { 
   getItems();
- };
+};
