@@ -41,6 +41,12 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
+function sumTotalPrice(price) {
+  const total = document.querySelector('.total-price');
+  const totalPrice = (Number(total.innerText) + price).toFixed(2);
+  total.innerHTML = totalPrice;
+}
+
 function getItem(url) {
   fetch(url)
   .then((response) => response.json())
@@ -50,10 +56,9 @@ function getItem(url) {
       name: data.title,
       salePrice: data.price,
     };
-
-    const cartItems = document.querySelector('.cart__items');
-
-    cartItems.append(createCartItemElement(params));
+    const cartItemsElement = document.querySelector('.cart__items');
+    cartItemsElement.append(createCartItemElement(params));
+    sumTotalPrice(data.price);
   });
 }
 
@@ -64,7 +69,6 @@ function addToShoppingCart() {
     button[i].addEventListener('click', () => {
       const getProductId = button[i].parentNode.firstChild.innerText;
       getItem(`https://api.mercadolibre.com/items/${getProductId}`);
-      console.log(getProductId);
     });
   }
 }
@@ -85,6 +89,17 @@ function makeRequisiton(url) {
   .then(() => addToShoppingCart());
 }
 
+function clearCart() {
+  const cartItemsElement = document.querySelector('.cart__items');
+  const btnClear = document.querySelector('.empty-cart');
+  const totalPrice = document.querySelector('.total-price'); 
+  btnClear.addEventListener('click', () => {
+    cartItemsElement.innerHTML = '';
+    totalPrice.innerText = '0';
+  });
+}
+
 window.onload = () => {
   makeRequisiton('https://api.mercadolibre.com/sites/MLB/search?q=computador');
+  clearCart();
 };
