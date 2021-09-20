@@ -36,7 +36,7 @@ const getTotalPrice = (price, operation) => {
   if (operation === 'sub') {
     total -= price;
   }
-  totalPrice.innerText = total > 0 ? total.toFixed(2) : '0';
+  totalPrice.innerText = total > 0 ? total : '0';
   localStorage.setItem('total', total);
 };
 
@@ -59,15 +59,14 @@ function createProductItemElement({ sku, name, image }) {
 function cartItemClickListener(event) {
   event.target.remove(event);
   saveCart();
-  // const li = event.path[0];
-  // getTotalPrice((li.innerText.split('PRICE: $').pop()), 'sub');
+  const li = event.path[0];
+  getTotalPrice((li.innerText.split('PRICE: $').pop()), 'sub');
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
   return li;
 }
 
