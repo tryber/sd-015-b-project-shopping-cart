@@ -53,9 +53,13 @@ function cartItemClickListener(event) {
   saveStorage();
 }
 
-const removeCart = () => {
- 
-};
+function removeCart() {
+  const btnClear = document.querySelector('.empty-cart');
+  btnClear.addEventListener('click', () => {
+    document.querySelector('.cart__items').innerHTML = '';
+    saveStorage();
+  });
+}
 
 function createCartItemElement({ sku, name, salePrice }) {
   const objectList = document.createElement('li');
