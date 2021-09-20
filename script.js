@@ -131,6 +131,8 @@ function mapToDesiredObj(result) {
 
 // maps each product to desired object
 function resultsForEach(results) {
+  const loader = document.querySelector('.loading');
+  loader.remove();
   results.forEach((result) => mapToDesiredObj(result));
 }
 
@@ -149,6 +151,9 @@ function retrieveUserData() {
 
 // gets list of computers
 window.onload = () => {
+  const itemsSection = document.querySelector('.items');
+  const loader = createCustomElement('div', 'loading', 'loading...');
+  itemsSection.appendChild(loader);
   async function get(url) {
     if (url === 'https://api.mercadolibre.com/sites/MLB/search?q=computador') {
       return fetch(url)
