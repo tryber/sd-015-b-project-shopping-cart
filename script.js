@@ -1,5 +1,3 @@
-const apiMl = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
-
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -22,6 +20,7 @@ function createProductItemElement({ sku, name, image }) {
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
+  section.addEventListener('click', addToCart);
 
   return section;
 }
@@ -42,22 +41,39 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-const createProductList = async (url) => {
-  return fetch(url)
-  .then((response) => response.json())
-  .then((resultObject) => resultObject.results.forEach(({ id, title, thumbnail }) => {
+// Requisito 1
+async function createProductList() {
+  const response = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
+  const resultObject = await response.json();
+  return resultObject.results.forEach(({ id, title, thumbnail }) => {
     const itensOutput = {
       sku: id,
       name: title,
       image: thumbnail,
     };
-  const selectItems = document.querySelector('.items');
-  const itemCreate = createProductItemElement(itensOutput);
-  selectItems.append(itemCreate);
-  })
-  )}
-
-
-window.onload = () => {
-  createProductList(apiMl);
+    const selectItems = document.querySelector('.items');
+    const itemCreate = createProductItemElement(itensOutput);
+    selectItems.append(itemCreate);
+  });
 }
+
+// Requisito 2
+function addToCart() {
+  const productId = getSkuFromProductItem(this);
+  fetch(`https://api.mercadolibre.com/items/${productId}`)
+  .then((response) => response.json())
+  .then(({ id, title, price }) => {
+    const item = {
+      sku: id,
+      name: title,
+      salePrice: price,
+    };
+    const createdItem = createCartItemElement(item);
+    const cartList = document.querySelector('.cart__items');
+    cartList.appendChild(createdItem);
+  });
+}
+
+window.onload = () => { 
+  createProductList();
+};
