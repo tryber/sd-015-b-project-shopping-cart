@@ -74,11 +74,19 @@ function makeObjForProductItem(product) {
   return productObj;
 }
 
+function generateLoadingScreen(elementToAppend, text) {
+  const loadingP = document.createElement('p');
+  loadingP.innerText = text;
+  loadingP.classList.add('loading');
+  elementToAppend.appendChild(loadingP);
+}
+
 async function generateProductList(prodctName) {
+  const itemsSections = document.querySelector('.items');
+  generateLoadingScreen(itemsSections, 'Carregando...');
   const productList = await getProductList(prodctName);
   const prodctListResults = productList.results;
-  const itemsSections = document.querySelector('.items');
-  
+  itemsSections.innerHTML = '';
   prodctListResults.forEach((product) => {
     const objForProductItem = makeObjForProductItem(product);
     const productItemElement = createProductItemElement(objForProductItem);
