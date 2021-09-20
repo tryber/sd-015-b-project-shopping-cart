@@ -116,7 +116,7 @@ async function createProductsList() {
 function initLocalStorage() {
   if (!localStorage.getItem('myCart'))localStorage.setItem('myCart', JSON.stringify([]));
   const actualStorage = JSON.parse(localStorage.getItem('myCart'));
-  if (!actualStorage[0]) {
+  if (actualStorage[0]) {
     actualStorage.forEach((product) => {
     createCartItemElement(product);
     carItems.appendChild(createCartItemElement(product));
