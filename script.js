@@ -37,18 +37,17 @@ function getProductId(element) {
   return sectionItem.firstElementChild.innerText;
 }
 
-function getProductByIdFromEndpoint(event) {
+async function getProductByIdFromEndpoint(event) {
   const button = event.target;
-  const itemId = getProductId(button);
+  const itemId = await getProductId(button);
 
-  fetch(`https://api.mercadolibre.com/items/${itemId}`)
-    .then((response) => response.json())
-    .then((result) => {
-      const cartItem = document.querySelector('.cart__items');
-      cartItem.appendChild(createCartItemElement(
-        { sku: result.id, name: result.title, salePrice: result.price },
-      ));
-    });
+  const response = await fetch(`https://api.mercadolibre.com/items/${itemId}`);
+  const data = await response.json();
+
+  const cartItem = document.querySelector('.cart__items');
+  cartItem.appendChild(createCartItemElement(
+    { sku: data.id, name: data.title, salePrice: data.price },
+  ));
 }
 
 async function handleItemsListButtonEventAdd() {
@@ -59,16 +58,15 @@ async function handleItemsListButtonEventAdd() {
 }
 
 async function getProductsFromEndpoint() {
-  fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
-    .then((response) => response.json())
-    .then((info) => info.results)
-    .then((results) => results.forEach((itemOnSale) => {
-      const item = document.querySelector('.items');
-      item.appendChild(createProductItemElement(
-        { sku: itemOnSale.id, name: itemOnSale.title, image: itemOnSale.thumbnail },
-      ));
-    }))
-    .then(() => handleItemsListButtonEventAdd());
+  const response = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
+  const data = await response.json();
+  await data.results.forEach((itemOnSale) => {
+    const item = document.querySelector('.items');
+    item.appendChild(createProductItemElement(
+      { sku: itemOnSale.id, name: itemOnSale.title, image: itemOnSale.thumbnail },
+    ));
+  });
+  await handleItemsListButtonEventAdd();
 }
 
 function getSkuFromProductItem(item) {
@@ -79,10 +77,10 @@ function cartItemClickListener(event) {
   // coloque seu código aqui
 }
 
-function handleAll() {
-  getProductsFromEndpoint();
-}
+// function handleAll() {
+//   getProductsFromEndpoint();
+// }
 
 window.onload = () => { 
-  handleAll();
+  getProductsFromEndpoint();
 };
