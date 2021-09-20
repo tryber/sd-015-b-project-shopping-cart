@@ -7,7 +7,9 @@ function saveShoppingCartList(shoppingCartItem) {
   if (localStorage.getItem(localStorageKey) === null) {
     localStorage.setItem(localStorageKey, JSON.stringify([]));
   }
-
+  if (localStorage.getItem(localStorageKey).length < 1) {
+    localStorage.setItem(localStorageKey, JSON.stringify(totalPriceValue));
+  }
   const oldList = JSON.parse(localStorage.getItem(localStorageKey));
   oldList.push(shoppingCartItem.innerText);
   localStorage.setItem(localStorageKey, JSON.stringify(oldList));
@@ -45,10 +47,16 @@ function createProductItemElement({ sku, name, image }) {
 
 // Fonte: https://stackoverflow.com/questions/3650081/why-does-the-sum-of-2-parsefloat-variables-give-me-an-incorrect-decimal-number 
 // Fonte: https://stackoverflow.com/questions/3612744/remove-insignificant-trailing-zeros-from-a-number
+function changeShowPriceDisplay(display) {
+  const showPrice = document.querySelector('.show-price');
+  showPrice.style.display = display;
+}
+
 function updateTotalPrice(price) {
   const totalPrice = document.querySelector('.total-price');
   totalPriceValue += parseFloat(price.toFixed(4));
   totalPrice.innerHTML = totalPriceValue.toFixed(2).replace(/\.0+|0+$/, '');
+  changeShowPriceDisplay('flex');
 }
 
 function cartItemClickListener(event) {
@@ -151,6 +159,7 @@ function clearShoppingCart() {
     list.innerHTML = '';
     totalPrice.innerHTML = '';
     totalPriceValue = 0;
+    changeShowPriceDisplay('none');
   });
 }
 

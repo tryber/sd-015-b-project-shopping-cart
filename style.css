@@ -1,3 +1,7 @@
+* {
+  padding: 0;
+  margin: 0;
+}
 .container {
   display: flex;
   justify-content: space-around;
@@ -19,7 +23,7 @@
   flex-direction: column;
   height: auto;
   margin: 5px;
-  width: 150px;
+  width: 200px;
 }
 
 .item .item__sku {
@@ -33,7 +37,7 @@
 }
 
 .item .item__image {
-  width: 90%;
+  width: 100%;
 }
 
 .item .item__add {
@@ -54,4 +58,10 @@
   flex-basis: 1;
   font-size: 16pt;
   text-align: center;
+}
+.cart div {
+  display: none;
+}
+.cart p {
+  display: inline-block;
 }
