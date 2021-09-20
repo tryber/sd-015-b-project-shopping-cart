@@ -24,7 +24,7 @@ async function sumItems(param) {
     totalPrice.innerHTML = param; // Altera o valor do preço para o de param
   } else { // Senão
     // Converte a string para número e soma o param
-    totalPrice.innerHTML = parseFloat(totalPrice.innerHTML) + param;
+    totalPrice.innerHTML = (Number(totalPrice.innerHTML) + param).toFixed(2);
   }
   return totalPrice.innerHTML; // Retorna a nova variável atribuída
 }
@@ -95,7 +95,7 @@ async function apiRequest(calledURL) {
   .then((response) => response.json()) // Converte Binário para JSON
   .then((element) => {
     criarElementos(element.results);
-    setTimeout(function() {removeLoading();}, 3000);
+    removeLoading();
   })
   .catch((erro) => console.log(':::ERRO::: >>', erro));
 }
@@ -109,6 +109,7 @@ function salvarCarrinho() {
   // console.log(arrayCarrinho);
   localStorage.setItem('arrayCarrinho', JSON.stringify(arrayCarrinho));
 }
+
 function limpaLista() {
   const botaoLimpar = document.querySelector('.empty-cart');
   const moneyValue = document.querySelector('.total-price');
@@ -118,7 +119,6 @@ function limpaLista() {
       produto.remove();
     });
     moneyValue.innerText = 0;
-    
     // salvaCarrinho();
   });
 }
