@@ -34,7 +34,7 @@ function createProductItemElement({ sku, name, image }) {
 // }
 
 function cartItemClickListener(event) {
-  console.log('AQUI É PRA FAZER O REQUISITO 3 DE DELETAR O ITEM AO CLICAR NELE');
+  return event.path[0].remove();
 }
 
 function createCartItemElement({ id, title, price }) {
