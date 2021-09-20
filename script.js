@@ -1,23 +1,3 @@
-const requestComputer = () =>
-  fetch('https://api.mercadolibre.com/sites/MLB/search?q=$computador')
-    .then((responsive) => responsive.json())
-    .then((data) => creatObject(data.results)); // capturing objects
-
-function creatObject(data) {
-  const divHtml = document.querySelector('.items'); // capturing div by class items
-  for (const key in data) {
-    const item = createProductItemElement(data[key]); // listing array object
-    divHtml.appendChild(item);
-  }
-}
-/* const requestComputerAsync = async () => {
-  try {
-    await requestComputer('computador');
-  } catch (error) {
-    console.log('Erro na função Async!');
-  }
-}; */
-
 // ..........................................................................................
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -36,22 +16,39 @@ function createCustomElement(element, className, innerText) {
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
-
+  
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-
+  
   return section;
 }
 
+function creatObject(dados) {
+  const divHtml = document.querySelector('.items'); // capturing div by class items
+  dados.forEach((element) => {
+    const item = createProductItemElement(element);
+    divHtml.appendChild(item);
+  });
+}
+/* for (const key in dados) {
+  const item = createProductItemElement(dados[key]); // listing array object
+  divHtml.appendChild(item);
+} */
+
+function requestComputer() {
+  fetch('https://api.mercadolibre.com/sites/MLB/search?q=$computador')
+  .then((responsive) => responsive.json())
+  .then((dados) => creatObject(dados.results)); // capturing objects
+}
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-function cartItemClickListener(event) {
+function cartItemClickListener(_event) {
   // coloque seu código aqui
-
+  
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -64,5 +61,4 @@ function createCartItemElement({ sku, name, salePrice }) {
 
 window.onload = () => {
   requestComputer();
-  creatObject();
 };
