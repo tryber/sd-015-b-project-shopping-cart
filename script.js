@@ -30,7 +30,7 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-function cartItemClickListener(event) {
+function cartItemClickListener() {
   // coloque seu código aqui
 }
 
@@ -74,9 +74,9 @@ bodyCall.addEventListener('click', (event) => {
   });
 }
 
-function createCartList () {
+/* function createCartList() {
 
-}
+} */
 
 window.onload = () => { 
   getAPI();
