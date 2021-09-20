@@ -1,6 +1,5 @@
 const fetchML = async (url) => (await fetch(url)).json(); // função genérica do fetch para usar quando necessário
 
-
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -77,8 +76,19 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 }
 const API_URL_MLCOMPUTER = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
 
+const loading = () => {
+  const loader = document.querySelector('.loader-wrapper');
+  loader.classList.add('show');
+};
+
+const stopLoading = () => {
+  const loader = document.querySelector('.loader-wrapper');
+  loader.remove();
+};
+
 async function requestMLComputer(url) {
   try {
+    loading();
       const fetchingMLComputer = await fetchML(url);
       fetchingMLComputer.results  
       .map(({ id, title, thumbnail }) => {
@@ -87,6 +97,7 @@ async function requestMLComputer(url) {
           const eachComputer = createProductItemElement(objt); // R1 - usando a função previamente criada para fazer um produto.
           return sectionItems.append(eachComputer); // R1 - colocando cada produto criado na seção de items.
         });
+        stopLoading();
   } catch (error) {
     console.log(error);
   }
