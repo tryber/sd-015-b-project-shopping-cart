@@ -1,4 +1,4 @@
-const API_URL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador'; // criei const p armazenar apis
+const API_URL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador'; 
 const ol1 = ('.cart__items');
 
 function createProductImageElement(imageSource) {
@@ -53,7 +53,6 @@ const storangeKey = localStorage.getItem('key');
 const setLocalStorange = () => {
   const saveStorange = JSON.stringify(document.querySelector(ol1).innerHTML);
   localStorage.setItem('key', saveStorange);
-// console.log(localStorage);
 };
 
 function cartItemClickListener(event) {
