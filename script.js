@@ -34,17 +34,9 @@ async function sumItems(param) {
     totalPrice.innerText = acc + totalValue;
     return acc + totalValue;
   }, 0);
-  // console.log(calculaTotal);
-  // Implementar função Reduce
-  // O reduce deve percorrer o texto dos itens da lista do carrinho
-  // Deverá ser usado a funçao que procura pelo parâmetro buscado e retorna o index do primeiro caractere
-  // Deverá ser adicionado, ao resultado desse index, a soma de 8 index's para chegar ao parâmetro numérico (PREÇO)
-  // A função reduce retornará o valor da soma de todos os valores encontrados após o termo buscado, e mudar o preço
-  // final com o valor calculado pelo reduce (ACCUMULATOR)
 }
 
 function createProductItemElement({ sku, name, image }) {
-  // Recebe os parâmetros sku, name & image do JSON da API
   const section = document.createElement('section');
   section.className = 'item';
   section.appendChild(createCustomElement('span', 'item__sku', sku));
@@ -55,25 +47,19 @@ function createProductItemElement({ sku, name, image }) {
 }
 
 function getSkuFromProductItem(item) {
-  // Deve ser chamada quando o JSON da API for carregado, para assim realizar sua conversão
   return item.querySelector('span.item__sku').innerText;
 }
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
-  // QUando um elemento for removido, à funçao sumItems deve ser chamada com
-  // o valor do elemento multiplicado por -1, para aí subtrair o valor
   this.remove();
   sumItems();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
-  // Deve ser chamada, ao se clicar no botão "Adicionar ao Carrinho"
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
-  // Chama função saveItems
   return li;
 }
 function criarElementos(dados) {
@@ -97,16 +83,13 @@ function criarElementos(dados) {
     });
 }
 function removeLoading() {
-  // Seleciona elemento contendo o texto 'loading...'
   const loadingNode = document.querySelector('.loading');
-  // Remove elemento
   loadingNode.remove();
 }
 
 async function apiRequest(calledURL) {
-  // console.log("CONECTANDO A API DO MERCADO LIVRE...");
-  fetch(calledURL) // Requisita URL
-  .then((response) => response.json()) // Converte Binário para JSON
+  fetch(calledURL)
+  .then((response) => response.json())
   .then((element) => {
     criarElementos(element.results);
     removeLoading();
@@ -120,7 +103,6 @@ function salvarCarrinho() {
   listaOrdenada.forEach((elemento) => {
     arrayCarrinho.push(elemento);
   });
-  // console.log(arrayCarrinho);
   localStorage.setItem('arrayCarrinho', JSON.stringify(arrayCarrinho));
 }
 
@@ -134,9 +116,7 @@ function limpaLista() {
     });
     moneyValue.innerText = 0;
     setTimeout(function(){ sumItems(); }, 1000);
-    // salvaCarrinho();
-  });
-  
+  });  
 }
 
 window.onload = () => {
