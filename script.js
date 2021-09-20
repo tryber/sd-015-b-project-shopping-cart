@@ -97,35 +97,48 @@ function createProductItemElement({ sku, name, image }) {
 }
 
 const loadingScreen = () => {
-  const mainContainer = document.querySelector('.container');
-  const body = document.querySelector('body');
-  const div = document.createElement('div');
+  setTimeout(() => {
+    const mainContainer = document.querySelector('.container');
+    const body = document.querySelector('body');
+    const div = document.createElement('div');
 
-  mainContainer.style.display = 'none';
-  div.innerText = 'loading...';
-  div.className = 'loading';
-  body.append(div);
+    mainContainer.style.display = 'none';
+    div.innerText = 'loading...';
+    div.className = 'loading';
+    body.append(div);
+  }, 100);
 };
 
 const reloadScreen = () => {
-  const mainContainer = document.querySelector('.container');
-  const div = document.querySelector('.loading');
+  setTimeout(() => {
+    const mainContainer = document.querySelector('.container');
+    const div = document.querySelector('.loading');
 
-  div.remove();
-  mainContainer.style.display = 'flex';
+    div.remove();
+    mainContainer.style.display = 'flex';
+  }, 100);
+};
+
+const getUserSearch = () => {
+  const itemsSection = document.querySelector('.items');
+  itemsSection.innerHTML = '';
+
+  const userSearch = document.querySelector('.input-search').value;
+  return userSearch || 'computador';
 };
 
 const createItemProductSection = async () => {
   loadingScreen();
-  
-  const url = 'https://api.mercadolibre.com/sites/MLB/search?q=motos';
+
+  const userSearch = getUserSearch();
+  const url = `https://api.mercadolibre.com/sites/MLB/search?q=${userSearch}`;
+
   try {
-    const { results } = await fetchAPI(url);
     const itemsSection = document.querySelector('.items');
-    
+    const { results } = await fetchAPI(url);
+
     results.forEach(({ id, title, thumbnail }) => {
       const itemToRender = createProductItemElement({ sku: id, name: title, image: thumbnail });
-
       itemsSection.append(itemToRender);
     });
   } catch (e) {
@@ -160,4 +173,7 @@ window.onload = () => {
 
   const emptyCartButton = document.querySelector('.empty-cart');
   emptyCartButton.addEventListener('click', emptyCart);
+
+  const userSearch = document.querySelector('.input-search');
+  userSearch.addEventListener('input', createItemProductSection);
 };
