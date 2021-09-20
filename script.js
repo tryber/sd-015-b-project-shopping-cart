@@ -135,8 +135,6 @@ function mapToDesiredObj(result) {
 
 // maps each product to desired object
 function resultsForEach(results) {
-  const loader = document.querySelector('.loading');
-  loader.remove();
   results.forEach((result) => mapToDesiredObj(result));
 }
 
@@ -155,6 +153,11 @@ function retrieveUserData() {
   }
 }
 
+function killLoader() {
+  const loader = document.querySelector('.loading');
+  loader.remove();
+}
+
 // gets list of computers
 window.onload = () => {
   const itemsSection = document.querySelector('.items');
@@ -166,6 +169,7 @@ window.onload = () => {
         .then((response) => response.json())
         .then((msg) => msg.results)
         .then((results) => resultsForEach(results))
+        .then(() => killLoader())
         .catch((err) => err);
     }
     throw new Error('endpoint não existe');
