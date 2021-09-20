@@ -2,10 +2,9 @@ const urlApi = 'https://api.mercadolibre.com/sites/MLB';
 
 // elementos do HTML que não rodam pq o script no index é chamado antes do body.
 //const items = document.querySelector('.items');
-//const cart__items = document.querySelector('.cart__items');
-//const totalPrice = document.querySelector('.total-price');
-//const emptyCart= document.querySelector('.empty-cart');
 //
+//const totalPrice = document.querySelector('.total-price');
+
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -78,11 +77,19 @@ function createCartItemElement({ sku, name, salePrice }) {
     return li;
 }
 
+function apagarTudao(){
+  const cart__items = document.querySelector('.cart__items');
+  //console.log(cart__items.innerHTML);
+  cart__items.innerHTML = ''; // gambiarra que substitui tudo q tá no cart e subistitiu por vazio...
+  // innerhtml são os componentes da tag selecionada.
+}
+
 window.onload = async () => {
   try { // faz o try / catch da API - pra ver se retorna mesmo os computadores 
     const computer = await getComputer();
   } catch (e) {
     console.log(e);
   }
-  
+  const BotaoEmptyCart = document.querySelector('.empty-cart')
+  BotaoEmptyCart.addEventListener('click', apagarTudao)
 };
