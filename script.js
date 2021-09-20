@@ -24,37 +24,38 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
+// function getSkuFromProductItem(item) {
+//   return item.querySelector('span.item__sku').innerText;
+// }
+
+let valorTotal = 0;
+const spamValor = document.querySelector('.total-price');
+
+function valorTotalDaCompra(valor) {
+  const preco = Number(valor);
+  valorTotal += preco;
+  spamValor.innerText = valorTotal;
 }
 
 function cartItemClickListener(event) {
   // coloque seu código aqui
   const eventos = event.target;
+  const valor = eventos.innerText.split('$')[1];
+  valorTotal -= Number(valor);
+  spamValor.innerText = valorTotal;
   if (eventos.className === 'cart__item') {
     eventos.remove();
   }
 }
-
-// function valorTotalDaCompra(valor) {
-//   const preco = Number(valor);
-//   const carrinho = document.querySelector('.cart');
-//   let valorTotal = 0;
-//   valorTotal += preco;
-//   console.log(valorTotal);
-//   const spamValor = document.createElement('spam');
-//   spamValor.innerText = valorTotal;
-//   carrinho.appendChild(spamValor);
-// }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
-  // const informacoesProduto = li.innerText;
-  // const valorProduto = informacoesProduto.split('$')[1];
-  // // valorTotalDaCompra(valorProduto);
+  const informacoesProduto = li.innerText;
+  const valorProduto = informacoesProduto.split('$')[1];
+  valorTotalDaCompra(valorProduto);
   return li;
 }
 
