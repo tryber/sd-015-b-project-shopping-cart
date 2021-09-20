@@ -14,11 +14,6 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-/*
-  sku === id
-  name === title
-  image === thumbnail
-*/
 function createProductItemElement({ sku, name, image }) {
   const section = document.createElement('section');
   section.className = 'item';
@@ -47,6 +42,31 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
+async function addElementToCart(event) {
+  const itemID = event.target.parentNode.firstChild.innerText;
+  const itemUrl = `https://api.mercadolibre.com/items/${itemID}`;
+  const cart = document.querySelector('.cart__items');
+  fetch(itemUrl, { method: 'GET' })
+  .then((response) => response.json())
+  .then((data) => {
+    const product = {
+      sku: data.id,
+      name: data.title,
+      salePrice: data.price.toString(),
+    };
+    const item = createCartItemElement(product);
+    cart.appendChild(item);
+  })
+  .catch(() => console.log('Error: invalid ID'));
+}
+
+function addEvents() {
+  const buttons = document.querySelectorAll('.item__add');
+  for (let i = 0; i < buttons.length; i += 1) {
+    buttons[i] = document.addEventListener('click', addElementToCart);
+   }
+ }
+
 function fetchMercadoLivreAPI() {
   const productSection = document.querySelector('.items');
   const init = {
@@ -56,14 +76,11 @@ function fetchMercadoLivreAPI() {
     .then((response) => response.json())
     .then((data) => {
       data.results.forEach((product) => {
-        const productInfo = {
-          sku: product.id,
-          name: product.title,
-          image: product.thumbnail,
-        };
+        const productInfo = { sku: product.id, name: product.title, image: product.thumbnail };
         const element = createProductItemElement(productInfo);
         productSection.appendChild(element);
       });
+      addEvents();
     })
     .catch(() => console.log('Error: failed to request'));
 }
