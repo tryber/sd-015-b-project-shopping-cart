@@ -7,7 +7,6 @@ function createProductImageElement(imageSource) {
 function cartItemClickListener(_event) {
   // coloque seu código aqui
 
-
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -64,7 +63,6 @@ function requestComputer() {
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
-
 
 window.onload = () => {
   requestComputer();
