@@ -1,5 +1,4 @@
-/* eslint-disable sonarjs/no-duplicate-string */
-/* eslint-disable sonarjs/no-use-of-empty-return-value */
+const cartItems = ('.cart__items');
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -71,7 +70,7 @@ const getItemLocal = () => {
   const restore = JSON.parse(localStorage.getItem('chave'));
   restore.forEach((element) => {
     const li = document.createElement('li');
-    const listaTotal = document.querySelector('.cart__items');
+    const listaTotal = document.querySelector(cartItems);
     li.innerHTML = element;
     li.classList.add('cart__item');
     li.addEventListener('click', cartItemClickListener);
@@ -91,7 +90,7 @@ function fetchID(idItem) {
         salePrice: price,
       };
       const cartItem = createCartItemElement(priceItem);
-      const ol = document.querySelector('.cart__items');
+      const ol = document.querySelector(cartItems);
       ol.appendChild(cartItem);
       setItemLocal();
     })
@@ -104,7 +103,7 @@ function botao() {
 }
 
 function apagaTudo() {
-  const listaCompleta = document.querySelector('.cart__items');
+  const listaCompleta = document.querySelector(cartItems);
   listaCompleta.innerHTML = ' ';
 }
 
