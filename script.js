@@ -1,5 +1,6 @@
 const products = document.querySelector('.items');
-const userItems = [];
+const emptyCart = document.querySelector('.empty-cart');
+let userItems = [];
 const skuLength = 18;
 let total = 0;
 
@@ -17,14 +18,19 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
+// Source: https://stackoverflow.com/a/32229831
+function toFixedIfNecessary(value, dp) {
+  return +parseFloat(value).toFixed(dp);
+}
+
 function updateTotal(totalPrice) {
   const carTotal = document.querySelector('.total-price');
-  carTotal.innerText = totalPrice;
+  const correctTotalPrice = toFixedIfNecessary(totalPrice, 2);
+  carTotal.innerText = correctTotalPrice;
 }
 
 function removeItemFromStorage(origin) {
   const elementText = origin.target.innerText;
-  console.log(elementText);
   const elementTextLength = elementText.length;
   const skuKeyLength = 'SKU: '.length;
   const priceKeyLength = 'PRICE: $'.length;
@@ -42,6 +48,15 @@ function removeItem(origin) {
   removeItemFromStorage(origin);
   const element = origin.target;
   element.remove();
+}
+
+function doEmptyCart() {
+  const productList = document.querySelector('.cart__items');
+  productList.innerText = '';
+  userItems = [];
+  localStorage.setItem('userItems', userItems);
+  total = 0;
+  updateTotal(total);
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -119,19 +134,14 @@ function resultsForEach(results) {
   results.forEach((result) => mapToDesiredObj(result));
 }
 
-function getTotal(userData) {
-  console.log(userData);
-}
-
 async function loadCart(userData) {
   await userData.forEach((item) => fetchProduct(item));
-  getTotal(userData);
 }
 
 function retrieveUserData() {
-  const userData = JSON.parse(localStorage.getItem('userItems'));
+  const userData = localStorage.getItem('userItems');
   if (userData) {
-    loadCart(userData);
+    loadCart(JSON.parse(userData));
   } else {
     localStorage.setItem('userItems', JSON.stringify(userItems));
   }
@@ -151,4 +161,5 @@ window.onload = () => {
   }
   get('https://api.mercadolibre.com/sites/MLB/search?q=computador');    
   retrieveUserData();
+  emptyCart.addEventListener('click', doEmptyCart);
 };
