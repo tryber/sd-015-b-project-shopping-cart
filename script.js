@@ -24,10 +24,21 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
+function getSkuFromProductItem(item) {
+  return item.querySelector('span.item__sku').innerText;
+}
+
 function cartItemClickListener(event) {
   const cartItem = event.target;
+
+  const itemsText = cartItem.innerText;
+  const itemsData = itemsText.split('|');
+  const sku = itemsData[0].split(' ')[1];
+
   const cart = cartItem.parentElement;
   cart.removeChild(cartItem);
+
+  localStorage.removeItem(`${sku}`);
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -38,26 +49,17 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-// function getProductId(element) {
-//   const sectionItem = element.parentElement;
-//   return sectionItem.firstElementChild.innerText;
-// }
-
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
-
 function addItemToCart(data) {
-  const cartItem = document.querySelector('.cart__items');
-  cartItem.appendChild(createCartItemElement(
-    { sku: data.id, name: data.title, salePrice: data.price },
-  ));
+  const cartList = document.getElementsByClassName('cart__items')[0];
+  const itemData = { sku: data.id, name: data.title, salePrice: data.price };
+  cartList.appendChild(createCartItemElement(itemData));
+
+  localStorage.setItem(`${itemData.sku}`, JSON.stringify(itemData));
 }
 
 async function getProductByIdFromEndpoint(event) {
   const button = event.target;
-  const itemId = getSkuFromProductItem(button.parentElement);
-  // const itemId = await getProductId(button);
+  const itemId = await getSkuFromProductItem(button.parentElement);
 
   const response = await fetch(`https://api.mercadolibre.com/items/${itemId}`);
   const data = await response.json();
@@ -77,6 +79,7 @@ function handleCartListErasing() {
   while (cart.firstChild) {
     cart.removeChild(cart.firstChild);
   }
+  localStorage.clear();
 }
 
 async function eraseButtonListener() {
@@ -97,55 +100,20 @@ async function getProductsFromEndpoint() {
   await eraseButtonListener();
 }
 
-// function handleCartListSaving() {
-//   const cart = document.querySelectorAll('.cart__item');
-//   const itemsSKUs = [];
-//   const itemsNames = [];
-//   const itemsSalePrices = [];
-//   cart.forEach((item) => {
-//     const itemsText = item.innerText;
-//     const itemsData = itemsText.split('|');
-//     const sku = itemsData[0].split(' ')[1];
-//     const name = itemsData[1].slice(7, itemsData[1].length - 1);
-//     const salePrice = itemsData[2].slice(9);
-    
-//     itemsSKUs.push(sku);
-//     itemsNames.push(name);
-//     itemsSalePrices.push(salePrice);
-//   });
-//   localStorage.setItem('SKUs', JSON.stringify(itemsSKUs));
-//   localStorage.setItem('Names', JSON.stringify(itemsNames));
-//   localStorage.setItem('SalePrices', JSON.stringify(itemsSalePrices));
-// }
+function retrieveListFromLocalStorage() {
+  const items = localStorage.length;
+  const cartList = document.querySelector('.cart__items');
+  for (let index = 0; index < items; index += 1) {
+    const key = localStorage.key(index);
+    const item = JSON.parse(localStorage.getItem(key));
+    const itemData = { sku: item.sku, name: item.name, salePrice: item.salePrice };
+    cartList.appendChild(createCartItemElement(itemData));
+  }
+}
 
-// function handleCartListRetrieving() {
-//   if (localStorage.length > 0) {
-//     handleCartListErasing();
-//     const newItemsSKUs = JSON.parse(localStorage.getItem('SKUs'));
-//     const newItemsNames = JSON.parse(localStorage.getItem('Names'));
-//     const newItemsSalePrices = JSON.parse(localStorage.getItem('SalePrices'));
-//     const listSize = newItemsSKUs.length;
-//     for (let index = 0; index < listSize; index += 1) {
-//       const cartItem = document.querySelector('.cart__items');
-//       cartItem.appendChild(createCartItemElement(
-//           { sku: newItemsSKUs[index], 
-//             name: newItemsNames[index], 
-//             salePrice: newItemsSalePrices[index] },
-//         ));
-//     }
-//   } else {
-//     return window.onload;
-//   }
-// }
-
-// function handlePageReload() {
-//   window.onreset = 
-// }
-
-// function handleAll() {
-//   getProductsFromEndpoint();
-// }
-
-window.onload = () => { 
+window.onload = () => {
   getProductsFromEndpoint();
+  if (localStorage.length > 0) {
+    retrieveListFromLocalStorage();
+  }
 };
