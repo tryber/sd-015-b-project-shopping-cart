@@ -1,4 +1,6 @@
 const requestURL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
+const arrayTeste = new Array();
+localStorage.setItem("arrayCarrinho", JSON.stringify(arrayTeste));
 
 function createProductImageElement(imageSource) {
   // Cria elemento com os dados do createProductItemElement
@@ -15,6 +17,14 @@ function createCustomElement(element, className, innerText) {
   e.innerText = innerText;
   return e;
 }
+function sumItems(price) {
+  // Somar Todos os Itens
+  // Percorrer o Array do carrinho de compras,
+  // verificando o valor de cada Item e somando, a cada iteração
+  const totalPrice = document.querySelector('.total-price');
+  
+}
+sumItems();
 
 function createProductItemElement({ sku, name, image }) {
   // Recebe os parâmetros sku, name & image do JSON da API
@@ -36,8 +46,9 @@ function cartItemClickListener(event) {
   // coloque seu código aqui
   // Adiciona evento de click para item no Carrinho
   // Quando o item do carrinho for clickado, o mesmo deve ser removido
-  console.log('That\'s working Fine!');
+  // console.log('That\'s working Fine!');
   this.remove();
+  // sumItems();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -46,11 +57,10 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
-  // Chama função sumItems
+  li.addEventListener('click', sumItems());
   // Chama função saveItems
   return li;
 }
-
 function criarElementos(dados) {
   const resultados = dados;
   const itensContainer = document.querySelector('.items');
@@ -66,6 +76,7 @@ function criarElementos(dados) {
       const itensCarrinho = document.querySelector('.cart__items');
       const novaLi = createCartItemElement(dadosRecebidos);
       itensCarrinho.appendChild(novaLi);
+      sumItems();
     });
     itensContainer.appendChild(criaElemento);
     });
@@ -73,11 +84,20 @@ function criarElementos(dados) {
 
 async function apiRequest(calledURL) {
   // console.log("CONECTANDO A API DO MERCADO LIVRE...");
-
   fetch(calledURL) // Requisita URL
   .then((response) => response.json()) // Converte Binário para JSON
   .then((element) => criarElementos(element.results))
   .catch((erro) => console.log(':::ERRO::: >>', erro));
+}
+
+function salvarCarrinho() {
+  let listaOrdenada = document.querySelectorAll('li');
+  let arrayCarrinho = new Array();
+  listaOrdenada.forEach( (elemento) => {
+    arrayCarrinho.push(elemento);
+  })
+  // console.log(arrayCarrinho);
+  localStorage.setItem("arrayCarrinho", JSON.stringify(arrayCarrinho));
 }
 
 function limpaLista() {
@@ -87,7 +107,7 @@ function limpaLista() {
     listaCompras.forEach((produto) => {
       produto.remove();
     });
-    // salvaTarefas();
+    // salvaCarrinho();
   });
 }
 
