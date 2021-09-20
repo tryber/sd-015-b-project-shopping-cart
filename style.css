@@ -1,3 +1,8 @@
+body {
+  background-image: url(https://wallpapercave.com/wp/wp5126145.jpg);
+  font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
 .container {
   display: flex;
   justify-content: space-around;
@@ -12,7 +17,7 @@
 }
 
 .item {
-  border: 2px solid blue;
+  border: 2px solid rgb(32, 0, 119);
   border-radius: 5px;
   box-sizing: border-box;
   display: flex;
@@ -20,6 +25,7 @@
   height: auto;
   margin: 5px;
   width: 200px;
+  background-color: white;
 }
 
 .item .item__sku {
@@ -54,4 +60,29 @@
   flex-basis: 1;
   font-size: 16pt;
   text-align: center;
+  color: white;
+}
+
+.cart__item {
+  color: white;
+}
+
+.total-price {
+  color: white;
+}
+
+.empty-cart {
+  border: 0;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.empty-cart:hover {
+  background-color: rgba(32, 0, 119, 0.513);
+  color: white;
+  transition: 0.6s;
+}
+
+.empty-cart {
+  transition: 0.6s;
 }
