@@ -91,8 +91,16 @@ function addItems(param) {
 }
 
 const requestComputadorList = () => {
+  const items = document.querySelector('.items');
+  const span = document.createElement('span');
+  span.className = 'loading';
+  span.innerText = 'loading...';
+  items.appendChild(span);
   fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
-  .then((response) => response.json())
+  .then((response) => {
+    items.removeChild(span);
+    return response.json();
+  })
   .then((data) => data.results)
   .then((retorno) => addItems(retorno)); 
 };
