@@ -4,9 +4,20 @@ function getSkuFromProductItem(item) {
 
 function test() {
   const li = document.getElementsByTagName('li');
+  const span = document.querySelector('.total-price');
   const tt = [...li];
-  const string = tt.map((element) => element.innerText.split(' ')[1]);
-  localStorage.test = JSON.stringify(string);
+  const resultado = tt.reduce((acc, element) => {
+    const numero = element.innerText.split('$');
+    return acc + Number(numero[1]);
+  }, 0);
+span.innerText = resultado;
+}
+
+function saveItensInTheNuvem() {
+  const li = document.getElementsByTagName('li');
+  const arrayDeLi = [...li];
+  const arrayDeIds = arrayDeLi.map((element) => element.innerText.split(' ')[1]);
+  localStorage.test = JSON.stringify(arrayDeIds);
 }
 
 function createProductImageElement(imageSource) {
@@ -40,6 +51,7 @@ function createProductItemElement({ id, title, thumbnail }) {
 function cartItemClickListener(event) {
   const ol = document.getElementsByClassName('cart__items')[0];
   ol.removeChild(event.target);
+  saveItensInTheNuvem();
   test();
 }
 
@@ -50,6 +62,7 @@ function createCartItemElement({ id, title, price }) {
   li.innerText = `SKU: ${id} | NAME: ${title} | PRICE: $${price}`;
   li.addEventListener('click', cartItemClickListener);
   ol.appendChild(li);
+  saveItensInTheNuvem();
   test();
 }
 
@@ -84,7 +97,7 @@ const requestComputadorList = () => {
   .then((retorno) => addItems(retorno)); 
 };
 
-function tes2() {
+function getInTheNuvem() {
   const chaveLocalStorage = localStorage.getItem('test');
   if (chaveLocalStorage) {
   const arrayDeIds = JSON.parse(chaveLocalStorage);
@@ -94,5 +107,5 @@ function tes2() {
 
 window.onload = () => { 
   requestComputadorList();
-  tes2();
+  getInTheNuvem();
 };
