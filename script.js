@@ -32,13 +32,13 @@ function createProductItemElement({ sku, name, image }) {
 }
 
 function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
+  return item.target.querySelector('span.item__sku').innerText;
 }
 
 function cartItemClickListener(event) {
   // coloque seu código aqui
   const itemClicked = event.target;
-  document.addEventListener('click', itemClicked.remove())
+  document.addEventListener('click', itemClicked.remove());
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -49,16 +49,11 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-async function getProductId(element) {
-  const item = element.parentElement;
-  return item.firstElementChild.innerText;
-}
-
 async function cartItems(event) {
     // consultei o repositorio da Gabrielle Murat pra pegar algumas lógicas pro requisito 2
   // https://github.com/tryber/sd-015-b-project-shopping-cart/tree/gabrielle-murat-shopping-cart
   const button = event.target;
-  const productId = await getProductId(button);
+  const productId = getSkuFromProductItem(button);
   const fetchItem = await fetch(`https://api.mercadolibre.com/items/${productId}`);
   const data = await fetchItem.json();
   
