@@ -24,29 +24,45 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
-// function getSkuFromProductItem(item) {
-//   return item.querySelector('span.item__sku').innerText;
-// }
+function getSkuFromProductItem(item) {
+  return item.querySelector('span.item__sku').innerText;
+}
 
 // function cartItemClickListener(event) {
 //   // coloque seu código aqui
 // }
 
-// function createCartItemElement({ sku, name, salePrice }) {
-//   const li = document.createElement('li');
-//   li.className = 'cart__item';
-//   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-//   li.addEventListener('click', cartItemClickListener);
-//   return li;
-// }
+function createCartItemElement({ id: sku, title: name, price: salePrice }) {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  // li.addEventListener('click', cartItemClickListener);
+  return li;
+}
+
+const addToCart = (event) => {
+  const id = getSkuFromProductItem(event.target.parentElement);
+  fetch(`https://api.mercadolibre.com/items/${id}`)
+    .then((response) => response.json())
+    .then((product) => {
+      document.querySelector('ol.cart__items')
+        .appendChild(createCartItemElement(product));
+    });
+};
+
+const addToCartListeners = () => document.querySelectorAll('.item__add')
+  .forEach((btn) => btn.addEventListener('click', addToCart));
 
 const fetchQuery = () => {
   const query = 'computador';
   fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`)
     .then((response) => response.json())
-    .then((response) => response.results.forEach((product) => {
-      document.querySelector('section.items').appendChild(createProductItemElement(product));
-    }));
+    .then((response) => {
+      response.results.forEach((product) => {
+        document.querySelector('section.items').appendChild(createProductItemElement(product));
+      });
+      addToCartListeners();
+    });
 };
 
 window.onload = () => {
