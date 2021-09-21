@@ -57,12 +57,27 @@ body {
   color: rgb(46, 193, 139);
 }
 
+.nav-container {
+  display: flex;
+  width: 80rem;
+  justify-content: space-around;
+  align-items: center;
+  font-size: 1.5rem;
+  margin-left: 15.5rem;
+  background-color: rgb(233, 233, 233);
+}
+
+.nav-container div i {
+  font-size: 2.7rem;
+  color: rgb(46, 193, 139);
+}
+
 .container {
   display: flex;
   justify-content: space-around;
-  width: 100%;
-  margin-left: 9.2rem;
   font-size: 1.6rem;
+  padding-top: 2rem;
+  padding-left: 12rem;
 }
 
 .items {
@@ -115,4 +130,8 @@ body {
   flex-basis: 1;
   font-size: 1.6rem;
   text-align: center;
+}
+
+.cart__items li {
+  list-style: none;
 }
