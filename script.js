@@ -4,10 +4,17 @@ function createProductImageElement(imageSource) {
   img.src = imageSource;
   return img;
 }
-function cartItemClickListener(_event) {
+const empytCartItem = document.querySelector('.cart__item');
+function cartItemClickListener(event) {
   // coloque seu código aqui
-
+  const listItem = event.target;
+  listItem.remove();
 }
+// empytCartItem.addEventListener('click', () => cartItemClickListener());
+/*   const olFather = document.querySelector('.cart__items');
+  while (olFather.firstChild) {
+    olFather.removeChild(olFather.firstChild);
+  } */
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
