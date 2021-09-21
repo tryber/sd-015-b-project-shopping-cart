@@ -20,7 +20,7 @@ function createProductItemElement({ sku, name, image }) {
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
   section.appendChild(
-    createCustomElement('button', 'item__add', 'Adicionar ao carrinho!')
+    createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'),
   );
 
   return section;
@@ -30,17 +30,26 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-function cartItemClickListener(event) {
-  // coloque seu código aqui
-  const target = event.target.innerText;
-  const cart = document.getElementsByClassName('cart__item');
-  for (let index = 0; index < cart.length; index++) {
-    const element = cart[index];
-    if (target == element.innerText) {
-      IDList.splice(index, 1);
-      createCardItems(IDList);
-    }
+/// //////////////////////////////////////////////////////////////////////////////////////////
+
+let IDList = [];
+
+async function getProductFromID(ID) {
+  try {
+    const res = await fetch(`https://api.mercadolibre.com/items/${ID}`);
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.log(error);
   }
+}
+
+async function GetSumOfPrice(array) {
+  const prices = await array.reduce(async (acc, element) => {
+    const data = await getProductFromID(element);
+    return (await acc) + (await data.price);
+  }, 0);
+  document.querySelector('.total-price').innerText = prices;
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -51,14 +60,44 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-/// //////////////////////////////////////////////////////////////////////////////////////////
+function createCardItems(array) {
+  const card = document.querySelector('.cart__items');
+  card.innerHTML = '';
+  array.forEach(async (element) => {
+    const data = await getProductFromID(element);
+    const product = {
+      sku: data.id,
+      name: data.title,
+      salePrice: data.price,
+    };
+    card.append(createCartItemElement(product));
+  });
+  GetSumOfPrice(IDList);
+}
 
-let IDList = [];
+function cartItemClickListener(event) {
+  // coloque seu código aqui
+  const target = event.target.innerText;
+  const cart = document.getElementsByClassName('cart__item');
+  for (let index = 0; index < cart.length; index += 1) {
+    const element = cart[index];
+    if (target === element.innerText) {
+      IDList.splice(index, 1);
+      createCardItems(IDList);
+    }
+  }
+}
+
+function createCardProduct({ target }) {
+  const id = target.parentNode.children[0].innerText;
+  IDList.push(id);
+  createCardItems(IDList);
+}
 
 async function fetchPCs() {
   try {
     const res = await fetch(
-      'https://api.mercadolibre.com/sites/MLB/search?q=computador'
+      'https://api.mercadolibre.com/sites/MLB/search?q=computador',
     );
     const data = await res.json();
     return data;
@@ -81,48 +120,10 @@ async function setupProductList() {
   });
   const addButton = document.querySelectorAll('.item__add');
   addButton.forEach((e) => {
-    e.addEventListener('click', (e) => {
-      createCardProduct(e);
+    e.addEventListener('click', (element) => {
+      createCardProduct(element);
     });
   });
-}
-
-function createCardProduct({ target }) {
-  const id = target.parentNode.children[0].innerText;
-  IDList.push(id);
-  createCardItems(IDList);
-}
-
-async function getProductFromID(ID) {
-  try {
-    const res = await fetch(`https://api.mercadolibre.com/items/${ID}`);
-    const data = await res.json();
-    return data;
-  } catch (error) {
-    console.log(error);
-  }
-}
-async function GetSumOfPrice(array) {
-  let prices = await array.reduce(async (acc, element) => {
-    const data = await getProductFromID(element);
-    return (await acc) + (await data.price);
-  }, 0);
-  document.querySelector('.total-price').innerText = prices;
-}
-
-function createCardItems(array) {
-  const card = document.querySelector('.cart__items');
-  card.innerHTML = '';
-  array.forEach(async (element) => {
-    const data = await getProductFromID(element);
-    const product = {
-      sku: data.id,
-      name: data.title,
-      salePrice: data.price,
-    };
-    card.append(createCartItemElement(product));
-  });
-  GetSumOfPrice(IDList);
 }
 
 window.onload = () => {
