@@ -75,6 +75,17 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
+function deleteCart() {
+  const cart = document.querySelector('.cart__items');
+  cart.innerHTML = '';
+}
+
+function addDeleteCartListener() {
+  const emptyCart = document.querySelector('.empty-cart');
+  emptyCart.addEventListener('click', deleteCart);
+}
+
 window.onload = () => {
   fetchAPI();
+  addDeleteCartListener();
 };
