@@ -37,14 +37,31 @@ async function getInfos(url) {
 
 // Função entendida e desenvolvida com base no código do Gabriel Benedicto
 // https://github.com/tryber/sd-015-b-project-shopping-cart/blob/b5ae9470633f2967668fb997ca6164fadc616929/script.js#L97
+function sumPrice() {
+  const totalPrice = document.querySelector('.total-price');
+  const listItems = document.querySelectorAll('.cart__item');
+  let sum = 0;
+
+  listItems.forEach(async (item) => {
+    const split = item.innerText.split('|');
+    const priceText = split.filter((element) => 
+      (element.includes('PRICE'))).map((element) => element.replace(' PRICE: $', ''));
+    sum += parseFloat(priceText);
+  });
+  totalPrice.innerText = sum.toFixed(2);
+}
+
+// Função entendida e desenvolvida com base no código do Gabriel Benedicto
+// https://github.com/tryber/sd-015-b-project-shopping-cart/blob/b5ae9470633f2967668fb997ca6164fadc616929/script.js#L97
 function saveOnLocalStorage() {
   const itemsOnLocalStorage = [];
 
   const listItems = document.querySelectorAll('.cart__item');
 
-  listItems.forEach((element) => itemsOnLocalStorage.push(element.innerText));
+  listItems.forEach((item) => itemsOnLocalStorage.push(item.innerText));
 
   localStorage.setItem('currentCart', JSON.stringify(itemsOnLocalStorage));
+  sumPrice();
 }
 
 function cartItemClickListener(event) { 
@@ -60,8 +77,10 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
+// Função entendida e desenvolvida com base no código do Gabriel Benedicto
+// https://github.com/tryber/sd-015-b-project-shopping-cart/blob/b5ae9470633f2967668fb997ca6164fadc616929/script.js#L97
 function getOldCart() {
-  const olList = document.querySelector('.cart__items');
+  const ol = document.querySelector('.cart__items');
 
   if (localStorage.getItem('currentCart')) {
     const items = JSON.parse(localStorage.getItem('currentCart'));
@@ -71,7 +90,8 @@ function getOldCart() {
       li.innerHTML = item;
       li.className = 'cart__item';
       li.addEventListener('click', cartItemClickListener);
-      olList.appendChild(li);
+      ol.appendChild(li);
+      sumPrice();
     });
   }
 }
@@ -89,9 +109,10 @@ async function getItemInfos(item) {
   saveOnLocalStorage();
 }
 
-async function addItemToCart() {
+function addItemToCart() {
   const items = document.querySelectorAll('.item');
-  items.forEach((item) => item.lastChild.addEventListener('click', () => {
+  
+  items.forEach((item) => item.lastChild.addEventListener('click', async () => {
     getItemInfos(item);
     saveOnLocalStorage();
   }));
@@ -121,4 +142,5 @@ async function getItemsElement() {
 window.onload = () => {
   getItemsElement();
   getOldCart();
+  sumPrice();
 };
