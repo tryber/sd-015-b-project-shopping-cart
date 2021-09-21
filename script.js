@@ -33,10 +33,6 @@ function getCartItemsOl() {
   return document.querySelector('.cart__items');
 }
 
-function getThumbnailUrl(id) {
-  return fetch(ITEM_BASE_URL + id).then((response) => response.json());
-}
-
 function saveCartItems(ol) {
   localStorage.cartItems = ol.innerHTML;
 }
@@ -137,13 +133,9 @@ function createProductItemElement({ sku, name, image, price }) {
 
 function fillItemsSection(products) {
   const itemsSection = document.querySelector('.items');
-  products.forEach(async ({ id, title, price }) => {
-    let thumbnail;
-    await getThumbnailUrl(id).then(({ pictures }) => {
-      thumbnail = pictures[0].url;
-    });
+  products.forEach(({ id, title, thumbnail, price }) => {
     itemsSection.appendChild(
-      createProductItemElement({ sku: id, name: title, image: thumbnail, price }),
+      createProductItemElement({ sku: id, name: title, image: thumbnail, price })
     );
   });
 }

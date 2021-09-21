@@ -62,6 +62,7 @@ body {
   border-radius: 5px;
   width: 95%;
   align-self: center;
+  transition: background-color 500ms;
 }
 
 .item .item__add:active {
