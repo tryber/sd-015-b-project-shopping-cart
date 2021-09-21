@@ -33,7 +33,8 @@
 }
 
 .item .item__image {
-  width: 100%;
+  height: 200px;
+  margin: 10px;
 }
 
 .item .item__add {
