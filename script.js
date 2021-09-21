@@ -19,6 +19,9 @@ async function priceSummation() {
   const totalPrice = document.querySelector('.total-price'); 
   const list = document.querySelector(listClass);
   const listArray = Array.from(list.childNodes);
+  
+  if (listArray.length === 0) totalPrice.innerText = 0;
+
   await listArray.forEach(async (item) => {
     const productId = item.id;
     await fetch(`https://api.mercadolibre.com/items/${productId}`)
@@ -111,7 +114,19 @@ async function searchOnMercado(produto) {
     itemsSection.appendChild(createProductItemElement({ sku: id, name: title, image: thumbnail }));
   });
 }
+
+function eraseList() {
+  const list = document.querySelector(listClass);
+  const items = Array.from(list.childNodes);
+  items.forEach((item) => {
+    list.removeChild(item);
+  });
+  priceSummation();
+}
+
 window.onload = () => {
   searchOnMercado('computador'); 
   cartItemsLoad();
- };
+  const emptyCart = document.querySelector('.empty-cart');
+  emptyCart.addEventListener('click', eraseList);
+};
