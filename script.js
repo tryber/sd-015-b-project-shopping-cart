@@ -87,8 +87,25 @@ async function addItemInTheCart(event) {
     });
 }
 
+// async function sumPrices() {
+//   const totalPrice = document.querySelector('.total-price');
+//   const getPrices = document.querySelector('.cart__item');
+//   console.log(getPrices.innerHTML);
+// }
+
+function eraseCart() {
+  const emptyCart = document.querySelector('.empty-cart');
+  
+  emptyCart.addEventListener('click', (event) => {
+    cartItems.innerHTML = '';
+    saveInLocalStorage();
+  });
+}
+
 window.onload = () => {  
   requestProducts();
   addToCart();
   loadLocalStorage();
+  // sumPrices();
+  eraseCart();
 };
