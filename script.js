@@ -29,7 +29,7 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
+  // adcionar um remuve item
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -44,7 +44,7 @@ function createCartItemElement({ sku, name, salePrice }) {
 // passando por que o teste rodava antes do carregamento do fecth
 // então coloquei o fetch dentro de uma função e a chamei dentro window.onload
 // https://github.com/tryber/sd-015-b-project-shopping-cart/pull/2/commits/c9ad5927fa9cd32f2d0146cc161f3af2cca44b6e
-function returnListMLB() {
+async function returnListMLB() {
 return fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${'computador'}`)
   .then((allInfo) => allInfo.json())
   .then((list) => list.results)
@@ -56,6 +56,22 @@ return fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${'computador'}`)
 }));
 }
 
+function getInputForCartItemElement(element) {
+  let buttonSelected = element.target.className;
+  if (buttonSelected === 'item__add') {
+    buttonSelected = element.target.parentNode;
+    const idFromItemSelected = getSkuFromProductItem(buttonSelected);
+    fetch(`https://api.mercadolibre.com/items/${idFromItemSelected}`)
+   .then((infoItem) => infoItem.json())
+   .then((itemData) => {
+ const dataFromInputElement = { sku: itemData.id, name: itemData.title, salePrice: itemData.price };
+ document.querySelector('ol.cart__items')
+ .appendChild(createCartItemElement(dataFromInputElement));    
+});
+  }  
+}
+   
 window.onload = () => {
   returnListMLB();
- };
+  document.addEventListener('click', getInputForCartItemElement);
+};
