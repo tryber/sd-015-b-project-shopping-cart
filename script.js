@@ -21,6 +21,7 @@ const saveCartLocalStorage = () => {
 const sumPrices = () => {
   let sum = 0;
   const totalPrice = document.querySelector(priceContainer);
+  const totalParagraph = document.getElementById('total-value');
   const itemsList = document.getElementsByClassName('cart__item');
 
   for (let i = 0; i < itemsList.length; i += 1) {
@@ -29,10 +30,10 @@ const sumPrices = () => {
   }
 
   if (sum === 0) {
-    totalPrice.style.display = 'none';
+    totalParagraph.style.display = 'none';
   } else {
-    totalPrice.style.display = 'inline';
-    totalPrice.innerHTML = `<b>VALOR TOTAL: R$ </b>${sum.toFixed(2)}`;
+    totalParagraph.style.display = 'inline';
+    totalPrice.innerText = sum.toFixed(2);
   }
 };
 
