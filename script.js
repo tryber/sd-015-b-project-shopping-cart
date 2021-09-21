@@ -2,7 +2,7 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-function test() {
+function calculatorNumbers() {
   const li = document.getElementsByTagName('li');
   const span = document.querySelector('.total-price');
   const tt = [...li];
@@ -52,7 +52,7 @@ function cartItemClickListener(event) {
   const ol = document.getElementsByClassName('cart__items')[0];
   ol.removeChild(event.target);
   saveItensInTheNuvem();
-  test();
+  calculatorNumbers();
 }
 
 function createCartItemElement({ id, title, price }) {
@@ -63,7 +63,7 @@ function createCartItemElement({ id, title, price }) {
   li.addEventListener('click', cartItemClickListener);
   ol.appendChild(li);
   saveItensInTheNuvem();
-  test();
+  calculatorNumbers();
 }
 
 const requestComputerfForId = (param) => {
@@ -105,7 +105,20 @@ function getInTheNuvem() {
   }
   }
 
+  function removeAll() {
+    const ol = document.querySelector('.cart__items');
+    ol.innerHTML = '';
+    calculatorNumbers();
+    saveItensInTheNuvem();
+  }
+
+  function removeItens() {
+    const button = document.querySelector('.empty-cart');
+    button.addEventListener('click', removeAll);
+  }
 window.onload = () => { 
   requestComputadorList();
   getInTheNuvem();
+  removeItens();
+  calculatorNumbers();
 };
