@@ -7,10 +7,16 @@ function createProductImageElement(imageSource) {
   return img;
 }
 
-function cartItemClickListener(event, price) {
+function cartItemClickListener(event, price, id) {
   const clicked = event.target;
-  p.innerText = parseFloat(p.innerText) - price;
   clicked.remove();
+  
+  const arrayStorage = JSON.parse(localStorage.getItem('saveInfo'));
+  const updatedStorage = arrayStorage.filter((item) => item.sku !== id);
+
+  localStorage.setItem('saveInfo', JSON.stringify(updatedStorage));
+
+  p.innerText = parseFloat(p.innerText) - price;
 }
 
 function totalPrice(value) {
@@ -23,20 +29,24 @@ function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  console.log(salePrice);
-  li.addEventListener('click', (event) => cartItemClickListener(event, salePrice));
+  li.addEventListener('click', (event) => cartItemClickListener(event, salePrice, sku));
   return li;
+}
+function saveCartProducts(info) {
+  const arrayStorage = JSON.parse(localStorage.getItem('saveInfo'));
+  arrayStorage.push(info);
+  localStorage.setItem('saveInfo', JSON.stringify(arrayStorage));
 }
 
 function addCartItem(id) {
   fetch(`https://api.mercadolibre.com/items/${id}`)
   .then((response) => response.json())
   .then((data) => {
-    console.log(data);
     const { id: sku, title: name, price: salePrice } = data;
     const ol = document.querySelector('.cart__items');
     ol.appendChild(createCartItemElement({ sku, name, salePrice }));
     totalPrice(salePrice);
+    saveCartProducts({ sku, name, salePrice });
   });
 }
 function createCustomElement(element, className, innerText) {
@@ -87,7 +97,21 @@ function buttonCleanListener() {
   const buttonCleanCart = document.querySelector('.empty-cart');
   buttonCleanCart.addEventListener('click', cleanCart);
 }
+
+function storageArray() {
+  const storage = JSON.parse(localStorage.getItem('saveInfo'));
+  const ol = document.querySelector('.cart__items');
+
+  if (localStorage.getItem('saveInfo')) {
+    storage.forEach((e) => ol.appendChild(createCartItemElement(e)));
+  } else {
+    localStorage.setItem('saveInfo', JSON.stringify([]));
+  }
+  // console.log(localStorage.getItem('saveInfo'));
+}
+
 window.onload = () => {
   getProducts();
   buttonCleanListener();
+  storageArray();
 };
