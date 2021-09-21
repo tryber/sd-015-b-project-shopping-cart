@@ -26,10 +26,6 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
-
 /// //////////////////////////////////////////////////////////////////////////////////////////
 
 let IDList = [];
@@ -50,6 +46,21 @@ async function GetSumOfPrice(array) {
     return (await acc) + (await data.price);
   }, 0);
   document.querySelector('.total-price').innerText = prices;
+}
+
+function cartItemClickListener(event) {
+  // coloque seu código aqui
+  const target = event.target.innerText;
+  const cart = document.getElementsByClassName('cart__item');
+  for (let index = 0; index < cart.length; index += 1) {
+    const element = cart[index];
+    if (target === element.innerText) {
+      IDList.splice(index, 1);
+      element.remove();
+      GetSumOfPrice(IDList);
+      localStorage.cart = JSON.stringify(IDList);
+    }
+  }
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -73,19 +84,6 @@ function createCardItems(array) {
     card.append(createCartItemElement(product));
   });
   GetSumOfPrice(IDList);
-}
-
-function cartItemClickListener(event) {
-  // coloque seu código aqui
-  const target = event.target.innerText;
-  const cart = document.getElementsByClassName('cart__item');
-  for (let index = 0; index < cart.length; index += 1) {
-    const element = cart[index];
-    if (target === element.innerText) {
-      IDList.splice(index, 1);
-      createCardItems(IDList);
-    }
-  }
 }
 
 function createCardProduct({ target }) {
