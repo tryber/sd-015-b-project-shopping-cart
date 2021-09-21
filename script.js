@@ -91,6 +91,7 @@ function cartItemClickListener(event) {
 function createCardProduct({ target }) {
   const id = target.parentNode.children[0].innerText;
   IDList.push(id);
+  localStorage.cart = JSON.stringify(IDList);
   createCardItems(IDList);
 }
 
@@ -127,13 +128,13 @@ async function setupProductList() {
 }
 
 window.onload = () => {
+  document.querySelector('.empty-cart').addEventListener('click', () => {
+    IDList = [];
+    createCardItems(IDList);
+  });
   setupProductList();
   if ('cart' in localStorage) {
     IDList = JSON.parse(localStorage.cart);
     createCardItems(IDList);
   }
-};
-
-window.onunload = () => {
-  localStorage.cart = JSON.stringify(IDList);
 };
