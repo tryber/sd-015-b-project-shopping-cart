@@ -1,5 +1,15 @@
 const cart = document.querySelector('.cart__items');
 
+function saveCart() {
+  const cartHTML = document.querySelector('.cart__items').innerHTML;
+  localStorage.setItem('cart', cartHTML);
+}
+
+function loadCart() {
+  const storageCart = localStorage.getItem('cart');
+  cart.innerHTML = storageCart;
+}
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -16,6 +26,7 @@ function createCustomElement(element, className, innerText) {
 
 function cartItemClickListener(event) {
   cart.removeChild(event.target);
+  saveCart();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -23,6 +34,7 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
+
   return li;
 }
 
@@ -44,6 +56,8 @@ async function addItemToCartClickListener(event) {
   const cartItem = createCartItemElement({ sku, name, salePrice });
 
   cart.appendChild(cartItem);
+
+  saveCart();
 }
 
 function addButtonListener() {
@@ -79,6 +93,7 @@ async function fetchAPI(query = 'computador') {
 
 function deleteCart() {
   cart.innerHTML = '';
+  saveCart();
 }
 
 function addDeleteCartListener() {
@@ -89,4 +104,5 @@ function addDeleteCartListener() {
 window.onload = () => {
   fetchAPI();
   addDeleteCartListener();
+  loadCart();
 };
