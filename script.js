@@ -76,6 +76,17 @@ bodyCall.addEventListener('click', (event) => {
   });
 }
 
+function buttonclearCart() {
+  const bodys = document.body;
+  const lista = document.querySelector('.cart__items');
+  bodys.addEventListener('click', (event) => {
+    const button = event.target;
+    if (button.classList.contains('empty-cart')) {
+      lista.innerHTML = '';
+    }
+  });
+}
+
 /* function createCartList() {
 
 } */
@@ -83,4 +94,5 @@ bodyCall.addEventListener('click', (event) => {
 window.onload = () => { 
   getAPI();
   createListener();
+  buttonclearCart();
 };
