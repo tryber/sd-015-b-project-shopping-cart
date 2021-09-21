@@ -32,7 +32,7 @@ const totalPrice = document.createElement('span');
 totalPrice.className = 'total-price';
 cartSection.appendChild(totalPrice);
 
-// Font: https://stackoverflow.com/questions/3612744/remove-insignificant-trailing-zeros-from-a-number
+// Fonte: https://stackoverflow.com/questions/3612744/remove-insignificant-trailing-zeros-from-a-number
 const getTotalPrice = () => {
   const itemsHTMLCollection = document.querySelectorAll('.cart__item');
   const items = [...itemsHTMLCollection];
@@ -112,6 +112,7 @@ const getItems = async () => {
   } catch (error) {
     console.log('Erro ao receber os dados dos Itens');
   }
+  await document.querySelector('.loading').remove();
   getAddToCartBtnListener();
 };
 
@@ -130,64 +131,18 @@ function loadLocalStorage() {
   }
 }
 
+function clearCart() {
+  const cartItems = [...document.getElementsByClassName('cart__item')];
+  cartItems.forEach((item) => {
+    olCartSection.firstElementChild.remove();
+  });
+  totalPrice.innerText = '';
+}
+
+const btnClear = document.querySelector('.empty-cart');
+btnClear.addEventListener('click', clearCart);
+
 window.onload = () => { 
   getItems();
   loadLocalStorage();
 };
-
-// window.onload = () => {
-//   if (localStorage.getItem('savedTasks') === null) {
-  //     localStorage.setItem('savedTasks', JSON.stringify([]));
-  //   } else {
-    //     const savedTasks = JSON.parse(localStorage.getItem('savedTasks'));
-//     for (let i = 0; i < savedTasks.length; i += 1) {
-  //       const oldLi = document.createElement('li');
-  //       oldLi.innerText = savedTasks[i].innerText;
-  //       oldLi.className = savedTasks[i].className;
-  //       oldLi.addEventListener('click', addSelectedClass);
-  //       oldLi.addEventListener('dblclick', addCompletedClass);
-  //       ol.appendChild(oldLi);
-  //     }
-  //   }
-  // };
-  
-//                                                                              ----> falta a 'appendar' o LI na OL ao iniciar a página
-// function createCartItemElement({ id, title, price }) {
-  // const li = document.createElement('li');
-  // li.className = 'cart__item';
-  // li.innerText = `SKU: ${id} | NAME: ${title} | PRICE: $${price}`;
-  // li.addEventListener('click', cartItemClickListener);
-  // olCartSection.appendChild(li);
-  // return li;
-// }
-
-// const localStorageCart = JSON.parse(localStorage.getItem('ObjetoParaGuardar'));
-// let ObjetoParaGuardar = localStorage.getItem('ObjetoParaGuardar') ? localStorageCart : [];
-
-// const updateLocalStorageCart = () => {
-//   localStorage.getItem('ObjetoParaGuardar', JSON.stringify(ObjetoParaGuardar));
-// };
-
-// function removeItemsInLocalStorage(itemInnerText) {
-//   if (localStorage.getItem('items') !== null) {
-//     const items = JSON.parse(localStorage.getItem('items'));
-//     items.forEach((item, i) => {
-//       console.log('ITEM É:', item);
-//     if (item.innerText === itemInnerText) return localStorage.removeItem(`items[${i}]`);
-//     });
-//   }
-// }
-
-//              --> tentando pegar os preços de forma mais dinâmica e falhando miseravelmente:
-// totalPrice.innerText = prices.reduce((acc, curr) => acc + curr);
-  // try {
-  //   const itensInCart = document.querySelectorAll('.cart__item');
-  //   itensInCart.forEach(async (item) => {
-  //     const response = await fetch(`https://api.mercadolibre.com/items/${item.id}`);
-  //     const itemData = await response.json();
-  //     prices.push(itemData.price);
-  //     console.log(prices);
-  //   });
-  // } catch (error) {
-  //   console.log('Erro ao calcular o preço total!');
-  // }  
