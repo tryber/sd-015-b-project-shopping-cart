@@ -1,3 +1,5 @@
+const cartItems = '.cart__items';
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -27,8 +29,8 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-function getLocalStorage() {
-  const saveStorage = document.querySelector('.cart__items').innerHTML;
+function saveLocalStorage() {
+  const saveStorage = document.querySelector(cartItems).innerHTML;
   localStorage.setItem('item', JSON.stringify(saveStorage));
 }
 
@@ -37,7 +39,6 @@ function sumCart() {
   const getValues = getClassItem.map((value) => {
     const splited = value.innerText.split('$')[1];
     const number = parseFloat(splited, 10);
-    console.log(number);
     return number;
   });
   const result = getValues.reduce((acc, curr) => (acc + curr), 0);
@@ -45,15 +46,14 @@ function sumCart() {
 }
 
 function cartItemClickListener(event) {
-  const eventoClick = event.target;
-  eventoClick.remove();
+  event.target.remove();
   sumCart();
-  getLocalStorage();
+  saveLocalStorage();
 }
 
 function recoveryLocalStorageOl() {
   const getLis = JSON.parse(localStorage.getItem('item'));
-  const getOl = document.querySelector('ol');
+  const getOl = document.querySelector(cartItems);
   getOl.innerHTML = getLis;
   getOl.addEventListener('click', cartItemClickListener);
 }
@@ -76,11 +76,10 @@ async function createListElements(products) {
           image: thumbnail,
         };
 
-        const classItems = document.querySelector('.items');
-        const createProducts = createProductItemElement(listProducts);
-        classItems.appendChild(createProducts);
-    }))
-    .catch(() => console.log('error'));
+        const selectAllItems = document.querySelector('.items');
+        const cartProducts = createProductItemElement(listProducts);
+        selectAllItems.appendChild(cartProducts);
+    }));
 }
 
 function getListIds(idItem) {
@@ -95,10 +94,10 @@ function getListIds(idItem) {
       };
 
       const itemLi = createCartItemElement(idProducts);
-      const itemOl = document.querySelector('.cart__items');
+      const itemOl = document.querySelector(cartItems);
       itemOl.appendChild(itemLi);
       sumCart();
-      getLocalStorage();
+      saveLocalStorage();
     })
     .catch(() => console.log('error na verificacao do id'));
 }
@@ -112,27 +111,22 @@ function buttonId() {
 }
 
 function buttonClearCart() {
-  const getOl = document.querySelector('ol');
-    const getSpan = document.querySelector('.total-price');
-      getOl.innerHTML = '';
-      getSpan.innerHTML = '';
-      getLocalStorage();
+  const getOl = document.querySelector(cartItems);
+  const getSpan = document.querySelector('.total-price');
+    getOl.innerHTML = '';
+    getSpan.innerHTML = '';
+    saveLocalStorage();
 }
 
-function createSpanText() {
-  const selectSection = document.querySelector('.container');
-  selectSection.appendChild(createCustomElement('span', 'loading', 'loading...'));
-}
-
-function removeSpanLoading() {
-  const loading = document.querySelector('.loading');
-  loading.remove();
+function createSpanLoading() {
+  const container = document.querySelector('.container');
+  container.appendChild(createCustomElement('span', 'loading', 'loading...'));
 }
 
 window.onload = () => {
-  createSpanText();
+  createSpanLoading();
   createListElements('computador')
-    .then(() => removeSpanLoading())
+    .then(() => document.querySelector('.loading').remove())
     .then(() => buttonId())
     .then(() => recoveryLocalStorageOl())
     .then(() => sumCart())
