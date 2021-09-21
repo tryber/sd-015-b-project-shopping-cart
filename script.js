@@ -248,12 +248,24 @@ function addCodeWithEnter(event) {
   }
 }
 
+function togleBlackScreen() {
+  const blackScreen = document.querySelector('#black-screen');
+  if (blackScreen.style.zIndex === '-1') {
+    blackScreen.style.zIndex = '0';
+    blackScreen.style.opacity = '50%';
+  } else {
+    blackScreen.style.zIndex = '-1';
+    blackScreen.style.opacity = '0%';
+  }
+}
+
 window.onload = () => {
   const retrieveCart = localStorage.getItem('currentCart');
   const btnSearch = document.querySelector('#button-search');
   const inputField = document.querySelector('#input-search');
   const btnPromoCode = document.querySelector('#promo-code-btn');
   const inputPromoCode = document.querySelector('#promo-code-input');
+  const cartBtn = document.querySelector('#cart-btn');
 
   if (retrieveCart) retrieveSavedCart();
   initialExecOrder();
@@ -261,4 +273,5 @@ window.onload = () => {
   inputField.addEventListener('keydown', refillWithNewSearchWithEnter);
   btnPromoCode.addEventListener('click', addCodeWithClick);
   inputPromoCode.addEventListener('keydown', addCodeWithEnter);
+  cartBtn.addEventListener('click', togleBlackScreen);
 };
