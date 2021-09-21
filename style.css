@@ -65,3 +65,8 @@
 .coin {
   padding-inline: 10px;
 }
+
+.loading {
+  padding: 4%;
+  align-self: center;
+}

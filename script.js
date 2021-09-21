@@ -115,8 +115,9 @@ async function getProductsFromEndpoint() {
       { sku: itemOnSale.id, name: itemOnSale.title, image: itemOnSale.thumbnail },
     ));
   });
-  await handleItemsListButtonEventAdd();
-  await eraseButtonListener();
+  // await handleItemsListButtonEventAdd();
+  // await eraseButtonListener();
+  // const loading = document.querySelector('.loading');
 }
 
 function retrieveListFromLocalStorage() {
@@ -131,9 +132,22 @@ function retrieveListFromLocalStorage() {
   }
 }
 
-window.onload = () => {
-  getProductsFromEndpoint();
+async function handleAll() {
+  await getProductsFromEndpoint();
+  await handleItemsListButtonEventAdd();
+  await eraseButtonListener();
+  const loading = document.querySelector('.loading');
+  const cart = document.querySelector('.cart');
+  cart.removeChild(loading);
   if (localStorage.length > 0) {
     retrieveListFromLocalStorage();
   }
+}
+
+window.onload = () => {
+  handleAll();
+  // getProductsFromEndpoint();
+  // if (localStorage.length > 0) {
+  //   retrieveListFromLocalStorage();
+  // }
 };
