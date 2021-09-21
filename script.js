@@ -32,7 +32,8 @@ function createProductItemElement({ sku, name, image }) {
 }
 
 function getSkuFromProductItem(item) {
-  return item.target.querySelector('span.item__sku').innerText;
+  const itemElement = item.parentElement;
+  return itemElement.firstElementChild.innerText;
 }
 
 function cartItemClickListener(event) {
