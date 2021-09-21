@@ -105,7 +105,6 @@ function storageArray() {
       ol.appendChild(createCartItemElement(e));
       totalPrice(e.salePrice);
     });
-    
   } else {
     localStorage.setItem('saveInfo', JSON.stringify([]));
   }
