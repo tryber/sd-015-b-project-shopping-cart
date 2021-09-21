@@ -2,10 +2,11 @@ const OlClass = '.cart__items';
 const constainerClass = '.container';
 const promoCodes = {
   rafael: 0.67, // 33% desconto
-  amanda: 0.97,  // 3% desconto
+  amanda: 0.97, // 3% desconto
   laurenz: 0.86, // 14% desconto
   leonardo: 0.46, // 54% desconto
   fernando: 0.12, // 88% desconto
+  joaonasc: 0.03, // 97% desconto
 };
 
 function createProductImageElement(imageSource) {
