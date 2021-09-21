@@ -12,12 +12,12 @@ function cartItemClickListener(event, price, id) {
   const clicked = event.target;
   clicked.remove();
   
-  const arrayStorage = JSON.parse(localStorage.getItem('saveInfo'));
-  const updatedStorage = arrayStorage.filter((item) => item.sku !== id);
-
-  localStorage.setItem('saveInfo', JSON.stringify(updatedStorage));
-
-  p.innerText = parseFloat(p.innerText) - price;
+  if (localStorage.getItem('saveInfo')) {
+    const arrayStorage = JSON.parse(localStorage.getItem('saveInfo'));
+    const updatedStorage = arrayStorage.filter((item) => item.sku !== id);
+    localStorage.setItem('saveInfo', JSON.stringify(updatedStorage));
+  }
+  p.innerText = parseFloat(p.innerText).toFixed(2) - price;
 }
 
 function totalPrice(value) {
@@ -101,7 +101,11 @@ function storageArray() {
   const storage = JSON.parse(localStorage.getItem('saveInfo'));
 
   if (localStorage.getItem('saveInfo')) {
-    storage.forEach((e) => ol.appendChild(createCartItemElement(e)));
+    storage.forEach((e) => {
+      ol.appendChild(createCartItemElement(e));
+      totalPrice(e.salePrice);
+    });
+    
   } else {
     localStorage.setItem('saveInfo', JSON.stringify([]));
   }
