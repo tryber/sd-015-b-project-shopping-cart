@@ -1,3 +1,14 @@
+function getSkuFromProductItem(item) {
+  return item.querySelector('span.item__sku').innerText;
+}
+
+function test() {
+  const li = document.getElementsByTagName('li');
+  const tt = [...li];
+  const string = tt.map((element) => element.innerText.split(' ')[1]);
+  localStorage.test = JSON.stringify(string);
+}
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -26,13 +37,10 @@ function createProductItemElement({ id, title, thumbnail }) {
   return section;
 }
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
-
 function cartItemClickListener(event) {
   const ol = document.getElementsByClassName('cart__items')[0];
   ol.removeChild(event.target);
+  test();
 }
 
 function createCartItemElement({ id, title, price }) {
@@ -42,6 +50,7 @@ function createCartItemElement({ id, title, price }) {
   li.innerText = `SKU: ${id} | NAME: ${title} | PRICE: $${price}`;
   li.addEventListener('click', cartItemClickListener);
   ol.appendChild(li);
+  test();
 }
 
 const requestComputerfForId = (param) => {
@@ -75,6 +84,15 @@ const requestComputadorList = () => {
   .then((retorno) => addItems(retorno)); 
 };
 
+function tes2() {
+  const chaveLocalStorage = localStorage.getItem('test');
+  if (chaveLocalStorage) {
+  const arrayDeIds = JSON.parse(chaveLocalStorage);
+  arrayDeIds.forEach((element) => requestComputerfForId(element));
+  }
+  }
+
 window.onload = () => { 
   requestComputadorList();
+  tes2();
 };
