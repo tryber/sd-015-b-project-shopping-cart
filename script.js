@@ -3,45 +3,26 @@ const ordenedlistCart = document.querySelector('ol.cart__items');
 const buttonEmptyCart = document.querySelector('button.empty-cart');
 
 function createLoadingScreanToInit() {
-  const element = document.createElement('span');
-  element.className = 'loading';
-  element.innerText = 'loading...';
-  document.body.prepend(element);
+  if (!document.querySelector('.loading')) {
+    const element = document.createElement('span');
+    element.className = 'loading';
+    element.innerText = 'loading...';
+    document.body.prepend(element);
+  }
 }
 
 function createLoadingScreanToList() {
-  const element = document.createElement('span');
-  element.className = 'loading';
-  element.innerText = 'loading...';
-  document.querySelector('section.cart').appendChild(element);
-}
-
-function closeInitLoadingScrean() {
-  const element = document.querySelector('body span.loading');
-  document.body.removeChild(element);
+  if (!document.querySelector('.loading')) {
+    const element = document.createElement('span');
+    element.className = 'loading';
+    element.innerText = 'loading...';
+    document.querySelector('section.cart').appendChild(element);
+  }
 }
 
 function closeListLoadingScrean() {
   const element = document.querySelector('section.cart span.loading');
   document.querySelector('section.cart').removeChild(element);
-}
-
-function createProductImageElement(imageSource) {
-  const img = document.createElement('img');
-  img.className = 'item__image';
-  img.src = imageSource;
-  return img;
-}
-
-function createCustomElement(element, className, innerText) {
-  const e = document.createElement(element);
-  e.className = className;
-  e.innerText = innerText;
-  return e;
-}
-
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
 }
 
 async function itemObjectPromise(id) {
@@ -52,6 +33,64 @@ async function itemObjectPromise(id) {
       closeListLoadingScrean();
       return resultJson;
     });
+}
+
+function closeInitLoadingScrean() {
+  const element = document.querySelector('body span.loading');
+  document.body.removeChild(element);
+}
+
+function getSkuFromProductItem(item) {
+  return item.querySelector('span.item__sku').innerText;
+}
+
+function createpopupElement({ sku, salePrice }) {
+  const span = document.createElement('span');
+  span.id = 'cart__popup';
+  const container = document.createElement('div');
+  const ul = document.createElement('ul');
+  const liId = document.createElement('li');
+  const liPrice = document.createElement('li');
+  liId.innerText = `id: ${sku}`;
+  liPrice.innerText = `Price: $${salePrice.toFixed(2)}`;
+  ul.appendChild(liId);
+  ul.appendChild(liPrice);
+  container.appendChild(ul);
+  span.appendChild(container);
+  return span;
+}
+
+function showHidePopupElement(event) {
+  const element = event.target.parentNode;
+  const elementId = getSkuFromProductItem(element);
+  itemObjectPromise(elementId)
+    .then((object) => {
+      const { id: sku, price: salePrice } = object;
+      if (!element.querySelector('#cart__popup')) {
+        const popup = createpopupElement({ sku, salePrice });
+        element.appendChild(popup);
+        element.nextSibling.style.zIndex = '-1';
+      } else {
+        element.removeChild(element.querySelector('#cart__popup'));
+        element.nextSibling.style.zIndex = '0';
+      }
+    });
+}
+
+function createProductImageElement(imageSource) {
+  const img = document.createElement('img');
+  img.className = 'item__image';
+  img.src = imageSource;
+  img.addEventListener('mouseover', showHidePopupElement);
+  img.addEventListener('mouseout', showHidePopupElement);
+  return img;
+}
+
+function createCustomElement(element, className, innerText) {
+  const e = document.createElement(element);
+  e.className = className;
+  e.innerText = innerText;
+  return e;
 }
 
 function cartListInArray() {
@@ -124,6 +163,7 @@ function createProductItemElement({ sku, name, image }) {
   section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
   section.lastChild.addEventListener('click', addElementToCart);
+  section.querySelector('img').alt = `${name} | ${image}`;
   return section;
 }
 

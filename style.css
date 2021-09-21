@@ -20,6 +20,21 @@
   height: auto;
   margin: 5px;
   width: 200px;
+  box-shadow: 0 0 5px rgb(0, 0, 255);
+  position: relative;
+}
+
+.item #cart__popup {
+  position: absolute;
+  background-color: black;
+  color: white;
+  left: 200px;
+  padding-right: 10px;
+}
+
+.item:hover {
+  transform: scale(1.05);
+  transition: 500ms;
 }
 
 .item .item__sku {
@@ -42,6 +57,13 @@
   cursor: pointer;
   margin: 0;
   padding: 5px;
+  color: white;
+  font-weight: 900;
+}
+
+.item .item__add:hover {
+  background-color: rgb(0, 85, 0);
+  transition: 1s;
 }
 
 .cart {
@@ -54,4 +76,8 @@
   flex-basis: 1;
   font-size: 16pt;
   text-align: center;
+}
+
+ol li::marker {
+  font-weight: 900;
 }
