@@ -1,3 +1,13 @@
+// acessar o endpoint
+// ver o results
+// usar a função createProduct
+
+async function getProducts() {
+  const response = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
+  const dados = await response.json();
+  return dados.results;
+}
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -12,13 +22,13 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({ sku, name, image }) {
+function createProductItemElement({ id, title, thumbnail }) {
   const section = document.createElement('section');
   section.className = 'item';
 
-  section.appendChild(createCustomElement('span', 'item__sku', sku));
-  section.appendChild(createCustomElement('span', 'item__title', name));
-  section.appendChild(createProductImageElement(image));
+  section.appendChild(createCustomElement('span', 'item__sku', id));
+  section.appendChild(createCustomElement('span', 'item__title', title));
+  section.appendChild(createProductImageElement(thumbnail));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
 
   return section;
@@ -40,4 +50,11 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-window.onload = () => { };
+window.onload = async () => { 
+  const section = document.getElementById('items');
+  const products = await getProducts();
+  console.log(products);
+  products.forEach((product) => {
+    section.appendChild(createProductItemElement(product));
+  });
+};
