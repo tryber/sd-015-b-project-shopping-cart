@@ -4,7 +4,7 @@ function createProductImageElement(imageSource) {
   img.src = imageSource;
   return img;
 }
-const empytCartItem = document.querySelector('.cart__item');
+// const empytCartItem = document.querySelector('.cart__item');
 function cartItemClickListener(event) {
   // coloque seu código aqui
   const listItem = event.target;
@@ -67,9 +67,9 @@ function requestComputer() {
     .then((dados) => creatObject(dados.results)); // capturing objects
 }
 
-function getSkuFromProductItem(item) {
+/* function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
-}
+} */
 
 window.onload = () => {
   requestComputer();
