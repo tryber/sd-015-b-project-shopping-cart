@@ -1,4 +1,5 @@
 const p = document.querySelector('.total-price');
+const ol = document.querySelector('.cart__items');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -43,7 +44,6 @@ function addCartItem(id) {
   .then((response) => response.json())
   .then((data) => {
     const { id: sku, title: name, price: salePrice } = data;
-    const ol = document.querySelector('.cart__items');
     ol.appendChild(createCartItemElement({ sku, name, salePrice }));
     totalPrice(salePrice);
     saveCartProducts({ sku, name, salePrice });
@@ -88,7 +88,6 @@ function getProducts() {
 }
 
 function cleanCart() {
-  const ol = document.querySelector('.cart__items');
   ol.innerHTML = '';
   p.innerText = 0;
 }
@@ -100,14 +99,12 @@ function buttonCleanListener() {
 
 function storageArray() {
   const storage = JSON.parse(localStorage.getItem('saveInfo'));
-  const ol = document.querySelector('.cart__items');
 
   if (localStorage.getItem('saveInfo')) {
     storage.forEach((e) => ol.appendChild(createCartItemElement(e)));
   } else {
     localStorage.setItem('saveInfo', JSON.stringify([]));
   }
-  // console.log(localStorage.getItem('saveInfo'));
 }
 
 window.onload = () => {
