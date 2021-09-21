@@ -30,34 +30,53 @@ function getSkuFromProductItem(item) {
 
 async function getInfos(url) {
   const urlData = url;
-  try {
-    const response = await fetch(urlData);
-    const jsonData = await response.json();
-    return await jsonData;
-  } catch (error) {
-    throw new Error();
-  }
+  const response = await fetch(urlData);
+  const jsonData = await response.json();
+  return jsonData;
 }
 
-function cartItemClickListener(element) {
-  const cartItems = document.querySelector('.cart__item');
+// Função entendida e desenvolvida com base no código do Gabriel Benedicto
+// https://github.com/tryber/sd-015-b-project-shopping-cart/blob/b5ae9470633f2967668fb997ca6164fadc616929/script.js#L97
+function saveOnLocalStorage() {
+  const itemsOnLocalStorage = [];
 
-  if (cartItems.parentNode) {
-    cartItems.parentNode.removeChild(element);
-  }
+  const listItems = document.querySelectorAll('.cart__item');
+
+  listItems.forEach((element) => itemsOnLocalStorage.push(element.innerText));
+
+  localStorage.setItem('currentCart', JSON.stringify(itemsOnLocalStorage));
+}
+
+function cartItemClickListener(event) { 
+  event.target.remove();
+  saveOnLocalStorage();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', () => {
-    cartItemClickListener(li);
-  });
+  li.addEventListener('click', cartItemClickListener);
   return li;
 }
 
-async function getIntemInfos(item) {
+function getOldCart() {
+  const olList = document.querySelector('.cart__items');
+
+  if (localStorage.getItem('currentCart')) {
+    const items = JSON.parse(localStorage.getItem('currentCart'));
+
+    items.forEach((item) => {
+      const li = document.createElement('li');
+      li.innerHTML = item;
+      li.className = 'cart__item';
+      li.addEventListener('click', cartItemClickListener);
+      olList.appendChild(li);
+    });
+  }
+}
+
+async function getItemInfos(item) {
   const productId = getSkuFromProductItem(item);
   const url = `https://api.mercadolibre.com/items/${productId}`;
   const endPointInfos = await getInfos(url);
@@ -67,12 +86,14 @@ async function getIntemInfos(item) {
   cartItems.appendChild(createCartItemElement({
     sku: response.id, name: response.title, salePrice: response.price,
   }));
+  saveOnLocalStorage();
 }
 
 async function addItemToCart() {
   const items = document.querySelectorAll('.item');
   items.forEach((item) => item.lastChild.addEventListener('click', () => {
-    getIntemInfos(item);
+    getItemInfos(item);
+    saveOnLocalStorage();
   }));
 }
 
@@ -81,7 +102,6 @@ async function getItemsElement() {
     'https://api.mercadolibre.com/sites/MLB/search?q=$computador',
   );
   const productResults = endPointInfos.results;
-  
   const sectionItems = document.querySelector('.items');
 
   const result = productResults.forEach((product) => {
@@ -94,10 +114,11 @@ async function getItemsElement() {
       createProductItemElement({ sku: productId, name: productName, image: productImage }),
     );
   });
+  addItemToCart();
   return result;
 }
 
-window.onload = async () => {
-  await getItemsElement();
-  await addItemToCart();
+window.onload = () => {
+  getItemsElement();
+  getOldCart();
 };
