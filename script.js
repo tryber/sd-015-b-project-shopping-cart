@@ -29,7 +29,7 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-  // coloque seu código aquii
+  event.target.remove();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
