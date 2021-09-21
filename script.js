@@ -60,10 +60,12 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 }
 
 function buscarInfomacaoAppi(item) {
+const loading = document.querySelector('.loading');
 const url = `https://api.mercadolibre.com/sites/MLB/search?q=$${item}`;
 fetch(url)
   .then((resposta) => resposta.json())
   .then((resultado) => { 
+    loading.remove();
    const listaDeItens = resultado.results;
   listaDeItens.forEach((element) => {
     const sectioClassItems = document.querySelector('.items');
