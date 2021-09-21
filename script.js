@@ -1,5 +1,12 @@
 const OlClass = '.cart__items';
 const constainerClass = '.container';
+const promoCodes = {
+  rafael: 0.67, // 33% desconto
+  amanda: 0.97,  // 3% desconto
+  laurenz: 0.86, // 14% desconto
+  leonardo: 0.46, // 54% desconto
+  fernando: 0.12, // 88% desconto
+};
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -217,13 +224,40 @@ function refillWithNewSearchWithEnter(event) {
   }
 }
 
+function newAmountWithPromoCode(code) {
+  const amountStr = document.querySelector('.total-price');
+  const totalAmount = parseFloat(amountStr.innerText
+    .replace('R$ ', '').replace('.', '').replace(',', '.'), 10);
+
+  amountStr.innerText = (totalAmount * code)
+    .toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}
+
+function addCodeWithClick() {
+  const promoCodeInputValue = document.querySelector('#promo-code-input').value.toLowerCase();
+
+  if (promoCodes[promoCodeInputValue]) newAmountWithPromoCode(promoCodes[promoCodeInputValue]);
+}
+
+function addCodeWithEnter(event) {
+  if (event.key === 'Enter') {
+    const promoCodeInputValue = document.querySelector('#promo-code-input').value.toLowerCase();
+
+    if (promoCodes[promoCodeInputValue]) newAmountWithPromoCode(promoCodes[promoCodeInputValue]);
+  }
+}
+
 window.onload = () => {
   const retrieveCart = localStorage.getItem('currentCart');
   const btnSearch = document.querySelector('#button-search');
   const inputField = document.querySelector('#input-search');
+  const btnPromoCode = document.querySelector('#promo-code-btn');
+  const inputPromoCode = document.querySelector('#promo-code-input');
+
   if (retrieveCart) retrieveSavedCart();
   initialExecOrder();
   btnSearch.addEventListener('click', refillWithNewSearchWithClick);
-
   inputField.addEventListener('keydown', refillWithNewSearchWithEnter);
+  btnPromoCode.addEventListener('click', addCodeWithClick);
+  inputPromoCode.addEventListener('keydown', addCodeWithEnter);
 };

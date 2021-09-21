@@ -354,3 +354,8 @@ label {
     transform: rotate(1800deg);
   }
 }
+
+#promo-code {
+  align-self: center;
+  margin-bottom: 20px;
+}
