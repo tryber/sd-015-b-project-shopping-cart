@@ -31,6 +31,18 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+function showLoading() {
+  const h2Loading = document.createElement('h2');
+  const body = document.querySelector('body');
+  h2Loading.className = 'loading';
+  h2Loading.innerHTML = 'loading...';
+  body.appendChild(h2Loading);
+}
+
+function hiddenLoading() {
+  document.querySelector('.loading').remove();
+}
+
 function clear() {
   const olItems = document.querySelectorAll(cartItems);
 
@@ -128,7 +140,7 @@ async function getItemInfos(item) {
 function addItemToCart() {
   const items = document.querySelectorAll('.item');
   
-  items.forEach((item) => item.lastChild.addEventListener('click', async () => {
+  items.forEach((item) => item.lastChild.addEventListener('click', () => {
     getItemInfos(item);
     saveOnLocalStorage();
   }));
@@ -140,7 +152,6 @@ async function getItemsElement() {
   );
   const productResults = endPointInfos.results;
   const sectionItems = document.querySelector('.items');
-
   const result = productResults.forEach((product) => {
     const productId = product.id;
     const productName = product.title;
@@ -151,11 +162,13 @@ async function getItemsElement() {
       createProductItemElement({ sku: productId, name: productName, image: productImage }),
     );
   });
+  hiddenLoading();
   addItemToCart();
   return result;
 }
 
-window.onload = async () => {
+window.onload = () => {
+  showLoading();
   getItemsElement();
   getOldCart();
   sumPrice();
