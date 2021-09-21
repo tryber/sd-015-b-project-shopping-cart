@@ -19,8 +19,9 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
-  section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-
+  const buttonTest = createCustomElement('button', 'item__add', 'Adicionar ao carrinho!');
+  buttonTest.id = sku;
+  section.appendChild(buttonTest);
   return section;
 }
 
@@ -41,12 +42,28 @@ function createCartItemElement({ sku, name, salePrice }) {
 }
 
 /* Criação de novas funções a partir desta linha */
+function APIToSelectItem(event) {
+  const getItemOfProduct = getSkuFromProductItem(event.target.parentElement);
+  const listOfProducts = document.querySelector('.cart__items');
+  fetch(`https://api.mercadolibre.com/items/${getItemOfProduct}`)
+  .then((response) => response.json())
+  .then((item) => listOfProducts.appendChild(createCartItemElement(
+    { sku: item.id, name: item.title, salePrice: item.price },
+    )));
+}
+
+function addProductShoppingCar() {
+  const buttonAddProduct = document.querySelectorAll('.item__add');
+  buttonAddProduct.forEach((buttons) => buttons.addEventListener('click', APIToSelectItem));
+}
+
 function createdObjetctToProducts(listOfComputers) {
   const findFatherOfList = document.querySelector('.items');
   for (let index = 0; index < listOfComputers.length; index += 1) {
     const createItems = createProductItemElement(listOfComputers[index]);
     findFatherOfList.appendChild(createItems);
   }
+  addProductShoppingCar();
 }
 
 function computerListWithFech() {
