@@ -1,6 +1,5 @@
 function cartItemClickListener(event) {
-  // click no botao
-  console.log(event);
+  event.target.remove();
 }
 
 function getSkuFromProductItem(item) {
