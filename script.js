@@ -10,8 +10,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  // eslint-disable-next-line no-use-before-define
-  li.addEventListener('click', cartItemClickListener);
+  // li.addEventListener('click', cartItemClickListener);
   return li;
 }
 
@@ -61,10 +60,9 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
-function cartItemClickListener(_event) {
-  // coloque seu código aqui
-
-}
+// function cartItemClickListener(_event) {
+//   // coloque seu código aqui
+// }
 
 // REQUISITO 1 UM
 const getListProducts = (product = 'computador') => {
