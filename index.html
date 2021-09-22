@@ -1,22 +1,60 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Document</title>
+    <title>Trybemart</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@100;300;400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css" />
-    <script src="script.js"></script>
+    <script src="./functions_lib/data.js" type="module"></script>
+    <script src="script.js" type="module"></script>
   </head>
 
   <body>
-    <section class="container">
-      <section class="items"></section>
-      <section class="cart">
-        <span class="cart__title">Carrinho de compras</span>
-        <button class="empty-cart">Esvaziar carrinho</button>
-        <ol class="cart__items"></ol>
+    <header>
+      <section class="title">
+        <h1>
+          Trybemart
+        </h1>
       </section>
+
+      <section id="section-search">
+        <input id="input-search" type="search" placeholder="Busque aqui">
+        <button id="button-search">Buscar</button>
+      </section>
+
+    </header>
+    
+    <input type="checkbox" id="cart-btn">
+    <label for="cart-btn">
+      <span id="cart-btn-text">🛒</span>
+    </label>
+
+    <nav class="cart">
+      <span class="cart__title">Carrinho de compras</span>
+
+      
+      <div class="container-amount">
+        <span class="total-price"></span>
+      </div>
+
+      <div id="promo-code">
+        <input id="promo-code-input" type="text" placeholder="Cupom de Desconto">
+        <button id="promo-code-btn">Adicionar</button>
+      </div>
+
+      <button class="empty-cart">Esvaziar carrinho</button>
+      <ol class="cart__items"></ol>
+    </nav>
+
+    <div id="black-screen" style="z-index: -1;
+  opacity: 0;"></div>
+
+    <section class="container" style="display: none;">
+      <section class="items"></section>
     </section>
   </body>
 </html>
