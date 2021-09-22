@@ -60,11 +60,30 @@ function cleanLocal(id) {
   localStorage.setItem('cart', JSON.stringify(itens));
 }
 
+function calcPrice(itens) {
+  const cartItens = document.querySelector('.total-price');
+  const li = document.querySelectorAll('ol .cart__item');
+  let count = 0;
+  if (li.length > 0) {
+    li.forEach((el) => {
+      const stringEd = el.innerText.split('|')[2].split('$')[1];
+      const number = parseFloat(stringEd);
+      count += number;
+      console.log(number);
+      cartItens.innerText = `${count}`;
+    });
+    count = 0;
+  } else {
+    cartItens.innerText = `${li.length}`;
+  }
+}
+
 //  remove itens event 'click'
 function cartItemClickListener(event) {
   event.target.remove();
   const stringEd = event.target.innerText.split(' ')[1];
   cleanLocal(stringEd);
+  calcPrice(getCart);
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -86,6 +105,7 @@ async function getProductId(item) {
   const productt = createCartItemElement(resultItem);
   selectItems.appendChild(productt);
   itemlocal(itemId);
+  calcPrice(getCart);
 }
 
 // select all buttons
@@ -98,20 +118,22 @@ function buttonProduct() {
 
 // localStorage start page
 function creatCartStorage(itens) {
-itens.forEach(async (el) => {
-  const data = await fetch(`https://api.mercadolibre.com/items/${el}`);
-  const getComputerId = await data.json();
-  const { id, title, price } = getComputerId;
-  const resultItem = { sku: id, name: title, salePrice: price };
-  const selectItems = document.querySelector('.cart__items');
-  const productt = createCartItemElement(resultItem);
-  selectItems.appendChild(productt);
-}); 
+  itens.forEach(async (el) => {
+    const data = await fetch(`https://api.mercadolibre.com/items/${el}`);
+    const getComputerId = await data.json();
+    const { id, title, price } = getComputerId;
+    const resultItem = { sku: id, name: title, salePrice: price };
+    const selectItems = document.querySelector('.cart__items');
+    const productt = createCartItemElement(resultItem);
+    selectItems.appendChild(productt);
+    calcPrice(getCart);
+  }); 
 }
 
 const requestsAsincronos = async () => {
   await getComputer();
   buttonProduct();
+
   creatCartStorage(getCart);
 };
 
