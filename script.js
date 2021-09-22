@@ -78,10 +78,8 @@ function getInputForCartItemElement(element) {
  const dataFromInputElement = { sku: itemData.id, name: itemData.title, salePrice: itemData.price };
  const cart = document.querySelector('ol.cart__items');
  cart.appendChild(createCartItemElement(dataFromInputElement));
-//  localStorage
-//  .setItem(`${cart.childElementCount}-${itemData.id}`,
-//    `SKU: ${itemData.id} | NAME: ${itemData.title} | PRICE: $${itemData.price}`);
-    localStorage.setItem('cart', JSON.stringify([`SKU: ${itemData.id} | NAME: ${itemData.title} | PRICE: $${itemData.price}`]));
+    // localStorage
+    // .setItem('cart', JSON.stringify([`SKU: ${itemData.id} | NAME: ${itemData.title} | PRICE: $${itemData.price}`]));
 });
 }
 }
