@@ -140,7 +140,9 @@ function cleanCart() {
 const buttonClean = document.querySelector('.empty-cart');
 buttonClean.addEventListener('click', cleanCart);
 
+const load = document.querySelector('.loading');
 const requestsAsincronos = async () => {
+  setTimeout(() => { load.remove(); }, 3000);
   await getComputer();
   buttonProduct();
   creatCartStorage(getCart);
