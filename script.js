@@ -30,11 +30,13 @@ function getSkuFromProductItem(item) {
 
 function cartItemClickListener(event) {
   event.target.remove();
+  localStorage.removeItem(event.target.id);
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
+  li.id = sku;
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   return li;
@@ -65,13 +67,51 @@ function getInputForCartItemElement(element) {
    .then((infoItem) => infoItem.json())
    .then((itemData) => {
  const dataFromInputElement = { sku: itemData.id, name: itemData.title, salePrice: itemData.price };
- document.querySelector('ol.cart__items')
- .appendChild(createCartItemElement(dataFromInputElement));    
+ document.querySelector('ol.cart__items').appendChild(createCartItemElement(dataFromInputElement));
+ localStorage
+ .setItem(itemData.id, `SKU: ${itemData.id} | NAME: ${itemData.title} | PRICE: $${itemData.price}`);
 });
-  }  
 }
-   
+}
+
+function cleanCart() {
+  const cart = document.querySelector('.cart__items');
+  while (cart.firstChild) {
+    cart.removeChild(cart.firstChild);
+  }
+  return localStorage.clear();
+}
+
+// requisito 4 - funções ainda em desenvolvimento
+function createCartItemElementFromStorage(id, text) {
+  const li = document.createElement('li');
+    li.className = 'cart__item';
+    li.id = id;
+    li.innerText = text;
+    return li;
+}
+
+function reloadCartItemFromStorage() {
+  if (localStorage.length) {  
+  for (let i = 0; i < localStorage.length; i += 1) {
+    const liID = localStorage.key(i);
+    const valueElementStorage = localStorage.getItem(localStorage.key(i));
+    document.querySelector('ol.cart__items')
+    .appendChild(createCartItemElementFromStorage(liID, valueElementStorage));    
+  }
+}
+}
+
 window.onload = () => {
   returnListMLB();
-  document.addEventListener('click', getInputForCartItemElement);
+  document.addEventListener('click', ((element) => {
+    const buttonSelected = element.target.className;
+    console.log(buttonSelected);
+    if (buttonSelected === 'item__add') {
+      return getInputForCartItemElement(element);
+    }
+    if (buttonSelected === 'empty-cart') {
+      return cleanCart();
+    }
+  }));
 };
