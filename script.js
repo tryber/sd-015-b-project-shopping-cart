@@ -1,6 +1,8 @@
 const total = Number(localStorage.getItem('totalPrice'));
 let totalPrice = ((total > 0) ? total : 0);
 const buttonEmpytCart = document.querySelector('.empty-cart');
+const arrayLocalStorage = JSON.parse(localStorage.getItem('cartItems'));
+const arrayToLocalStorage = ((arrayLocalStorage === true) ? arrayLocalStorage : []);
 
 const clearAllCart = () => {
   localStorage.clear();
@@ -17,8 +19,8 @@ function createProductImageElement(imageSource) {
   return img;
 }
 
-const setCartItensOnLocalStorage = (element) => {
-  localStorage.setItem('cartItem', element.innerHTML);
+const setCartItensOnLocalStorage = (array) => {
+  localStorage.setItem('cartItems', JSON.stringify(array));
 };
 
 function getSkuFromProductItem(item) {
@@ -85,9 +87,9 @@ const getProductID = (event) => {
     document.querySelector('.cart__items').appendChild(cartItem);
     return product;
   })
-  .then(() => {
-    const cartItems = document.querySelector('.cart__items');
-    setCartItensOnLocalStorage(cartItems);
+  .then((product) => {
+    arrayToLocalStorage.push(createCartItemElement(product).innerText);
+    setCartItensOnLocalStorage(arrayToLocalStorage);
   });
 };
 
@@ -134,13 +136,18 @@ const getProductsFromAPI = (product = 'computador') => {
 };
 
 const getElementsFromLocalStorage = () => {
-  const cartItens = document.getElementsByClassName('cart__items')[0];
-  const cartItem = localStorage.getItem('cartItem');
-  if (cartItem) {
-    cartItens.innerHTML = cartItem;
-    const items = document.querySelectorAll('.cart__item');
-    items.forEach((item) => {
-      item.addEventListener('click', cartItemClickListener);
+  const cartItens = document.querySelector('.cart__items');
+  const cartItems = JSON.parse(localStorage.getItem('cartItems'));
+  if (cartItems) {
+    cartItems.forEach((item) => {
+      const splitProduct = item.split('|');
+      const id = splitProduct[0].slice(5, splitProduct[0].length - 1);
+      const title = splitProduct[1].slice(7, splitProduct[1].length - 1);
+      const price = splitProduct[2].slice(9, splitProduct[2].length);
+      console.log(price);
+      const objProduct = { id, title, price };
+      const li = createCartItemElement(objProduct);
+      cartItens.appendChild(li);
     });
   }
 };
