@@ -1,3 +1,4 @@
+const olCartItems = document.querySelector('.cart__items');
 function sumTotalPrice() {
   const listForSum = [...document.querySelectorAll('.cart__item')];
   const textPrice = document.querySelector('.total-price');
@@ -7,14 +8,9 @@ function sumTotalPrice() {
   });
   const priceSum = listNumber.reduce((acumulator, currentValue) => acumulator + currentValue, 0);
   textPrice.innerText = `${priceSum}`;
-    // .toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`;
+  // .toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`;
 }
-// const empytCartItem = document.querySelector('.cart__item');
-// empytCartItem.addEventListener('click', () => cartItemClickListener());
-/*   const olFather = document.querySelector('.cart__items');
-while (olFather.firstChild) {
-  olFather.removeChild(olFather.firstChild);
-} */
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -39,9 +35,16 @@ function cartItemClickListener(event) {
   saveList();
 }
 
+// const empytItemsCart = document.querySelector('.empty-cart');
+olCartItems.addEventListener('click', () => {
+  const olFather = document.querySelector('.cart__items');
+  while (olFather.firstChild) {
+    olFather.removeChild(olFather.firstChild);
+  }
+});
+
 const listGet = JSON.parse(localStorage.getItem('listSave'));
 function getList() {
-  const olCartItems = document.querySelector('.cart__items');
   if (listGet) {
     listGet.forEach((element) => {
       const liCartItem = document.createElement('li');
@@ -86,8 +89,8 @@ function selected(sku) {
     .then((responsive) => responsive.json())
     .then((dados) => createCartItemElement(dados))
     .then((newItem) => {
-      const list = document.querySelector('.cart__items');
-      list.appendChild(newItem);
+      // const list = document.querySelector('.cart__items');
+      olCartItems.appendChild(newItem);
       sumTotalPrice();
       saveList();
     }); // capturing objects
@@ -102,7 +105,6 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const buttonSelect = createCustomElement('button', 'item__add', 'Adicionar ao carrinho!');
   buttonSelect.addEventListener('click', () => selected(sku));
   section.appendChild(buttonSelect); // creating buton 
-
   return section;
 }
 
