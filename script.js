@@ -1,3 +1,40 @@
+function cartItemClickListener(event) {
+  // click no botao
+  console.log(event);
+}
+
+function getSkuFromProductItem(item) {
+  return item.querySelector('span.item__sku').innerText;
+}
+
+function createCartItemElement({ id: sku, title: name, price: salePrice }) {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.addEventListener('click', cartItemClickListener);
+  return li;
+}
+
+function getId(item) {
+  const idItem = getSkuFromProductItem(item.parentElement);
+  fetch(`https://api.mercadolibre.com/items/${idItem}`)
+    .then((response) => response.json())
+    .then((product) => {
+      const cart = document.querySelector('.cart__items');
+      const itemP = createCartItemElement(product);
+      return cart.appendChild(itemP);
+    });
+}
+// fiz conforme monitoria, irei refatorar!!!!
+// refatorei: ao inves de colocar todos os items e depois colcoar condições, ja passei como target o botao especifico.
+// para isso adicionei na função createProductItemElement o evento, pois o botao esta sendo criado lá. senao da 'null'.
+async function buttonEvent(button) {
+  button.addEventListener('click', (event) => {
+    const buttonItem = event.target;
+    getId(buttonItem);
+  });
+}
+
 function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
   e.className = className;
@@ -15,12 +52,12 @@ function createProductImageElement(imageSource) {
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
-
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
-  section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-
+  const buttonItem = createCustomElement('button', 'item__add', 'Adicionar ao carrinho!');
+  buttonEvent(buttonItem);
+  section.appendChild(buttonItem);
   return section;
 }
 
@@ -41,46 +78,6 @@ function getAPI() {
   .then((obj) => createObjectProduct(obj.results));
 }
 
-function cartItemClickListener(event) {
-  // click no botao
-  console.log(event);
-}
-
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
-
-function createCartItemElement({ id: sku, title: name, price: salePrice }) {
-  const li = document.createElement('li');
-  li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
-  return li;
-}
-
-function getId(item) {
-  const idItem = getSkuFromProductItem(item.parentElement);
-  const api = `https://api.mercadolibre.com/items/${idItem}`;
-  fetch(api)
-    .then((response) => response.json())
-    .then((product) => {
-      const cart = document.querySelector('.cart__items');
-      const itemP = createCartItemElement(product);
-      return cart.appendChild(itemP);
-    });
-}
-// fiz conforme monitoria, irei refatorar!!!!
-async function buttonEvent() {
-  const items = document.querySelector('.items');
-  items.addEventListener('click', (event) => {
-    const button = event.target;
-    if (button.className === 'item__add') {
-      getId(button);
-    }
-  });
-}
-
 window.onload = () => { 
   getAPI();
-  buttonEvent();
 };
