@@ -47,8 +47,11 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
+  const removeList = event.target;
+  removeList.parentElement.removeChild(removeList);
 }
+
+// aqui usei target para atingir o alvo do parâmetro, e removi os filhos da ol.
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
