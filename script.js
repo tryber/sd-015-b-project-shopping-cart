@@ -40,31 +40,26 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-// -----------------------------------------------------------------------------
+// contituaçao requisito 1 ---------------------------------------------------------
 
-const filtroResultadosObjeto = (array) => {
-  const addItems = document.querySelector('.items');
-  const idNameImageProducts = array
-  .map(({ id, title, thumbnail }) => ({ sku: id, name: title, image: thumbnail }))
-  .forEach((element) => {
-  addItems.appendChild(createProductItemElement(element));
+const filtroResultadosObjeto = (data) => {
+  const selecionaIten = document.querySelector('.items');
+  const obj = {};
+  data.forEach((element) => {
+    obj.sku = element.id;
+    obj.name = element.title;
+    obj.image = element.thumbnail;
+    const product = createProductItemElement(obj);
+    selecionaIten.appendChild(product);
   });
-  return idNameImageProducts;
-  };
-  // window.onload = () => { };
-  // Inicio usar api requisito 1 monitoria com carol
-  const buscarProdutos = (produto) => {
-    const produtoPorCategoria = `https://api.mercadolibre.com/sites/MLB/search?q=${produto}`;
-    fetch(produtoPorCategoria)
-      .then((response) => response.json())
-      .then((objeto) => {
-        if (objeto.error) {
-          throw new Error(objeto.error);
-        } else {
-  filtroResultadosObjeto(objeto.results);
-  }
-  });
-  };
-  window.onload = function onload() {
-    buscarProdutos('computador');
-  };
+};
+  // Inicio usar api requisito 1 Carol monitoria e rafael colombo
+const buscarProdutos = (produto) => {
+  const produtoPorCategoria = `https://api.mercadolibre.com/sites/MLB/search?q=${produto}`;
+  fetch(produtoPorCategoria)
+    .then((response) => response.json())
+    .then((objeto) => filtroResultadosObjeto(objeto.results));
+};
+window.onload = function onload() {
+  buscarProdutos('computador');
+};
