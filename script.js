@@ -65,10 +65,12 @@ function pegaBotao(p) {
   });
 }
 
- function criaItens() {
- const loader = '<div class="loading">Loading...</div>';
- document.getElementById('exibe').innerHTML = loader;
- fetch('https://api.mercadolibre.com/sites/MLB/search?q=$computer')
+async function criaItens() {
+ const loader = document.createElement('div');
+ loader.className = 'loading';
+ loader.innerText = 'loading...';
+ document.querySelector('.container').appendChild(loader);
+ await fetch('https://api.mercadolibre.com/sites/MLB/search?q=$computer')
  .then((element) => element.json())
  .then((element) => element.results)
  .then((element) => element.forEach((x) => {
@@ -76,9 +78,9 @@ function pegaBotao(p) {
  const item = document.querySelector('.items'); 
  item.appendChild(createProductItemElement(retorno));
  const botoes = document.querySelectorAll('.item__add');
- document.querySelector('.loading').innerHTML = '';
  pegaBotao(botoes);
 }));
+ await document.querySelector('.container').removeChild(loader);
 }
 
 function puxandoDados() {
