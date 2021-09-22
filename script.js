@@ -100,6 +100,7 @@ async function addToCart(event) {
     const product = getSkuFromProductItem(event.target.parentNode);
     const url = `https://api.mercadolibre.com/items/${product}`;
     const myFetch = await fetch(url);
+    
     const searchResult = await myFetch.json();
     const results = { 
       sku: searchResult.id, 
@@ -127,6 +128,7 @@ async function createProductsList() {
   try {
     const url = 'https://api.mercadolibre.com/sites/MLB/search?q=$computador';
     const myFetch = await fetch(url);
+    document.querySelector('.loading').remove();
     const searchResult = await myFetch.json();
     const products = await searchResult.results;
     products.forEach(({ id, title, thumbnail }) => {
