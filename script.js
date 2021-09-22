@@ -1,5 +1,6 @@
 const cartItems = document.querySelector('.cart__items');
 const buttonAddInCart = document.querySelector('section.items');
+const getLoadingText = document.querySelector('.loading');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -37,6 +38,7 @@ const requestProducts = () => {
     const itemElement = createProductItemElement(itemObject);
     const getClassItems = document.querySelector('.items');
     getClassItems.appendChild(itemElement);
+    getLoadingText.remove();
   }));
 }; // ref rerquisito 1 .: https://github.com/tryber/sd-015-b-project-shopping-cart/pull/33/commits/6974a393bc7f5f84e2300355ead2200545238289
 
@@ -87,11 +89,13 @@ async function addItemInTheCart(event) {
     });
 }
 
-// async function sumPrices() {
-//   const totalPrice = document.querySelector('.total-price');
-//   const getPrices = document.querySelector('.cart__item');
-//   console.log(getPrices.innerHTML);
-// }
+async function sumPrices() {
+  const totalPrice = document.querySelector('.total-price');
+  const getCartItems = document.querySelector('.cart__item');
+  console.log(getCartItems.innerHTML);
+
+  totalPrice.innerHTML = `Preço total: $${totalPrice}`;
+}
 
 function eraseCart() {
   const emptyCart = document.querySelector('.empty-cart');
@@ -106,6 +110,6 @@ window.onload = () => {
   requestProducts();
   addToCart();
   loadLocalStorage();
-  // sumPrices();
+  sumPrices();
   eraseCart();
 };
