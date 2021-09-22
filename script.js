@@ -100,7 +100,7 @@ async function getProductId(item) {
   const getComputerId = await data.json();
   const { id, title, price } = getComputerId;
   const resultItem = { sku: id, name: title, salePrice: price };
-  const selectItems = document.querySelector('.cart__items');
+  const selectItems = document.querySelector('ol');
   const productt = createCartItemElement(resultItem);
   selectItems.appendChild(productt);
   itemlocal(itemId);
@@ -134,8 +134,9 @@ const cartBuyOl = document.querySelector('.cart__items');
 function cleanCart() {
   cartBuyOl.innerText = '';
   calcPrice();
-  localStorage.clear()
+  localStorage.clear();
 }
+
 const buttonClean = document.querySelector('.empty-cart');
 buttonClean.addEventListener('click', cleanCart);
 
