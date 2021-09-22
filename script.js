@@ -37,7 +37,6 @@ function removeAllCart() {
   const buttonRemoveAll = document.querySelector('.empty-cart');
   const cartItems = document.querySelector('.cart__items');
   buttonRemoveAll.addEventListener('click', () => {
-    console.log('oi');
     cartItems.innerHTML = '';
   });
 }
@@ -109,12 +108,11 @@ function cardButton() {
 
 function setInitialCart() {
   const itemsStorages = getLocalstorage();
-  itemsStorages.forEach((item) => createElement(item));
+  if (itemsStorages !== null) itemsStorages.forEach((item) => createElement(item));
 }
 
 const requestsAsincronos = async () => {
   try {
-    setInitialCart();
     await requestProduct();
     cardButton();
     await requestCartProduct();
@@ -125,5 +123,6 @@ const requestsAsincronos = async () => {
 
 window.onload = () => { 
   requestsAsincronos();
+  setInitialCart();
   removeAllCart();
 };
