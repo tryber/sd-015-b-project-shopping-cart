@@ -1,5 +1,4 @@
 const cartItems = document.querySelector('.cart__items');
-const cartItem = document.querySelectorAll('.cart__item');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -43,6 +42,15 @@ function removeItemLocalStorage(indexRemove) {
     }
   });
   localStorage.setItem('myCart', JSON.stringify(newStorage));
+}
+
+async function sumTotalCart() {
+  const total = document.querySelector('.total-price');
+  const productsSaveCart = await JSON.parse(localStorage.getItem('myCart'));
+  const priceProducts = await productsSaveCart.map((product) => product.salePrice);
+  const totalPriceProducts = await priceProducts
+    .reduce((acc, current) => parseFloat(acc + current), 0);
+  total.innerHTML = `${totalPriceProducts}`;
 }
 
 function cartItemClickListener(event) {
@@ -93,13 +101,6 @@ async function addToCart(event) {
   }
 }
 
-async function sumTotalCart() {
-  const total =  document.querySelector('.total-price');
-  const productsSaveCart = await JSON.parse(localStorage.getItem('myCart'));
-  const priceProducts = await productsSaveCart.map((product) => product.salePrice);
-  const totalPriceProducts = await priceProducts.reduce((acc, current) => parseFloat(acc + current), 0);
-  total.innerHTML = `${totalPriceProducts}`;
-}
 function loadAddButton() {
   const addButton = document.querySelectorAll('.item__add');
   addButton.forEach((button) => button.addEventListener('click', (event) => {
