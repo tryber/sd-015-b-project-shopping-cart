@@ -120,8 +120,8 @@ function requestComputer() {
     .then((responsive) => responsive.json())
     .then((dados) => {
       creatObject(dados.results);
-      const clear = document.getElementsByTagName('h2');
-      clear.remove();
+      document.getElementsByTagName('h2')[0].remove();
+      // const clear = document.querySelector('loading');
     }); // capturing objects
 }
 
