@@ -28,6 +28,7 @@ ul {
 
 header {
   position: fixed;
+  z-index: 1;
   display: flex;
   width: 100%;
   flex-direction: row;
@@ -127,7 +128,6 @@ header {
 }
 
 #cart-btn-text {
-  transition: 0.5s;
   font-size: 40px;
   position: fixed;
   top: 22px;
@@ -135,11 +135,7 @@ header {
 }
 
 #cart-btn-text:hover {
-  transition: 0.5s;
   cursor: pointer;
-  transform: rotate(45deg);
-  font-size: 60px;
-  right: 20px;
 }
 
 #cart-btn {
@@ -170,6 +166,15 @@ label {
   right: -380px;
   position: fixed;
   overflow-y: scroll;
+  z-index: 1;
+}
+
+#black-screen {
+  background-color: black;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transition: 0.5s;
 }
 
 .cart .cart__title {

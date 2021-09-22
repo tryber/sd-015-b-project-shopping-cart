@@ -1,13 +1,7 @@
+import { addCodeWithClick, addCodeWithEnter, togleBlackScreen } from './functions_lib/data.js';
+
 const OlClass = '.cart__items';
 const constainerClass = '.container';
-const promoCodes = {
-  rafael: 0.67, // 33% desconto
-  amanda: 0.97, // 3% desconto
-  laurenz: 0.86, // 14% desconto
-  leonardo: 0.46, // 54% desconto
-  fernando: 0.12, // 88% desconto
-  joaonasc: 0.03, // 97% desconto
-};
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -222,40 +216,6 @@ function refillWithNewSearchWithEnter(event) {
   if (event.key === 'Enter') {
     resetPageItems();
     initialExecOrder(getSearchValue());
-  }
-}
-
-function newAmountWithPromoCode(code) {
-  const amountStr = document.querySelector('.total-price');
-  const totalAmount = parseFloat(amountStr.innerText
-    .replace('R$ ', '').replace('.', '').replace(',', '.'), 10);
-
-  amountStr.innerText = (totalAmount * code)
-    .toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-}
-
-function addCodeWithClick() {
-  const promoCodeInputValue = document.querySelector('#promo-code-input').value.toLowerCase();
-
-  if (promoCodes[promoCodeInputValue]) newAmountWithPromoCode(promoCodes[promoCodeInputValue]);
-}
-
-function addCodeWithEnter(event) {
-  if (event.key === 'Enter') {
-    const promoCodeInputValue = document.querySelector('#promo-code-input').value.toLowerCase();
-
-    if (promoCodes[promoCodeInputValue]) newAmountWithPromoCode(promoCodes[promoCodeInputValue]);
-  }
-}
-
-function togleBlackScreen() {
-  const blackScreen = document.querySelector('#black-screen');
-  if (blackScreen.style.zIndex === '-1') {
-    blackScreen.style.zIndex = '0';
-    blackScreen.style.opacity = '50%';
-  } else {
-    blackScreen.style.zIndex = '-1';
-    blackScreen.style.opacity = '0%';
   }
 }
 
