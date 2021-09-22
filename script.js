@@ -40,4 +40,31 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-window.onload = () => { };
+// -----------------------------------------------------------------------------
+
+const filtroResultadosObjeto = (array) => {
+  const addItems = document.querySelector('.items');
+  const idNameImageProducts = array
+  .map(({ id, title, thumbnail }) => ({ sku: id, name: title, image: thumbnail }))
+  .forEach((element) => {
+  addItems.appendChild(createProductItemElement(element));
+  });
+  return idNameImageProducts;
+  };
+  // window.onload = () => { };
+  // Inicio usar api requisito 1 monitoria com carol
+  const buscarProdutos = (produto) => {
+    const produtoPorCategoria = `https://api.mercadolibre.com/sites/MLB/search?q=${produto}`;
+    fetch(produtoPorCategoria)
+      .then((response) => response.json())
+      .then((objeto) => {
+        if (objeto.error) {
+          throw new Error(objeto.error);
+        } else {
+  filtroResultadosObjeto(objeto.results);
+  }
+  });
+  };
+  window.onload = function onload() {
+    buscarProdutos('computador');
+  };
