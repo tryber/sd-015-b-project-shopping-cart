@@ -30,15 +30,21 @@ function getSkuFromProductItem(item) {
 
 function cartItemClickListener(event) {
   event.target.remove();
-  console.log(event.target.id);
-  localStorage.removeItem(event.target.id);
+  const itemsInCart = document.getElementsByClassName('cart__item');
+  if (itemsInCart.length) {
+    const storage = [itemsInCart[0].innerHTML];
+    for (let i = 1; i < itemsInCart.length; i += 1) { 
+      const item = itemsInCart[i].innerHTML; 
+      storage.push(item);
+    }
+    return localStorage.setItem('cart', JSON.stringify(storage));
+  }
+  localStorage.clear();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
-  const numberItem = localStorage.length;
   li.className = 'cart__item';
-  li.id = `${numberItem + 1}-${sku}`;
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   // li.addEventListener('click', cartItemClickListener);
   return li;
@@ -61,11 +67,16 @@ return fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${'computador'}`)
   .then(() => document.querySelector('.loading').remove());
 }
 
-// async function sumPriceFromCart(idItem) {
-//   fetch(`https://api.mercadolibre.com/items/${idItem}`)
-//    .then((infoItem) => infoItem.json())
-//    .then((itemData) => console.log(itemData.price)); 
-// }
+function inputStorage(newItemStorage) {
+  const itemStorage = [newItemStorage];
+  if (localStorage.length) {
+    let storage = [];
+    storage = JSON.parse(localStorage.getItem('cart'));  
+    storage.push(newItemStorage);
+    return localStorage.setItem('cart', JSON.stringify(storage));
+  }
+  localStorage.setItem('cart', JSON.stringify(itemStorage));
+}
 
 function getInputForCartItemElement(element) {
   let buttonSelected = element.target.className;
@@ -73,15 +84,16 @@ function getInputForCartItemElement(element) {
     buttonSelected = element.target.parentNode;
     const idFromItemSelected = getSkuFromProductItem(buttonSelected);
     fetch(`https://api.mercadolibre.com/items/${idFromItemSelected}`)
-   .then((infoItem) => infoItem.json())
-   .then((itemData) => {
- const dataFromInputElement = { sku: itemData.id, name: itemData.title, salePrice: itemData.price };
- const cart = document.querySelector('ol.cart__items');
- cart.appendChild(createCartItemElement(dataFromInputElement));
-    // localStorage
-    // .setItem('cart', JSON.stringify([`SKU: ${itemData.id} | NAME: ${itemData.title} | PRICE: $${itemData.price}`]));
-});
-}
+      .then((infoItem) => infoItem.json())
+      .then((itemData) => {
+          const dataFromInputElement = { 
+            sku: itemData.id, name: itemData.title, salePrice: itemData.price };
+          const cart = document.querySelector('ol.cart__items');
+          cart.appendChild(createCartItemElement(dataFromInputElement));
+          const item = `SKU: ${itemData.id} | NAME: ${itemData.title} | PRICE: $${itemData.price}`;
+          inputStorage(item);
+        });
+      }
 }
 
 function cleanCart() {
@@ -93,28 +105,26 @@ function cleanCart() {
 }
 
 // requisito 4 - funções ainda em desenvolvimento
-function createCartItemElementFromStorage(id, text) {
+function createCartItemElementFromStorage(text) {
   const li = document.createElement('li');
     li.className = 'cart__item';
-    li.id = id;
     li.innerText = text;
     return li;
 }
 
 function reloadCartItemFromStorage() {
   if (localStorage.length) {  
-  for (let i = 0; i < localStorage.length; i += 1) {
-    const liID = localStorage.key(i);
-    const valueElementStorage = localStorage.getItem(localStorage.key(i));
-    document.querySelector('ol.cart__items')
-    .appendChild(createCartItemElementFromStorage(liID, valueElementStorage));    
+    const itemsInStorage = JSON.parse(localStorage.getItem('cart'));
+    for (let i = 0; i < itemsInStorage.length; i += 1) {
+      document.querySelector('ol.cart__items')
+        .appendChild(createCartItemElementFromStorage(itemsInStorage[i]));
+    }
   }
-}
 }
 
 window.onload = () => {
   returnListMLB()
-  .then(() => reloadCartItemFromStorage());
+    .then(() => reloadCartItemFromStorage());
   document.addEventListener('click', ((element) => {
     const buttonSelected = element.target.className;
     if (buttonSelected === 'item__add') {
