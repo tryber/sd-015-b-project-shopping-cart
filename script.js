@@ -50,7 +50,7 @@ async function sumTotalCart() {
   const priceProducts = await productsSaveCart.map((product) => product.salePrice);
   const totalPriceProducts = await priceProducts
     .reduce((acc, current) => parseFloat(acc + current), 0);
-  total.innerHTML = `${totalPriceProducts}`;
+  total.innerHTML = `${parseFloat(totalPriceProducts.toFixed(2))}`;
 }
 
 function cartItemClickListener(event) {
@@ -65,6 +65,20 @@ function cartItemClickListener(event) {
   removeItemLocalStorage(initialIndex);
   sumTotalCart();
   cartItems.removeChild(event.target);
+}
+
+function deleteAllLis() {
+  const myItemsList = document.querySelectorAll('.cart__item');
+  for (let index = 0; index < myItemsList.length; index += 1) {
+    myItemsList[index].remove();
+  }
+  localStorage.setItem('myCart', JSON.stringify([]));
+  sumTotalCart();
+}
+
+function buttonDeleteAll() {
+  const buttonDeleteAllItens = document.querySelector('.empty-cart');
+  buttonDeleteAllItens.addEventListener('click', deleteAllLis);
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -142,4 +156,5 @@ window.onload = () => {
   createProductsList()
   .then(() => sumTotalCart());
   initLocalStorage();
+  buttonDeleteAll();
 };
