@@ -69,7 +69,7 @@ async function criaItens() {
  const loader = document.createElement('div');
  loader.className = 'loading';
  loader.innerText = 'loading...';
- document.querySelector('.container').appendChild(loader);
+ document.querySelector('.items').appendChild(loader);
  await fetch('https://api.mercadolibre.com/sites/MLB/search?q=$computer')
  .then((element) => element.json())
  .then((element) => element.results)
@@ -80,7 +80,7 @@ async function criaItens() {
  const botoes = document.querySelectorAll('.item__add');
  pegaBotao(botoes);
 }));
- await document.querySelector('.container').removeChild(loader);
+ await document.querySelector('.items').removeChild(loader);
 }
 
 function puxandoDados() {
@@ -102,6 +102,7 @@ function limparTudo() {
   botaoLimpar.addEventListener('click', function () {
     const carrinho = document.getElementById('cart__item');
     carrinho.innerHTML = '';
+  localStorage.removeItem('carrinho');
   });
 }
 
