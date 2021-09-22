@@ -1,4 +1,5 @@
-const carItems = document.querySelector('.cart__items');
+const cartItems = document.querySelector('.cart__items');
+const cartItem = document.querySelectorAll('.cart__item');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -46,7 +47,7 @@ function removeItemLocalStorage(indexRemove) {
 
 function cartItemClickListener(event) {
   event.target.classList.add('toRemoved');
-  const cart = Array.from(carItems.children);
+  const cart = Array.from(cartItems.children);
   let initialIndex;
   cart.forEach((product, index) => {
     if (product.classList.contains('toRemoved')) {
@@ -54,7 +55,8 @@ function cartItemClickListener(event) {
     }
   });
   removeItemLocalStorage(initialIndex);
-  carItems.removeChild(event.target);
+  sumTotalCart();
+  cartItems.removeChild(event.target);
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -83,16 +85,27 @@ async function addToCart(event) {
       salePrice: searchResult.price,
     };
     const returnedElement = createCartItemElement(results);
-    carItems.appendChild(returnedElement);
+    cartItems.appendChild(returnedElement);
     saveLocalStorage(results);
+    sumTotalCart();
   } catch (error) {
     console.log(error);
   }
 }
 
+async function sumTotalCart() {
+  const total =  document.querySelector('.total-price');
+  const productsSaveCart = await JSON.parse(localStorage.getItem('myCart'));
+  const priceProducts = await productsSaveCart.map((product) => product.salePrice);
+  const totalPriceProducts = await priceProducts.reduce((acc, current) => parseFloat(acc + current), 0);
+  total.innerHTML = `${totalPriceProducts}`;
+}
 function loadAddButton() {
   const addButton = document.querySelectorAll('.item__add');
-  addButton.forEach((button) => button.addEventListener('click', addToCart));
+  addButton.forEach((button) => button.addEventListener('click', (event) => {
+    addToCart(event); 
+    sumTotalCart();
+  }));
 }
 
 async function createProductsList() {
@@ -119,12 +132,13 @@ function initLocalStorage() {
   if (actualStorage[0]) {
     actualStorage.forEach((product) => {
     createCartItemElement(product);
-    carItems.appendChild(createCartItemElement(product));
+    cartItems.appendChild(createCartItemElement(product));
     });
   }
 }
 
 window.onload = () => {
-  createProductsList();
+  createProductsList()
+  .then(() => sumTotalCart());
   initLocalStorage();
 };
