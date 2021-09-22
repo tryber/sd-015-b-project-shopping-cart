@@ -14,6 +14,10 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
+async function sumPrices() {
+
+}
+
 function clearButtonEvent() {
   const list = document.querySelectorAll('li');
   list.forEach((element) => element.remove());
@@ -32,6 +36,10 @@ function getId(item) {
       const cart = document.querySelector('.cart__items');
       const itemP = createCartItemElement(product);
       return cart.appendChild(itemP);
+    })
+    .then(() => {
+      const loading = document.querySelector('.load');
+      loading.remove();
     });
 }
 // fiz conforme monitoria, irei refatorar!!!!
@@ -79,12 +87,13 @@ function createObjectProduct(dados) {
   });
   return getDados;
 }
+
 // feito durante mentoria com passo a passo da carol
 // recolher e requerer api
 function getAPI() {
   fetch('https://api.mercadolibre.com/sites/MLB/search?q=$computador')
   .then((response) => response.json())
-  .then((obj) => createObjectProduct(obj.results));
+  .then((obj) => createObjectProduct(obj.results))
 }
 
 window.onload = () => { 
