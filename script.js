@@ -16,14 +16,10 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-// executa quando adiciona produto ao carrinho
 function cartItemClickListener(event) {
-  console.log('clicou');
-  // endpoint: "https://api.mercadolibre.com/items/$ItemID"
-  // onde $ItemID deve ser o valor id do item selecionado
+  event.target.remove();
 }
 
-// cria lista de compras no carrinho
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
