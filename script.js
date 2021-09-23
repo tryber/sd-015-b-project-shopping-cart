@@ -48,15 +48,16 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-const getCart = JSON.parse(localStorage.getItem('cart')) || [];
+const getCart = () => JSON.parse(localStorage.getItem('cart')) || [];
 
 function itemlocal(item) {
-  getCart.push(item);
-  localStorage.setItem('cart', JSON.stringify(getCart));
+  const cart = getCart();
+  cart.push(item);
+  localStorage.setItem('cart', JSON.stringify(cart));
 }
 
 function cleanLocal(id) {
-  const itens = getCart.filter((element) => element !== id);
+  const itens = getCart().filter((element) => element !== id);
   localStorage.setItem('cart', JSON.stringify(itens));
 }
 
@@ -67,6 +68,7 @@ function calcPrice() {
   if (li.length > 0) {
     li.forEach((el) => {
       const stringEd = el.innerText.split('|')[2].split('$')[1];
+      console.log(el);
       const number = parseFloat(stringEd);
       count += number;
       cartItens.innerText = `${count}`;
@@ -145,7 +147,7 @@ const requestsAsincronos = async () => {
   setTimeout(() => { load.remove(); }, 3000);
   await getComputer();
   buttonProduct();
-  creatCartStorage(getCart);
+  creatCartStorage(getCart());
 };
 
 window.onload = () => {  
