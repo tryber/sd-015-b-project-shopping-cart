@@ -1,19 +1,21 @@
-async function cartItemClickListener(event) {
+function cartItemClickListener(event) {
   event.target.remove();
 }
 
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
+// CONSTANTE LISTA
+const cartItems = document.querySelector('.cart__items');
 
 function storagingCart() {
-  const cartItems = document.querySelector('.cart__items');
   localStorage.setItem('cart', cartItems.innerHTML);
 }
 
 function refreshCart() {
-  const cartItems = document.querySelector('.cart__items');
-  cartItems.innerHTML = localStorage.getItem('cart');
+  const storage = localStorage.getItem('cart');
+  cartItems.innerHTML = storage;
+  cartItems.addEventListener('click', cartItemClickListener);
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -43,7 +45,7 @@ function getId(item) {
       const itemP = createCartItemElement(product);
       cart.appendChild(itemP);
       storagingCart();
-    })
+    });
 }
 // fiz conforme monitoria, irei refatorar!!!!
 // refatorei: ao inves de colocar todos os items e depois colcoar condições, ja passei como target o botao especifico.
