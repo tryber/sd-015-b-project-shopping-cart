@@ -26,7 +26,9 @@ function createProductItemElement({ sku, name, image }) {
 
 function cartItemClickListener(event) {
   // coloque seu código aqui
-
+  const ol = event.path[1];
+  ol.removeChild(event.path[0]);
+  localStorage.setItem('click', ol.innerHTML);
 }
 
 // abaixo requisito 2.5 ja implantado
