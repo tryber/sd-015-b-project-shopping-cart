@@ -81,7 +81,20 @@ const loadCart = () => {
     .forEach((li) => li.addEventListener('click', cartItemClickListener));
 };
 
+const emptyCartBtn = () => {
+  document.querySelector('button.empty-cart')
+    .addEventListener('click', () => {
+      document.querySelectorAll('li.cart__item')
+        .forEach((li) => li.remove());
+    });
+};
+
 window.onload = () => {
   fetchQuery();
   loadCart();
+  emptyCartBtn();
 };
+
+// const updateTotal = () => {
+//   document.querySelectorAll('li.cart__item').reduce((acc, product) => { }, 0);
+// };
