@@ -38,6 +38,19 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
+function clearListItemsOfCart() {
+  const pe = document.getElementById('emptyCar');
+  pe.innerText = 0;
+  const buttonCLearCar = document.querySelector('.cart__items');
+  while (buttonCLearCar.firstChild) {
+    buttonCLearCar.removeChild(buttonCLearCar.firstChild);
+  }
+}
+
+ function ClearCar() {
+  const buttonCLear = document.querySelector('.empty-cart');
+  buttonCLear.addEventListener('click', clearListItemsOfCart);
+  }
 const addEventListenerInButtons = async (event) => {
   const selected = event.target;
   const sectionOfButons = selected.parentNode;
@@ -56,6 +69,7 @@ const addEventListenerInButtons = async (event) => {
     arrayPrice.push(prices);
     sumTotal();
   });
+  ClearCar();
 };
 
 function createCustomElement(element, className, innerText) {
