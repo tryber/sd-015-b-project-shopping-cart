@@ -69,6 +69,16 @@ function getAPI() {
   .then((obj) => createObjectProduct(obj.results));  
 }
 
+function emptyCart() {
+  const cart = document.querySelector('.cart__items');
+  cart.innerHTML = '';
+}
+
+// const emptyButton = document.querySelector('.empty-cart');
+// emptyButton.addEventListener('click', emptyCart);
+
 window.onload = () => { 
   getAPI();
+  const emptyButton = document.querySelector('.empty-cart');
+  emptyButton.addEventListener('click', emptyCart);
 };
