@@ -65,12 +65,13 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 
   return section;
 }
+
 const addLoading = () => {
 const container = document.querySelector('.container');
 const section = document.querySelector('.items');
 const h2 = document.createElement('h2');
 h2.className = 'loading';
-h2.innerText = 'Loading...';
+h2.innerText = 'Loading';
 
 return container.insertBefore(h2, section);
 };
@@ -82,13 +83,13 @@ const getListProducts = (product = 'computador') => {
   fetch(API_URL)
     .then((response) => response.json())
     .then((listProd) => {
+      const loading = document.querySelector('.loading');
+      loading.remove();
       listProd.results.forEach((result) => {
       const section = document.querySelector('.items'); 
       section.appendChild(createProductItemElement(result));
     });
   });
-  const loading = document.querySelector('.loading');
-  loading.remove();
 };
 
 window.onload = () => { 
