@@ -5,6 +5,17 @@ function createProductImageElement(imageSource) {
   return img;
 }
 
+const loadTotalPrice = async () => {
+  const elementToFill = document.querySelector('.total-price');
+  const inTheLocalStorage = await (parseFloat(localStorage.getItem('totalPrice')));
+  const totalPrice = await inTheLocalStorage;
+  if (Number.isNaN(Number(totalPrice))) {
+    elementToFill.innerText = 0;
+  } else {
+    elementToFill.innerText = totalPrice;
+  }
+};
+
 const saveCartToLocalStorage = () => {
   const currentCart = document.querySelectorAll('.cart__item');
   const itemsToSend = [];
@@ -14,16 +25,25 @@ const saveCartToLocalStorage = () => {
   localStorage.setItem('products', JSON.stringify(itemsToSend));
 };
 
+const subPrice = async (receivedPrice) => {
+  const priceToSubtract = await parseFloat(receivedPrice.innerText.split('$')[1]).toFixed(2);
+  const totalInLocal = parseFloat(localStorage.getItem('totalPrice')).toFixed(2);
+  const newTotal = totalInLocal - priceToSubtract;
+  localStorage.setItem('totalPrice', parseFloat(newTotal).toFixed(2));
+  loadTotalPrice();
+};
+
 function cartItemClickListener(event) {
   const itemToRemove = event.target;
+  subPrice(itemToRemove);
   itemToRemove.parentElement.removeChild(itemToRemove);
   saveCartToLocalStorage();
-  // Fazer com que o objeto removido da OL também seja removido no localStorage
-}    
+  loadTotalPrice();
+}
 
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
-}  
+}
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
@@ -32,6 +52,15 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }  
+
+const addPrice = (receivedPrice) => {
+  const oldSum = Number(localStorage.getItem('totalPrice'));
+  Number(receivedPrice);
+  if (oldSum === undefined) {
+    localStorage.setItem('totalPrice', receivedPrice);
+  }
+  localStorage.setItem('totalPrice', parseFloat(oldSum + receivedPrice).toFixed(2));
+};
 
 const requestToAddOnCart = async (itemId) => {
 try {
@@ -43,8 +72,9 @@ try {
     const computerToAdd = createCartItemElement({ sku, name, salePrice });
     const listToAddTheComputerOn = document.querySelector('.cart__items');
     listToAddTheComputerOn.appendChild(computerToAdd);
-    // sendCartToLocalStorage({ sku, name, salePrice });
     saveCartToLocalStorage();
+    addPrice(salePrice);
+    loadTotalPrice();
   } catch (error) {
     console.log(error);
   }  
@@ -107,6 +137,7 @@ const loadCartFromLocalStorage = () => {
     itemToCart.addEventListener('click', cartItemClickListener);
     containerToFill.appendChild(itemToCart);
   });
+  loadTotalPrice();
 };
 
 /**
@@ -124,4 +155,5 @@ const loadCartFromLocalStorage = () => {
 window.onload = () => {
   requestProducts();
   loadCartFromLocalStorage();
+  loadTotalPrice();
 };
