@@ -95,14 +95,14 @@ const getListProducts = (product = 'computador') => {
 // Requisito 6
 
 function removeSkuFromCartShopping(item) {
-  const cartItens = item.parentElement;
-  
-  return cartItens.querySelector('li.cart__item').remove();
+ const cartItens = item.parentElement.querySelector('ol.cart__items');
+ cartItens.innerHTML = '';
 }
+ 
 const buttonRemoveCart = () => {
 const emptyCart = document.querySelector('.empty-cart');
 emptyCart.addEventListener('click', (event) => {
-const olCart = document.querySelector('.cart__items');
+// const olCart = document.querySelector('.cart__items');
 const buttonRemove = event.target;
 removeSkuFromCartShopping(buttonRemove);
 });
