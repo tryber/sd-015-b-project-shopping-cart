@@ -5,9 +5,29 @@ function createProductImageElement(imageSource) {
   return img;
 }
 
+const arrayPrice = [];
+function sumTotal() {
+  const p = document.querySelector('.total-price');
+  const total = arrayPrice.reduce((element, elementAtual) => element + elementAtual, 0);
+  p.innerText = parseFloat((total).toFixed(2));
+}
+
+function removePrice(Li) {
+  const p = document.querySelector('.total-price');
+  const total = arrayPrice.reduce((element, elementAtual) => element + elementAtual, 0);
+  const text = Li.innerText.split(' ');
+  const Qnumb = text[text.length - 1];
+ const number = [`${Qnumb[1]}${Qnumb[2]}${Qnumb[3]}${Qnumb[4]}${Qnumb[5]} ${Qnumb[6]} `];
+ const Convert = parseFloat(number);
+ const ntotal = total - Convert;
+  p.innerText = ntotal.toFixed(1);
+}
+
 function cartItemClickListener(event) {
   const Li = event.target;
   Li.remove();
+  console.log(Li);
+  removePrice(Li);
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -18,11 +38,11 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-const addEventListenerInButtons = (event) => {
+const addEventListenerInButtons = async (event) => {
   const selected = event.target;
   const sectionOfButons = selected.parentNode;
   const idButtonSelected = sectionOfButons.firstChild;
-  fetch(`https://api.mercadolibre.com/items/${idButtonSelected.innerText}`)
+   await fetch(`https://api.mercadolibre.com/items/${idButtonSelected.innerText}`)
   .then((res) => res.json())
   .then(({ id, title, price }) => {
     const items = {
@@ -32,6 +52,9 @@ const addEventListenerInButtons = (event) => {
     };
     const ol = document.querySelector('.cart__items');
     ol.appendChild(createCartItemElement(items));
+    const prices = items.salePrice;
+    arrayPrice.push(prices);
+    sumTotal();
   });
 };
 
