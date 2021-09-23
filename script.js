@@ -24,15 +24,12 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
-
 function cartItemClickListener(event) {
   // coloque seu código aqui
-  
+
 }
 
+// abaixo requisito 2.5 ja implantado
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
@@ -40,9 +37,41 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
+
+// abaixo requisito 2.4 ja implantado
+function getSkuFromProductItem(item) {
+  return item.querySelector('span.item__sku').innerText;
+}
+
 // a cima codigo  que ja implementado ---------------------------------------------
 
-// a baixo contituaçao requisito 1 monitoria carlol e rafael colombo --------------
+// abaixo requisito 2.3 
+const addNoCarrinho = async (item) => {
+  const pegaId = getSkuFromProductItem(item);
+  fetch(`https://api.mercadolibre.com/items/${pegaId}`)
+    .then((response) => response.json())
+    .then(({ id, title, price }) => {
+      const dadosId = {
+        sku: id,
+        name: title,
+        salePrice: price,
+      };
+      const ol = document.querySelector('.cart__items');
+      ol.append(createCartItemElement(dadosId));
+    });
+};
+
+// abairo requisito 2.2
+const addBotao = () => {
+  const produtos = document.querySelectorAll('.item');
+  console.log(produtos);
+  produtos.forEach((item) => item.lastChild.addEventListener('click', (() => 
+  addNoCarrinho(item))));
+
+  return produtos;
+};
+
+// a baixo requisito 1 monitoria carlol e rafael colombo --------------
 const buscarProduto = async () => 
   fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
   .then((response) => response.json())
@@ -52,7 +81,14 @@ const buscarProduto = async () =>
     const item = createProductItemElement(filtroResultadosObj);
     selecinaItem.append(item);
   }));
+  
+// a baixo requisito 2.1 inicio - buscaproduto veio para cá e window.onload inicia agora com loadOrden rafael colombo e virginiaVerso.------------------------------
+function gerarPedido() { 
+  buscarProduto()
+    .then(() => addBotao())
+    .catch(() => ('Erro, endereço não encontrado'));
+}
 
 window.onload = () => {
-    buscarProduto();
-  };
+  gerarPedido();
+};
