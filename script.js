@@ -66,16 +66,17 @@ function createObjectProduct(dados) {
 function getAPI() {
   fetch('https://api.mercadolibre.com/sites/MLB/search?q=$computador')
   .then((response) => response.json())
-  .then((obj) => createObjectProduct(obj.results));  
+  .then((obj) => createObjectProduct(obj.results))
+  .then(() => {
+    const loading = document.querySelector('.loading');
+    loading.remove();
+  });
 }
 
 function emptyCart() {
   const cart = document.querySelector('.cart__items');
   cart.innerHTML = '';
 }
-
-// const emptyButton = document.querySelector('.empty-cart');
-// emptyButton.addEventListener('click', emptyCart);
 
 window.onload = () => { 
   getAPI();
