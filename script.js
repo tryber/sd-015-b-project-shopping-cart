@@ -2,20 +2,19 @@ let price = 0;
 
 function addTotalPrice(salePrice) {
   price += salePrice;
-  const p = document.querySelector('.total-price');
-  p.innerText = `${price}`;
-  return p;
+  const p1 = document.querySelector('.total-price');
+  p1.innerText = `${price}`;
+  return p1;
 }
 
 function subtractTotalPrice(liToDelete) {
-
-  const gettingPrice = liToDelete.substring(liToDelete.indexOf('$')+1);
+  const gettingPrice = liToDelete.substring(liToDelete.indexOf('$') + 1); // referência: https://www.devmedia.com.br/javascript-substring-selecionando-parte-de-uma-string/39232
   const salePrice = parseFloat(gettingPrice);
   price -= salePrice; 
-  price = Math.abs(price);
-  const p = document.querySelector('.total-price');
-  p.innerText = `${price}`;
-  return p;
+  price = Math.abs(price); // referência: https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/Math/abs
+  const p2 = document.querySelector('.total-price');
+  p2.innerText = `${price}`;
+  return p2;
 }
 
 function createProductImageElement(imageSource) {
@@ -104,8 +103,8 @@ function buttonclearCart() {
     const button = event.target;
     if (button.classList.contains('empty-cart')) {
       lista.innerHTML = '';
-      const p = document.querySelector('.total-price');
-      p.innerText = '';
+      const p3 = document.querySelector('.total-price');
+      p3.innerText = '';
     }
   });
 }
