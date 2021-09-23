@@ -30,6 +30,7 @@ function getSkuFromProductItem(item) {
 
 function cartItemClickListener(event) {
   // coloque seu código aqui
+  
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -39,27 +40,19 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
+// a cima codigo  que ja implementado ---------------------------------------------
 
-// contituaçao requisito 1 ---------------------------------------------------------
+// a baixo contituaçao requisito 1 monitoria carlol e rafael colombo --------------
+const buscarProduto = async () => 
+  fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
+  .then((response) => response.json())
+  .then((data) => data.results.forEach(({ id, title, thumbnail }) => {
+    const filtroResultadosObj = { sku: id, name: title, image: thumbnail };
+    const selecinaItem = document.querySelector('.items');
+    const item = createProductItemElement(filtroResultadosObj);
+    selecinaItem.append(item);
+  }));
 
-const filtroResultadosObjeto = (data) => {
-  const selecionaIten = document.querySelector('.items');
-  const obj = {};
-  data.forEach((element) => {
-    obj.sku = element.id;
-    obj.name = element.title;
-    obj.image = element.thumbnail;
-    const product = createProductItemElement(obj);
-    selecionaIten.appendChild(product);
-  });
-};
-  // Inicio usar api requisito 1 Carol monitoria e rafael colombo
-const buscarProdutos = (produto) => {
-  const produtoPorCategoria = `https://api.mercadolibre.com/sites/MLB/search?q=${produto}`;
-  fetch(produtoPorCategoria)
-    .then((response) => response.json())
-    .then((objeto) => filtroResultadosObjeto(objeto.results));
-};
-window.onload = function onload() {
-  buscarProdutos('computador');
-};
+window.onload = () => {
+    buscarProduto();
+  };
