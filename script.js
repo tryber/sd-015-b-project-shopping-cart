@@ -5,12 +5,18 @@ function createProductImageElement(imageSource) {
   return img;
 }
 
+// Requisito 3
+function cartItemClickListener(event) {
+  const clickRemove = event.target;
+  clickRemove.remove();
+}
+
 // Requisito 2
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  // li.addEventListener('click', cartItemClickListener);
+  li.addEventListener('click', cartItemClickListener);
   return li;
 }
 
@@ -59,10 +65,6 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 
   return section;
 }
-
-// function cartItemClickListener(_event) {
-//   // coloque seu código aqui
-// }
 
 // REQUISITO 1 UM
 const getListProducts = (product = 'computador') => {
