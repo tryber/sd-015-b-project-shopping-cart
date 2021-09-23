@@ -1,3 +1,23 @@
+let price = 0;
+
+function addTotalPrice(salePrice) {
+  price += salePrice;
+  const p = document.querySelector('.total-price');
+  p.innerText = `${price}`;
+  return p;
+}
+
+function subtractTotalPrice(liToDelete) {
+
+  const gettingPrice = liToDelete.substring(liToDelete.indexOf('$')+1);
+  const salePrice = parseFloat(gettingPrice);
+  price -= salePrice; 
+  price = Math.abs(price);
+  const p = document.querySelector('.total-price');
+  p.innerText = `${price}`;
+  return p;
+}
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -33,6 +53,7 @@ function getSkuFromProductItem(item) {
 function cartItemClickListener(event) {
   // coloque seu código aqui
   const liRemove = event.target;
+  subtractTotalPrice(liRemove.innerText);
   liRemove.remove();
 }
 
@@ -42,8 +63,8 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   ol.appendChild(li);
-
   li.addEventListener('click', cartItemClickListener);
+  addTotalPrice(salePrice);
   return li;
 }
 
@@ -83,6 +104,8 @@ function buttonclearCart() {
     const button = event.target;
     if (button.classList.contains('empty-cart')) {
       lista.innerHTML = '';
+      const p = document.querySelector('.total-price');
+      p.innerText = '';
     }
   });
 }
