@@ -1,10 +1,12 @@
 let price = 0;
-
+function test() {
+  const p1 = document.querySelector('.total-price');
+  return p1;
+}
 function addTotalPrice(salePrice) {
   price += salePrice;
-  const p1 = document.querySelector('.total-price');
-  p1.innerText = `${price}`;
-  return p1;
+  test().innerText = `${price}`;
+  return test;
 }
 
 function subtractTotalPrice(liToDelete) {
@@ -12,9 +14,8 @@ function subtractTotalPrice(liToDelete) {
   const salePrice = parseFloat(gettingPrice);
   price -= salePrice; 
   price = Math.abs(price); // referência: https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/Math/abs
-  const p2 = document.querySelector('.total-price');
-  p2.innerText = `${price}`;
-  return p2;
+  test().innerText = `${price}`;
+  return test;
 }
 
 function createProductImageElement(imageSource) {
@@ -103,8 +104,7 @@ function buttonclearCart() {
     const button = event.target;
     if (button.classList.contains('empty-cart')) {
       lista.innerHTML = '';
-      const p3 = document.querySelector('.total-price');
-      p3.innerText = '';
+      test().innerText = '';
     }
   });
 }
