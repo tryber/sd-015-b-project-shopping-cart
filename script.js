@@ -48,7 +48,7 @@ async function sumPrices() {
     const split = items.innerText.split('$')[1];
     acumulador += parseFloat(split);
   });
-  getTotalPrice.innerText = acumulador;
+  getTotalPrice.innerText = acumulador.toFixed(1);
 }
 
 function handleButtonCallback(event) {
