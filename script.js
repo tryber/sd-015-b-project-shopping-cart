@@ -70,7 +70,11 @@ async function getItemsFromAPI() {
       { sku: element.id, name: element.title, image: element.thumbnail },
     ));
   }))
-  .then(() => handleButtonId());
+  .then(() => handleButtonId())
+  .then(() => {
+    const loading = document.querySelector('.loading');
+    loading.remove();
+  });
 }
 
 function cleanListCallback() {
