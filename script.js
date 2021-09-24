@@ -1,5 +1,4 @@
 const buscaClasseCartItems = '.cart__items';
-// trocar nome tosco buscaClasseCartItems
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -8,6 +7,7 @@ function createProductImageElement(imageSource) {
   return img;
 }
 
+// salva carrinho na localStorage
 function updateCart() {
   const cart = document.querySelector(buscaClasseCartItems);
   localStorage.setItem('shoppingCart', cart.innerHTML);
@@ -24,6 +24,7 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
+// calcula valor da compra
 function totalPrice(price, status) {
   const priceTotal = document.querySelector('.total-price');
   let valor = parseFloat(priceTotal.innerText);
@@ -41,13 +42,13 @@ function cartItemClickListener(event) {
   updateCart();
 }
 
+// adiciona produto ao carrinho
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   totalPrice(salePrice, 'added');
-  // updateCart();
   return li;
 }
 
@@ -58,11 +59,9 @@ function addCartItem(event) {
   .then((obj) => {
     const cart = document.querySelector(buscaClasseCartItems);
     const selectedProduct = createCartItemElement(obj);
-  // .then(() => updateCart());
     return cart.appendChild(selectedProduct);
   })
   .then(() => updateCart());
-  // updateCart();
 }
 
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
@@ -90,6 +89,7 @@ function createObjectProduct(dados) {
   return getDados;
 }
 
+// mostra 'loading' enquanto não tiver resolvido tudo
 function getAPI() {
   fetch('https://api.mercadolibre.com/sites/MLB/search?q=$computador')
   .then((response) => response.json())
@@ -108,10 +108,11 @@ function emptyCart() {
   updateCart();
 }
 
+// carrega carrinho salvo na localStorage
 function loadSavedCart() {
   const oldCart = document.querySelector(buscaClasseCartItems);
   oldCart.innerHTML = localStorage.getItem('shoppingCart');
-  document.querySelectorAll('.cart__item') // aqui
+  document.querySelectorAll('.cart__item')
     .forEach((li) => li.addEventListener('click', cartItemClickListener));
 }
 
@@ -119,6 +120,5 @@ window.onload = () => {
   getAPI();
   const emptyButton = document.querySelector('.empty-cart');
   emptyButton.addEventListener('click', emptyCart);
-  // recupera local storage
   loadSavedCart();
 };
