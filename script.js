@@ -12,6 +12,11 @@ function createCustomElement(element, className, innerText) {
   e.innerText = innerText;
   return e;
 }
+function createLoading() {
+ const loading = createCustomElement('p', 'loading', 'loading...');
+ const load = document.querySelector('.load');
+ load.appendChild(loading);
+}
 
 function createProductItemElement({ sku, name, image }) {
   const section = document.createElement('section');
@@ -37,16 +42,16 @@ function cartItemClickListener(event) {
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;  
   li.addEventListener('click', cartItemClickListener);
-  return li;
+  return li;  
 }
 
 const API_URL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
 
 function getProduct() {
   return fetch(API_URL)
-    .then((data) => data.json())
+    .then((data) => data.json())    
     .then((listItens) => listItens.results.forEach(({ id, title, thumbnail }) => {
       const listInfos = { sku: id, name: title, image: thumbnail };
       const classItens = document.querySelector('.items');
@@ -109,7 +114,9 @@ function apagaTudo() {
 
 const contentLocalStorage = localStorage.getItem('chave');
 window.onload = () => {
+  createLoading();
   getProduct()
+  .then(() => document.querySelector('.loading').remove())
   .then(() => botao());  
   if (contentLocalStorage) return getItemLocal();
   const limparCarrinho = document.querySelector('.empty-cart');
