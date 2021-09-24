@@ -52,9 +52,9 @@ function cartItemClickListener(event) {
 }
 
 // aqui usei target para atingir o alvo do parâmetro, e removi os filhos da ol.
-
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
+  console.log(name);
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
@@ -71,7 +71,7 @@ const API = async (pesquisa) => {
 
   // Nessa função eu peguei a API do mercado livre, passei para json, e já traduzido para json  acessei o results com o, para chamar ela na outra função, na addCarrinho
 
-const buttonCart = async () => {
+const buttonCart = () => {
   const buttons = document.querySelectorAll('.item__add');
   buttons.forEach((classItemAdd) => {
     classItemAdd.addEventListener('click', (event) => {
@@ -81,8 +81,8 @@ const buttonCart = async () => {
       fetch(`https://api.mercadolibre.com/items/${buttonId}`)
       .then((element) => element.json())
       .then((result) => {
-        const { id, title: name, price: salePrice } = result;
-        createCartItemElement({ id, name, salePrice });
+        const { id, title, price } = result;
+        createCartItemElement({ id, title, price });
       });
   });
 });
@@ -103,8 +103,16 @@ const addCarrinho = async () => {
 
 // Essa função, eu usei para atribuir o parametro da função "API", depois peguei essa API e percorri ela com o forEach, para montar o objeto conforme a funçao "createProductItemElement". E por ultimo usei para chamar a função "buttonCart".
 
+const butao = document.querySelector('.empty-cart');
+
+const removeOl = () => {
+  const listaOl = document.querySelector('.cart__items');
+    listaOl.innerHTML = '';
+};
+
+butao.addEventListener('click', removeOl);
+
 window.onload = () => {
   addApiMercadoLivre();
   addCarrinho();
-  // addCarrinho('MLB1341706310');
 };
