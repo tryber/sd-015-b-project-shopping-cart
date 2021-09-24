@@ -136,3 +136,5 @@ window.onload = () => {
   // isso aqui é gambiarra, vou arrumar depois rsrsrs, o importante é que funciona por enquanto kkk.
   ol.addEventListener('click', cartItemClickListener);
 };
+
+//teste
