@@ -95,8 +95,22 @@ function buscarProduto() {
   console.log('Erro, endereço não encontrado');
 }
 }
+// a baixo requisito 6
+function botaoLimparCarrinho() {
+  const OL = document.createElement('ol');
+  const apagaOL = document.querySelector('.cart__items');
+  const carrinho = document.querySelector('.cart');
+  apagaOL.remove();
+  OL.classList.add('cart__items');
+  carrinho.append(OL);
+}
+
+function caregador() {
+  buscarProduto();
+  const botaoLimpar = document.querySelector('.empty-cart');
+  botaoLimpar.addEventListener('click', botaoLimparCarrinho);
+}
 
 window.onload = () => {
-  // gerarPedido();
-  buscarProduto();
-  };
+  caregador();
+};
