@@ -12,6 +12,8 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
+// alteracao
+
 function createProductItemElement({ sku, name, image }) {
   const section = document.createElement('section');
   section.className = 'item';
@@ -30,6 +32,7 @@ function getSkuFromProductItem(item) {
 
 function cartItemClickListener(event) {
   // coloque seu código aquiuis
+  
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
