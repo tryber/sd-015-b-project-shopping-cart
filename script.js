@@ -1,4 +1,5 @@
 const queryToList = 'ol.cart__items';
+const queryToCartItem = 'li.cart__item';
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -30,14 +31,26 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-const updateCart = () => {
+const updateCartOnStorage = () => {
   const actualCart = document.querySelector(queryToList);
   localStorage.setItem('cartList', actualCart.innerHTML);
 };
 
+const updateTotal = () => {
+  const actualCart = document.querySelectorAll(queryToCartItem);
+  const total = document.querySelector('span.total-price');
+
+  const priceList = [];
+  actualCart.forEach((item) => {
+    priceList.push(parseFloat(item.innerText.split('$').reverse()[0], 10));
+  });
+  total.innerText = priceList.reduce((acc, actual) => acc + actual, 0);
+};
+
 function cartItemClickListener(event) {
   event.target.remove();
-  updateCart();
+  updateTotal();
+  updateCartOnStorage();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -55,7 +68,8 @@ const addToCart = (event) => {
     .then((product) => {
       document.querySelector(queryToList)
         .appendChild(createCartItemElement(product));
-      updateCart();
+      updateCartOnStorage();
+      updateTotal();
     });
 };
 
@@ -77,15 +91,17 @@ const fetchQuery = () => {
 const loadCart = () => {
   const prevCart = document.querySelector(queryToList);
   prevCart.innerHTML = localStorage.getItem('cartList');
-  document.querySelectorAll('li.cart__item')
+  document.querySelectorAll(queryToCartItem)
     .forEach((li) => li.addEventListener('click', cartItemClickListener));
+  updateTotal();
 };
 
 const emptyCartBtn = () => {
   document.querySelector('button.empty-cart')
     .addEventListener('click', () => {
-      document.querySelectorAll('li.cart__item')
+      document.querySelectorAll(queryToCartItem)
         .forEach((li) => li.remove());
+      updateTotal();
     });
 };
 
@@ -94,7 +110,3 @@ window.onload = () => {
   loadCart();
   emptyCartBtn();
 };
-
-// const updateTotal = () => {
-//   document.querySelectorAll('li.cart__item').reduce((acc, product) => { }, 0);
-// };
