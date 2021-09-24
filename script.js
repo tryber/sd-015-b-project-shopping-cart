@@ -77,17 +77,12 @@ async function getItemsFromAPI() {
   });
 }
 
-function cleanListCallback() {
-  const ol = document.querySelector('.cart__items');
-  const li = document.querySelectorAll('.cart_item');
-  li.forEach((item) => {
-    ol.removeChild(item);
-  });
-}
-
 function cleanList() {
   const cleanListButton = document.querySelector('.empty-cart');
-  cleanListButton.addEventListener('click', cleanListCallback);
+  cleanListButton.addEventListener('click', () => {
+    const li = document.querySelectorAll('.cart__item');
+    li.forEach((element) => element.remove());
+  });
 }
 
 window.onload = () => { 
