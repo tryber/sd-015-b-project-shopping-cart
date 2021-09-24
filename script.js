@@ -1,3 +1,4 @@
+const API_URL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -40,22 +41,49 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-const computador = ((product = 'computado') => {
-  const API_URL = `https://api.mercadolibre.com/sites/MLB/search?q=${product}`;
-  fetch(API_URL)    
-    .then((response) => {
-        const promiseJson = response.json()
-        .then((data) => {
-          const products = data.results;
-          products.forEach((productItem) => {
-            const item = createProductItemElement(productItem);
-            document.querySelector('.items').appendChild(item);
-          });
-        })
-        .catch(() => alert('erro - produto não encontrado'));
-      });
-    });
+async function addElementToCart(event) {
+  const itemID = event.target.parentNode.firstChild.innerText;
+  const itemUrl = `https://api.mercadolibre.com/items/${itemID}`;
+  const cart = document.querySelector('.cart__items');
+  fetch(itemUrl, { method: 'GET' })
+  .then((response) => response.json())
+  .then((data) => {
+    const product = {
+      sku: data.id,
+      name: data.title,
+      salePrice: data.price.toString(),
+    };
+    const item = createCartItemElement(product);
+    cart.appendChild(item);
+  })
+  .catch(() => console.log('Error: invalid ID'));
+}
 
-window.onload = () => {
-  computador(); 
+function addEvents() {
+  const buttons = document.querySelectorAll('.item__add');
+  for (let i = 0; i < buttons.length; i += 1) {
+    buttons[i] = document.addEventListener('click', addElementToCart);
+   }
+ }
+
+function fetchAPI() {
+  const produto = document.querySelector('.items');
+  const init = {
+    method: 'GET',
+  };
+  fetch(API_URL, init)
+    .then((response) => response.json())
+    .then((data) => {
+      data.results.forEach((product) => {
+        const productInfo = { sku: product.id, name: product.title, image: product.thumbnail };
+        const element = createProductItemElement(productInfo);
+        produto.appendChild(element);
+      });
+      addEvents();
+    })
+    .catch(() => console.log('Error: failed to request'));
+}
+
+window.onload = () => { 
+  fetchAPI();
 };
