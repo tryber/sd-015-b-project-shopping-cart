@@ -60,7 +60,7 @@ function handleButtonId() {
 }
 
 async function getItemsFromAPI() {
-  const url = 'https://api.mercadolibre.com/sites/MBL/search?q=computador';
+  const url = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
   fetch(url)
   .then((result) => result.json())
   .then((infos) => infos.results)
