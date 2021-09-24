@@ -40,7 +40,7 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-const sumPrices = () => {
+async function sumPrices() {
   const getCartItems = document.querySelectorAll('.cart__item');
   const getTotalPrice = document.querySelector('.total-price');
   let acumulador = 0;
@@ -49,7 +49,7 @@ const sumPrices = () => {
     acumulador += parseFloat(split);
   });
   getTotalPrice.innerText = acumulador;
-};
+}
 
 function handleButtonCallback(event) {
   const objeto = event.target.parentNode;
