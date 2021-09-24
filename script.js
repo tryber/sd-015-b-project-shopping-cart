@@ -1,8 +1,16 @@
+const buscaClasseCartItems = '.cart__items';
+// trocar nome tosco buscaClasseCartItems
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
   img.src = imageSource;
   return img;
+}
+
+function updateCart() {
+  const cart = document.querySelector(buscaClasseCartItems);
+  localStorage.setItem('shoppingCart', cart.innerHTML);
 }
 
 function getSkuFromProductItem(item) {
@@ -18,13 +26,11 @@ function createCustomElement(element, className, innerText) {
 
 function totalPrice(price, status) {
   const priceTotal = document.querySelector('.total-price');
-  console.log(`valor antes - price: ${priceTotal}`);
   let valor = parseFloat(priceTotal.innerText);
   if (status === 'added') valor += price;
   if (status === 'removed') valor -= price;
   if (status === 'clearAll') valor = 0;
   priceTotal.innerText = valor;
-  console.log(`valor: ${valor}`);
 }
 
 // remove item do carrinho
@@ -32,6 +38,7 @@ function cartItemClickListener(event) {
   event.target.remove();
   const salePrice = parseFloat(event.target.innerText.split('$').pop());
   totalPrice(salePrice, 'removed');
+  updateCart();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -40,6 +47,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   totalPrice(salePrice, 'added');
+  // updateCart();
   return li;
 }
 
@@ -48,10 +56,13 @@ function addCartItem(event) {
   fetch(`https://api.mercadolibre.com/items/${ItemID}`)
   .then((response) => response.json())
   .then((obj) => {
-    const cart = document.querySelector('.cart__items');
+    const cart = document.querySelector(buscaClasseCartItems);
     const selectedProduct = createCartItemElement(obj);
+  // .then(() => updateCart());
     return cart.appendChild(selectedProduct);
-  });
+  })
+  .then(() => updateCart());
+  // updateCart();
 }
 
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
@@ -91,13 +102,23 @@ function getAPI() {
 
 // esvazia todo o carrinho
 function emptyCart() {
-  const cart = document.querySelector('.cart__items');
+  const cart = document.querySelector(buscaClasseCartItems);
   cart.innerHTML = '';
   totalPrice(0, 'clearAll');
+  updateCart();
+}
+
+function loadSavedCart() {
+  const oldCart = document.querySelector(buscaClasseCartItems);
+  oldCart.innerHTML = localStorage.getItem('shoppingCart');
+  document.querySelectorAll('.cart__item') // aqui
+    .forEach((li) => li.addEventListener('click', cartItemClickListener));
 }
 
 window.onload = () => { 
   getAPI();
   const emptyButton = document.querySelector('.empty-cart');
   emptyButton.addEventListener('click', emptyCart);
+  // recupera local storage
+  loadSavedCart();
 };
