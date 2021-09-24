@@ -105,11 +105,18 @@ function createProductItemElement({ sku, name, image }) {
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
 
   return section;
-}    
+}
+
+const showLoadingMessage = async (receivedLoadingMessage) => {
+  const parentToAppend = await document.querySelector('body');
+  parentToAppend.appendChild(receivedLoadingMessage);
+};
 
 const requestProducts = async () => {
   try {
     const response = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
+    const loadingMessage = await createCustomElement('h1', 'loading', 'loading...');
+    await showLoadingMessage(loadingMessage);
     const data = await response.json();
     const { results } = data;
     const foundedComputers = results;
@@ -140,6 +147,12 @@ const loadCartFromLocalStorage = () => {
   loadTotalPrice();
 };
 
+const emptyCart = () => {
+  const buttonEmpty = document.querySelectorAll('.empty-cart');
+  console.log(buttonEmpty.innerHTML);
+};
+emptyCart();
+
 /**
  * Para entender e resolver o requisito 4 eu precisei consultar as requisições para puxar dos colegas:
  * Amanda Fernandes, em https://github.com/tryber/sd-015-b-project-shopping-cart/pull/63/commits/d951498d3ba358eb447c2943510230d9c40c8b36 e 
@@ -150,10 +163,13 @@ const loadCartFromLocalStorage = () => {
  * É, eu rachei a cuca e os colegas me ajudaram sem saber. Gostaria de ter tirado as dúvidas numa chamada, numa mentoria ou pelo slack.
  * Mas nem tive tempo durante a semana para acessar esses canais. O importante pra mim foi ter conseguido desenvolver uma lógica e uma dinâmica
  * para resolver a questão.
+ * Obtive também ajuda no requisito 7, no fio de conversa com a dúvida da Carolina Pereira, 
+ * 
  */
 
 window.onload = () => {
-  requestProducts();
+  requestProducts()
+   .then(() => document.querySelector('.loading').remove());
   loadCartFromLocalStorage();
   loadTotalPrice();
 };
