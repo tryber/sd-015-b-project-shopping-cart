@@ -1,15 +1,11 @@
+let price = 0;
+const storageItem = ((id, li) => window.localStorage.setItem(id, li.innerText));
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
   img.src = imageSource;
   return img;
-}
-
-async function getProductList() {
-  const fetchUrl = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=$"computador"')
-    .then((response) => response.json());
-  const result = await fetchUrl.results;
-  return result;
 }
 
 function createCustomElement(element, className, innerText) {
@@ -31,37 +27,71 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
+async function getProductList() {
+  const fetchUrl = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=$"computador"')
+    .then((response) => response.json());
+  const result = await fetchUrl.results;
+  return result;
+}
+
+async function cartTotalPrice(productPrice, operation) {
+  const totalprice = document.querySelector('.total-price');
+  if (operation === '-') {
+    price = parseFloat(totalprice.innerText) - parseFloat(productPrice);
+  }
+  if (operation === '+') {
+    price = parseFloat(totalprice.innerText) + parseFloat(productPrice);
+  }
+  totalprice.innerText = price;
+}
+
 function getSkuFromProductItem(item) {
   const itemElement = item.parentElement;
   return itemElement.firstElementChild.innerText;
 }
 
-function cartItemClickListener(event) {
+function eraseCartButton() {
+  const button = document.querySelector('.empty-cart');
+  button.addEventListener('click', () => {
+    const cartList = document.querySelectorAll('.cart__item'); 
+    cartList.forEach((item) => {
+      item.remove();
+      window.localStorage.clear();
+      document.querySelector('.total-price').innerText = 0;
+    });
+  });
+}
+
+function cartItemRemove(event) {
   // coloque seu código aqui
   const itemClicked = event.target;
-  document.addEventListener('click', itemClicked.remove());
+  const text = itemClicked.innerText;
+  const itemSplit = text.split('|');
+  const salePrice = itemSplit[2].slice(9);
+  cartTotalPrice(salePrice, '-');
+  window.localStorage.removeItem(text);
+  itemClicked.remove();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
+  li.addEventListener('click', cartItemRemove);
+  storageItem(sku, li);
   return li;
 }
 
 async function cartItems(event) {
-    // consultei o repositorio da Gabrielle Murat pra pegar algumas lógicas pro requisito 2
-  // https://github.com/tryber/sd-015-b-project-shopping-cart/tree/gabrielle-murat-shopping-cart
-  const button = event.target;
-  const productId = getSkuFromProductItem(button);
-  const fetchItem = await fetch(`https://api.mercadolibre.com/items/${productId}`);
-  const data = await fetchItem.json();
-  
-  const cartList = document.querySelector('.cart__items');
-  cartList.appendChild(createCartItemElement(
-    { sku: data.id, name: data.title, salePrice: data.price },
+const productId = getSkuFromProductItem(event.target);
+const fetchItem = await fetch(`https://api.mercadolibre.com/items/${productId}`);
+const product = await fetchItem.json();
+
+const cartList = document.querySelector('.cart__items');
+cartList.appendChild(createCartItemElement(
+  { sku: product.id, name: product.title, salePrice: product.price },
 ));
+cartTotalPrice(product.price, '+');
 }
 
 async function itemsListEventAdd() {
@@ -78,9 +108,16 @@ async function createProducts() {
     const products = createProductItemElement({ sku: id, name: title, image: thumbnail });
     sectionItems.appendChild(products);
   });
-  await itemsListEventAdd();
+  itemsListEventAdd();
+}
+
+function loadCartItems() {
+  const items = document.querySelectorAll('.cart__item');
 }
 
 window.onload = async () => {
+  cartTotalPrice();
   createProducts();
+  loadCartItems();
+  eraseCartButton();
  };
