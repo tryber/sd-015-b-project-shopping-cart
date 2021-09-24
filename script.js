@@ -40,6 +40,17 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
+const sumPrices = () => {
+  const getCartItems = document.querySelectorAll('.cart__item');
+  const getTotalPrice = document.querySelector('.total-price');
+  let acumulador = 0;
+  getCartItems.forEach((items) => {
+    const split = items.innerText.split('$')[1];
+    acumulador += parseFloat(split);
+  });
+  getTotalPrice.innerText = acumulador;
+};
+
 function handleButtonCallback(event) {
   const objeto = event.target.parentNode;
   const id = getSkuFromProductItem(objeto);
@@ -51,7 +62,7 @@ function handleButtonCallback(event) {
     ol.appendChild(createCartItemElement(
       { sku: item.id, name: item.title, salePrice: item.price },
     ));
-  });
+  }).then(() => sumPrices());
 }
 
 function handleButtonId() {
