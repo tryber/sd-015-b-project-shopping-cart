@@ -110,7 +110,18 @@ function setTotalChartStorage() {
   chart.innerText = localStorage.chartTotal;
 }
 
+function resetCart() {
+  const totalPrice = getTotalPrice();
+  const totalCart = document.getElementsByClassName('cart__items')[0];
+  totalPrice.innerText = 0;
+  localStorage.setItem('chartTotal', 0);
+  localStorage.removeItem('chart');
+  totalCart.innerHTML = '';
+}
+
 window.onload = () => {
+  const button = document.querySelector('.empty-cart');
+  button.addEventListener('click', resetCart);
   setTotalChartStorage();
   storageChart();
   requestAPi();
