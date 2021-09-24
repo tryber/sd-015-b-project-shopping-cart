@@ -73,6 +73,20 @@ async function getItemsFromAPI() {
   .then(() => handleButtonId());
 }
 
+function cleanListCallback() {
+  const ol = document.querySelector('.cart__items');
+  const li = document.querySelectorAll('.cart_item');
+  li.forEach((item) => {
+    ol.removeChild(item);
+  });
+}
+
+function cleanList() {
+  const cleanListButton = document.querySelector('.empty-cart');
+  cleanListButton.addEventListener('click', cleanListCallback)
+}
+
 window.onload = () => { 
   getItemsFromAPI();
+  cleanList();
 };
