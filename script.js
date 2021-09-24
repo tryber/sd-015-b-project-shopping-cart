@@ -16,8 +16,22 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
+function totalPrice(price, status) {
+  const priceTotal = document.querySelector('.total-price');
+  console.log(`valor antes - price: ${priceTotal}`);
+  let valor = parseFloat(priceTotal.innerText);
+  if (status === 'added') valor += price;
+  if (status === 'removed') valor -= price;
+  if (status === 'clearAll') valor = 0;
+  priceTotal.innerText = valor;
+  console.log(`valor: ${valor}`);
+}
+
+// remove item do carrinho
 function cartItemClickListener(event) {
   event.target.remove();
+  const salePrice = parseFloat(event.target.innerText.split('$').pop());
+  totalPrice(salePrice, 'removed');
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -25,6 +39,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
+  totalPrice(salePrice, 'added');
   return li;
 }
 
@@ -54,6 +69,7 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
+// cria quadradinhos com os produtos
 function createObjectProduct(dados) {
   const divHtml = document.querySelector('.items');
   const getDados = dados.forEach((dado) => {
@@ -73,9 +89,11 @@ function getAPI() {
   });
 }
 
+// esvazia todo o carrinho
 function emptyCart() {
   const cart = document.querySelector('.cart__items');
   cart.innerHTML = '';
+  totalPrice(0, 'clearAll');
 }
 
 window.onload = () => { 
