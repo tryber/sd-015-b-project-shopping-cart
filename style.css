@@ -55,3 +55,13 @@
   font-size: 16pt;
   text-align: center;
 }
+
+.empty-cart {
+  background-color: rgb(192, 11, 11);
+  border-color: brown;
+  color: rgb(219, 219, 219);
+}
+
+.empty-cart:active {
+  background-color: brown;
+}
