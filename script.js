@@ -163,8 +163,8 @@ emptyCart();
  * É, eu rachei a cuca e os colegas me ajudaram sem saber. Gostaria de ter tirado as dúvidas numa chamada, numa mentoria ou pelo slack.
  * Mas nem tive tempo durante a semana para acessar esses canais. O importante pra mim foi ter conseguido desenvolver uma lógica e uma dinâmica
  * para resolver a questão.
- * Obtive também ajuda no requisito 7, no fio de conversa com a dúvida da Carolina Pereira, 
- * 
+ * Obtive também ajuda no requisito 7, no fio de conversa com a dúvida da Carolina Pereira, no slack conforme o link:
+ * https://trybecourse.slack.com/archives/C027T2VU8U8/p1632169438124400 
  */
 
 window.onload = () => {
