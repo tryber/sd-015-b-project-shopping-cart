@@ -110,6 +110,8 @@ const removeOl = () => {
     listaOl.innerHTML = '';
 };
 
+// aqui eu apenas criei uma função, que utiliza o botao com a classe "empty-cart" que ativa a função "removeOl", e dentro dessa função eu troco o innerHTML por uma string vazia, sempre que clicar no botao de limpar.
+
 butao.addEventListener('click', removeOl);
 
 window.onload = () => {
