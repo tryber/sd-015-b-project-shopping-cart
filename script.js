@@ -74,10 +74,20 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
+// Requisito 7
+function loadingText() {
+  const createLoading = document.createElement('h2');
+  createLoading.classList.add('loading');
+  createLoading.innerHTML = 'Loading...';
+  document.body.appendChild(createLoading);
+}
+
 // Requisito 1
 async function createProductList() {
+  loadingText();
   const response = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
   const resultObject = await response.json();
+  document.querySelector('.loading').remove();
   return resultObject.results.forEach(({ id, title, thumbnail }) => {
     const itensOutput = {
       sku: id,
