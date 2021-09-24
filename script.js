@@ -1,4 +1,5 @@
 const ML_API_URL = 'https://api.mercadolibre.com';
+const totalPriceClass = '.total-price';
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -14,21 +15,28 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-// Busca o 'sku' de um item
-// function getSkuFromProductItem(item) {
-//   return item.querySelector('span.item__sku').innerText;
-// }
-
-function cartItemClickListener(event) {
+function cartItemClickListener(event, salePrice) {
   event.target.remove();
+  const totalPriceString = document.querySelector(totalPriceClass);
+  let totalPriceFloat = parseFloat(totalPriceString.innerText);
+  totalPriceFloat -= salePrice;
+  totalPriceString.innerText = `${totalPriceFloat}`;
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
+  li.addEventListener('click', (event) => cartItemClickListener(event, salePrice));
   return li;
+}
+
+function totalPrice(price) {
+  const currentPrice = parseFloat(price);
+  const totalPriceString = document.querySelector(totalPriceClass);
+  const totalPriceFloat = parseFloat(totalPriceString.innerText);
+  const newTotalPriceFloat = totalPriceFloat + currentPrice;
+  totalPriceString.innerText = `${newTotalPriceFloat}`;
 }
 
 // Adiciona itens ao carrinho
@@ -48,6 +56,8 @@ async function addItemToCart(sku) {
   };
   
   document.querySelector('.cart__items').appendChild(createCartItemElement(itemObj));
+
+  totalPrice(price);
 }
 
 function createProductItemElement({ sku, name, image }) {
@@ -89,9 +99,11 @@ async function requestSearchToML() {
 // Cria event listener no botão 'Esvaziar carrinho', que remove todos os itens
 document.querySelector('.empty-cart').addEventListener('click', () => {
   document.querySelectorAll('.cart__item').forEach((item) => item.remove());
+  document.querySelector(totalPriceClass).innerText = 0;
 });
 
 window.onload = () => {
   // Envia a requisição à API
   requestSearchToML();
+  totalPrice(0);
 };
