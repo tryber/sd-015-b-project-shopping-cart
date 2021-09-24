@@ -4,11 +4,24 @@ function createProductImageElement(imageSource) {
   img.src = imageSource;
   return img;
 }
-// abaixo requisito 2.5 ja implantado
+
+// a baixo requisito 4.2
+const salvaCarrinho = () => {
+  localStorage.clear();
+    const ol = document.querySelector('.cart__items');
+      localStorage.setItem('cartList', ol.innerHTML);
+};
+// abaixo requisito 4.1
+const carregaCarrinho = () => {
+  const ol = document.querySelector('.cart__items'); 
+    ol.innerHTML = localStorage.getItem('cartList');
+};
+
+  // abaixo requisito 2.5 ja implantado
 function cartItemClickListener(event) {
   // abaixo requisito 3 ja implantado
-  const cartItemOL = document.querySelector('.cart__items');
-  cartItemOL.removeChild(event.target);
+  event.target.remove();
+  salvaCarrinho(); // requito 4
 }
 
 // abaixo requisito 2.4 ja implantado
@@ -50,6 +63,7 @@ const buscaritemId = async (event) => {
   const cartItemList = createCartItemElement({ sku, name, salePrice });
   const cartList = document.querySelector('.cart__items');
   cartList.appendChild(cartItemList);
+  salvaCarrinho(); // requito 4
 }; // rafel machado guimaraes como referencia
 
 function createCustomElement(element, className, innerText) {
@@ -95,7 +109,7 @@ function buscarProduto() {
   console.log('Erro, endereço não encontrado');
 }
 }
-// a baixo requisito 6
+// a baixo requisito 6.1
 function botaoLimparCarrinho() {
   const OL = document.createElement('ol');
   const apagaOL = document.querySelector('.cart__items');
@@ -103,12 +117,14 @@ function botaoLimparCarrinho() {
   apagaOL.remove();
   OL.classList.add('cart__items');
   carrinho.append(OL);
+  salvaCarrinho(); // requito 4
 }
 
 function caregador() {
   buscarProduto();
-  const botaoLimpar = document.querySelector('.empty-cart');
-  botaoLimpar.addEventListener('click', botaoLimparCarrinho);
+  carregaCarrinho(); // inicia requisito 4
+  const botaoLimpar = document.querySelector('.empty-cart');// inicia requisito 6
+    botaoLimpar.addEventListener('click', botaoLimparCarrinho);
 }
 
 window.onload = () => {
