@@ -27,10 +27,8 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-  const OlCartItem = document.querySelector('.cart__items');
-    // event.target.addEventListener('click', (evento) => evento);
-    return console.log(OlCartItem);
-}
+     event.target.remove();
+    }
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
@@ -41,8 +39,7 @@ function createCartItemElement({ sku, name, salePrice }) {
 }
 
  const requestItem = async (item) => {
- const fetchItem = fetch(`https:api.mercadolibre.com/items/${item}`);
-  const responseFetch = await fetchItem;
+  const responseFetch = await fetch(`https:api.mercadolibre.com/items/${item}`);  
   const objectResponse = await responseFetch.json();  
   const objectParameter = {
     sku: objectResponse.id, 
@@ -55,7 +52,7 @@ function createCartItemElement({ sku, name, salePrice }) {
 const getCartitem = () => {
   const getButtonAdd = document.querySelectorAll('.item__add');  
     getButtonAdd.forEach((button) => button.addEventListener('click', 
-    (event) => {
+    (event) => {      
       const idComputer = (event.path[1].firstChild.innerHTML);
       requestItem(idComputer);      
     }));   
@@ -72,7 +69,7 @@ const getComputador = async () => {
     const sectionItem = document.querySelector('.items');
     sectionItem.appendChild(forEachElement);
   });  
-   return getCartitem();
+  getCartitem();
 };
 
 window.onload = () => { 
