@@ -83,7 +83,7 @@ function cleanListCallback() {
 
 function cleanList() {
   const cleanListButton = document.querySelector('.empty-cart');
-  cleanListButton.addEventListener('click', cleanListCallback)
+  cleanListButton.addEventListener('click', cleanListCallback);
 }
 
 window.onload = () => { 
