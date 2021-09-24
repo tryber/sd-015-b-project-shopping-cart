@@ -20,7 +20,7 @@ function createCustomElement(element, className, innerText) {
 // }
 
 function cartItemClickListener(event) {
-  
+  event.target.remove();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -33,6 +33,11 @@ function createCartItemElement({ sku, name, salePrice }) {
 
 // Adiciona itens ao carrinho
 async function addItemToCart(sku) {
+  const loading = document.createElement('section');
+  loading.className = 'loading';
+  loading.innerText = 'loading...';
+  document.querySelector('.items').appendChild(loading);
+  
   const requestItem = await fetch(`${ML_API_URL}/items/${sku}`);
   const receivedItem = await requestItem.json();
   const { title, price } = receivedItem;
@@ -41,6 +46,7 @@ async function addItemToCart(sku) {
     name: title,
     salePrice: price,
   };
+  
   document.querySelector('.cart__items').appendChild(createCartItemElement(itemObj));
 }
 
@@ -63,9 +69,14 @@ function createProductItemElement({ sku, name, image }) {
 // Faz requerimento de busca à API
 async function requestSearchToML() {
   const product = 'computador';
+  const loading = document.createElement('section');
+  loading.className = 'loading';
+  loading.innerText = 'loading...';
+  document.querySelector('.items').appendChild(loading);
   const requestProductSearch = await fetch(`${ML_API_URL}/sites/MLB/search?q=${product}`); // envia requerimento à API
   const productList = await requestProductSearch.json(); // faz um parse dos resultados entregues pela API para o formato .json
   const productListResults = productList.results; // cria array com os resultados (especificamente o parâmetro .results) 
+  document.querySelector('.loading').remove();
   productListResults.forEach((_product) => {
     const sku = _product.id;
     const name = _product.title;
@@ -74,6 +85,11 @@ async function requestSearchToML() {
     itemsClass.appendChild(createProductItemElement({ sku, name, image }));
   });
 }
+
+// Cria event listener no botão 'Esvaziar carrinho', que remove todos os itens
+document.querySelector('.empty-cart').addEventListener('click', () => {
+  document.querySelectorAll('.cart__item').forEach((item) => item.remove());
+});
 
 window.onload = () => {
   // Envia a requisição à API
