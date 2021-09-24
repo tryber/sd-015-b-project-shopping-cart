@@ -40,4 +40,9 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-window.onload = () => { };
+window.onload = () => { 
+  const selectListItem = (item) =>{
+    fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${item}`)
+      .then((response) => response.json());
+  }
+};
