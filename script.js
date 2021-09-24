@@ -75,6 +75,16 @@ async function createProductList() {
   });
 }
 
+// Requisito 6
+function clearCart() {
+  const cartItems = document.querySelector('.cart__items');
+  while (cartItems.firstChild) {
+    cartItems.removeChild(cartItems.firstChild);
+  }
+}
+
 window.onload = () => { 
   createProductList();
+  const clearCartButton = document.querySelector('.empty-cart'); // Requisito 6
+  clearCartButton.addEventListener('click', clearCart); // Requisito 6
 };
