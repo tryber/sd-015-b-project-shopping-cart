@@ -40,4 +40,19 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-window.onload = () => { };
+function Requisito1() {
+  fetch('https://api.mercadolibre.com/sites/MLB/search?q=$QUERY')
+  .then((response) => response.json())
+  .then((data) => data.results.forEach(({ id, title, thumbnail }) => {
+     const ArrayDoResponse = {
+        sku: id,
+        name: title,
+        image: thumbnail,
+     };
+     const Adicionar = createProductItemElement(ArrayDoResponse);
+     const items = document.getElementsByClassName('items')[0];
+     items.appendChild(Adicionar);
+    })); 
+ }
+ 
+window.onload = () => { Requisito1(); };
