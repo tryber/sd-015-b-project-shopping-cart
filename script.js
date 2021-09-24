@@ -54,6 +54,7 @@ async function addElementToCart(event) {
       salePrice: data.price.toString(),
     };
     const item = createCartItemElement(product);
+    console.log(item);
     cart.appendChild(item);
   })
   .catch(() => console.log('Error: invalid ID'));
@@ -75,8 +76,8 @@ function fetchAPI() {
     .then((response) => response.json())
     .then((data) => {
       data.results.forEach((product) => {
-        const productInfo = { sku: product.id, name: product.title, image: product.thumbnail };
-        const element = createProductItemElement(productInfo);
+        const element = createProductItemElement(product);
+        console.log(element);
         produto.appendChild(element);
       });
       addEvents();
