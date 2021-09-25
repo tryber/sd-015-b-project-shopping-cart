@@ -42,9 +42,9 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-function somaAssinc(evento) {
+function handleButtonCallback(event) {
   const span = document.querySelector('.total-price');
-  const objeto = evento.target.parentNode;
+  const objeto = event.target.parentNode;
   const id = getSkuFromProductItem(objeto);
   const url = `https://api.mercadolibre.com/items/${id}`;
   fetch(url)
@@ -52,21 +52,11 @@ function somaAssinc(evento) {
   .then((item) => {
     acumulador += item.price;
     span.innerHTML = acumulador;
-  });
-}
-
-function handleButtonCallback(event) {
-  const objeto = event.target.parentNode;
-  const id = getSkuFromProductItem(objeto);
-  const url = `https://api.mercadolibre.com/items/${id}`;
-  fetch(url)
-  .then((response) => response.json())
-  .then((item) => {
     const ol = document.querySelector('.cart__items');
     ol.appendChild(createCartItemElement(
       { sku: item.id, name: item.title, salePrice: item.price },
     ));
-  }).then(() => somaAssinc(event));
+  });
 }
 
 function handleButtonId() {
