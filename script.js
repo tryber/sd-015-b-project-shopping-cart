@@ -12,7 +12,7 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({ sku, name, image }) {
+function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
 
@@ -20,7 +20,7 @@ function createProductItemElement({ sku, name, image }) {
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-
+  
   return section;
 }
 
@@ -40,4 +40,27 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-window.onload = () => { };
+const fetchPC = async () => {
+  const response = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=$computador');
+  const data = await response.json();
+  return data;
+};
+
+const getPC = ({ results }) => {
+  results.forEach((result) => {
+    document.querySelector('.items')
+    .appendChild(createProductItemElement(result));
+  });
+};
+
+const getData = async () => {
+  try {
+    getPC(await fetchPC());
+  } catch (error) {
+    console.log('Deu errado');
+  }
+};
+
+window.onload = () => {
+  getData();
+ };
