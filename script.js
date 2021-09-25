@@ -55,12 +55,33 @@ const fetchGetComputers = () => {
   return fetcH;
 };
 
-window.onload = () => { 
+function getFetchProductId(idItem) {
+  const url = `https://api.mercadolibre.com/items/${idItem}`;
+  const ol = document.querySelector('.cart__items');
+
+  fetch(url)
+  .then((response) => response.json())
+  .then(({ id, title, price }) => {
+    ol.appendChild(createCartItemElement({ sku: id, name: title, salePrice: price }));
+  });
+}
+
+window.onload = () => {
   fetchGetComputers()
     .then((response) => {
-      response.forEach(({ id, title, thumbnail }) => { 
+      response.forEach(({ id, title, thumbnail }) => {
         const section = document.querySelector('.items');
         section.appendChild(createProductItemElement({ sku: id, name: title, image: thumbnail }));
+      });
+    })
+    .then(() => {
+      const produtos = [...document.getElementsByClassName('item')];
+      console.log(produtos);
+      produtos.forEach((element) => {
+        element.childNodes[3].addEventListener('click', () => {
+          console.log(element.firstChild.textContent);
+          getFetchProductId(element.firstChild.textContent);
+        });
       });
     });
 };
