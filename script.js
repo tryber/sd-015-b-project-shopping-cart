@@ -124,6 +124,8 @@ function fetchMercadoLivreAPI() {
         productSection.appendChild(element);
       });
       addEvents();
+      const loading = document.querySelector('.loading');
+      loading.remove();
     })
     .catch(() => console.log('Error: failed to request'));
 }
