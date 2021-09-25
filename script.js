@@ -56,8 +56,8 @@ function Requisito2(event) {
 }
  function botao() {
   const buttons = document.querySelectorAll('.item__add');
-  buttons.forEach(() => {
-  document.addEventListener('click', Requisito2);
+  buttons.forEach((element) => {
+  element.addEventListener('click', Requisito2);
  });
 } 
 function Requisito1() {
