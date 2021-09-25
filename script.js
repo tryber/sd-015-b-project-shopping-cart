@@ -5,8 +5,10 @@ function createProductImageElement(imageSource) {
   return img;
 }
 
-function cartItemClickListener() {
- 
+function cartItemClickListener(item) {
+ const itemClicado = item.target;
+ const cart = document.querySelector('.cart__items');
+ cart.removeChild(itemClicado);
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
