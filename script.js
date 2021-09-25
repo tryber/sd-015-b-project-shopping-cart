@@ -79,7 +79,15 @@ function loadStorage() {
   }
 }
 
+function clearCart() {
+  const cartList = document.querySelectorAll('.cart__item');
+  cartList.forEach((item) => item.remove());
+  localStorage.clear();
+}
+
 window.onload = () => { 
   requestProduct();
   loadStorage();
+  const clearButton = document.querySelector('.empty-cart');
+  clearButton.addEventListener('click', clearCart);
 };
