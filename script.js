@@ -36,7 +36,7 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-const getButtons = (event) => {
+const addToCart = (event) => {
   const clickedButton = event.target;
   const section = clickedButton.parentNode;
   const skuId = section.firstChild;
@@ -61,7 +61,7 @@ function createCustomElement(element, className, innerText) {
   e.className = className;
   e.innerText = innerText;
   if (element === 'button') {
-    e.addEventListener('click', getButtons);
+    e.addEventListener('click', addToCart);
   }
   return e;
 }
@@ -107,21 +107,40 @@ const emptyAllCart = () => {
   });
 };
 
-const createItemsList = () => {
-  fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
-    .then((bin) => bin.json())
-    .then((data) => {
-        data.results.forEach(({ id, title, thumbnail }) => {
-          const objItems = {
-            sku: id,
-            name: title,
-            image: thumbnail,
-          };
-          const sectionItems = document.querySelector('.items');
-          const itemCreate = createProductItemElement(objItems);
-          sectionItems.appendChild(itemCreate);
-      });
+const createLoading = () => {
+  const apiItems = document.querySelector('.items');
+  const loading = document.createElement('h2');
+  const body = document.querySelector('body');
+  apiItems.style.display = 'none';
+  loading.innerText = 'Loading...';
+  loading.className = 'loading';
+  body.appendChild(loading);
+};
+
+const resetPage = () => {
+  const apiItems = document.querySelector('.items');
+  const load = document.querySelector('.loading');
+  load.remove();
+  apiItems.style.display = 'flex';
+};
+
+const createItemsList = async () => {
+  createLoading();
+  const url = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
+  try {
+    const data = await fetch(url);
+    const { results } = await data.json();
+    results.forEach(({ id, title, thumbnail }) => {
+      const objItems = { sku: id, name: title, image: thumbnail };
+      const sectionItems = document.querySelector('.items');
+      const itemCreate = createProductItemElement(objItems);
+      sectionItems.appendChild(itemCreate);
     });
+  } catch (error) {
+    console.log('Requisition failed');
+    console.log(error);
+  }
+  resetPage();
 };
 
 window.onload = () => {
