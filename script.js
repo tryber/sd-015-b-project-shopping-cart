@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-vars */
-
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -7,7 +5,7 @@ function createProductImageElement(imageSource) {
   return img;
 }
 
-function cartItemClickListener(event) {
+function cartItemClickListener() {
  
 }
 
@@ -31,7 +29,7 @@ function createCustomElement(element, className, innerText, sku) {
         const promiseJson = resposta.json();
         promiseJson.then((data) => {
           const name = data.title;
-          const salePrice = data.price; const cart = document.querySelector('.cart');
+          const salePrice = data.price; const cart = document.querySelector('.cart__items');
           cart.appendChild(createCartItemElement({ sku, name, salePrice }));
         });
       });
@@ -69,9 +67,9 @@ function recuperaDados() {
   });
 }
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
+// function getSkuFromProductItem(item) {
+//   return item.querySelector('span.item__sku').innerText;
+// }
 
 window.onload = () => { 
   recuperaDados();
