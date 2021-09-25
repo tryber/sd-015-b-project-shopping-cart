@@ -51,11 +51,7 @@ function somaAssinc(evento) {
   .then((response) => response.json())
   .then((item) => {
     acumulador += item.price;
-    if (Number.isInteger(acumulador)) {
-      span.innerHTML = parseInt(acumulador, 0);
-    } else {
-      span.innerHTML = acumulador.toFixed(1);
-    }
+    span.innerHTML = acumulador;
   });
 }
 
