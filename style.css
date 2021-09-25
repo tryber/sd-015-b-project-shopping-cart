@@ -55,12 +55,3 @@
   font-size: 16pt;
   text-align: center;
 }
-
-.preços-totais {
-  display: flex;
-}
-
-.preços-totais .total-price {
-  display: flex;
-  padding-left: 10px;
-}
