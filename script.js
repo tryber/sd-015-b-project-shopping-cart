@@ -80,7 +80,7 @@ function Requisito1() {
      const vazio = document.querySelector('.empty-cart');
      vazio.addEventListener('click', () => {
        const cart = document.querySelector('.cart__items');
-       cart.innerText = '';
+       cart.innerHTML = '';
   });
   } 
 
