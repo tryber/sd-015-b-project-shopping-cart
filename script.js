@@ -53,9 +53,12 @@ const getPC = ({ results }) => {
   });
 };
 
+const loadingRemove = () => document.querySelector('.loading').remove();
+
 const getData = async () => {
   try {
     getPC(await fetchPC());
+    loadingRemove();
   } catch (error) {
     console.log('Deu errado');
   }
