@@ -76,4 +76,12 @@ function Requisito1() {
     })); 
   }
 
-window.onload = () => { Requisito1(); };
+   function Requisito6() {
+     const vazio = document.querySelector('.empty-cart');
+     vazio.addEventListener('click', () => {
+       const cart = document.querySelector('.cart__items');
+       cart.innerText = '';
+  });
+  } 
+
+window.onload = () => { Requisito1(); Requisito6(); };
