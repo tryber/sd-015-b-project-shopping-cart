@@ -51,7 +51,7 @@ function somaAssinc(evento) {
   .then((response) => response.json())
   .then((item) => {
     acumulador += item.price;
-    span.innerHTML = acumulador;
+    span.innerHTML = parseFloat(acumulador).toFixed(1);
   });
 }
 
