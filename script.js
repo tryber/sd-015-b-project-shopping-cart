@@ -1,3 +1,5 @@
+const getCartItems = () => document.querySelector('.cart__items');
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -70,7 +72,7 @@ try {
     const name = selectedComputer.title;
     const salePrice = selectedComputer.price;
     const computerToAdd = createCartItemElement({ sku, name, salePrice });
-    const listToAddTheComputerOn = document.querySelector('.cart__items');
+    const listToAddTheComputerOn = getCartItems();
     listToAddTheComputerOn.appendChild(computerToAdd);
     saveCartToLocalStorage();
     addPrice(salePrice);
@@ -135,7 +137,7 @@ const requestProducts = async () => {
 
 const loadCartFromLocalStorage = () => {
   const cartLoaded = JSON.parse(localStorage.getItem('products'));
-  const containerToFill = document.querySelector('.cart__items');
+  const containerToFill = getCartItems();
   if (!cartLoaded) {
     return;
   }
@@ -147,11 +149,21 @@ const loadCartFromLocalStorage = () => {
   loadTotalPrice();
 };
 
-const emptyCart = () => {
-  const buttonEmpty = document.querySelectorAll('.empty-cart');
-  console.log(buttonEmpty.innerHTML);
+const clearCart = async () => {
+  const cartItems = document.querySelectorAll('.cart__item');
+  cartItems.forEach((item) => {
+    subPrice(item);
+    item.parentNode.removeChild(item);
+  });
+  saveCartToLocalStorage();
+  // loadCartFromLocalStorage();
+  loadTotalPrice();
 };
-emptyCart();
+
+const listenClearer = async () => {
+  const buttonClearer = document.querySelector('.empty-cart');
+  buttonClearer.addEventListener('click', clearCart);
+};
 
 /**
  * Para entender e resolver o requisito 4 eu precisei consultar as requisições para puxar dos colegas:
@@ -169,7 +181,8 @@ emptyCart();
 
 window.onload = () => {
   requestProducts()
-   .then(() => document.querySelector('.loading').remove());
+  .then(() => document.querySelector('.loading').remove());
+  listenClearer();
   loadCartFromLocalStorage();
   loadTotalPrice();
 };
