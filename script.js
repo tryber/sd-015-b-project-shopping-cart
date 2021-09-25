@@ -1,3 +1,5 @@
+// Créditos: Breno da Cunha - Turma 15; me ajudar a resolver requisito 5.
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
