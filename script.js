@@ -1,5 +1,6 @@
 const URL = 'https://api.mercadolibre.com';
 const totalPriceClass = document.querySelector('.total-price');
+const buttonRemoveAll = document.querySelector('.empty-cart');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -21,17 +22,20 @@ function adjustSalePrice(salesPrice, flag) {
   // Subtrai o valor do item no valor total do carrinho
   if (flag === '100') {
     totalPriceFloat -= salePrice;
-    totalPriceClass.innerText = `${totalPriceFloat.toFixed(2)}`;
+    totalPriceClass.innerText = `${totalPriceFloat}`;
   }
   // Adiciona o valor do item no valor total do carrinho
   if (flag === '101') {
       totalPriceFloat += salePrice;
-      totalPriceClass.innerText = `${totalPriceFloat.toFixed(2)}`;
+      totalPriceClass.innerText = `${totalPriceFloat}`;
   }
 }
 
 // Remove itens do carrinho
 function cartItemClickListener(event, salePrice, flag) {
+  if (!event) {
+    
+  }
   event.target.remove();
   return adjustSalePrice(salePrice, flag);
 }
@@ -57,7 +61,7 @@ async function addItemsCart(sku) {
   const itemObject = {
     sku,
     name: title,
-    salePrice: price.toFixed(2),
+    salePrice: price,
   };
   document.querySelector('.cart__items')
   .appendChild(createCartItemElement(itemObject));
@@ -100,6 +104,10 @@ async function searchProductToMl() {
   });
 }
 
+function removeAllItemsToCart() {
+  document.querySelectorAll('.cart__items').forEach((produto) => produto.remove());
+}
+buttonRemoveAll.addEventListener('click', removeAllItemsToCart);
 window.onload = () => {
   // Só deixa a requisição à API ser feita após a pagina estar pronta
   searchProductToMl();
