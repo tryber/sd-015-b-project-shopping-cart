@@ -14,18 +14,6 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({ sku, name, image }) {
-  const section = document.createElement('section');
-  section.className = 'item';
-
-  section.appendChild(createCustomElement('span', 'item__sku', sku));
-  section.appendChild(createCustomElement('span', 'item__title', name));
-  section.appendChild(createProductImageElement(image));
-  section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-
-  return section;
-}
-
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
@@ -42,10 +30,38 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
+async function addItemsCart(sku) {
+  const product = await (await fetch(`https://api.mercadolibre.com/items/${sku}`)).json();
+  const { title, price } = product;
+  const itemObject = {
+    sku,
+    name: title,
+    salePrice: price,
+  };
+  document.querySelector('.cart__items').appendChild(createCartItemElement(itemObject));
+}
+
+function createProductItemElement({ sku, name, image }) {
+  const section = document.createElement('section');
+  section.className = 'item';
+
+  section.appendChild(createCustomElement('span', 'item__sku', sku));
+  section.appendChild(createCustomElement('span', 'item__title', name));
+  section.appendChild(createProductImageElement(image));
+  // Cria um escutador para o botão 'Adicionar ao carrinho!' para não precisar do forEach
+  const addCartButton = createCustomElement('button', 'item__add', 'Adicionar ao carrinho!');
+  addCartButton.addEventListener('click', () => {
+    addItemsCart(sku);
+  });
+  section.appendChild(addCartButton);   
+
+  return section;
+}
+
 // Requisição de busca feita na API
 async function searchProductToMl() {
   const product = 'computador';
-
+  //  Faz a requisição com o Fetch e ajusta a URL para a busca de produto
   const searchProduct = await fetch(`${URL}/sites/MLB/search?q=${product}`);
   // Parse dos dados do produto para JSON
   const productList = await searchProduct.json();
