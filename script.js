@@ -37,8 +37,10 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 
 function createPrice(totalPrice) {
   const price = document.querySelector('.total-price');
+  const showPrice = document.querySelector('.total-price-text');
   if (price) {
     price.remove();
+    showPrice.remove();
   }
   const priceText = createCustomElement('span', 'total-price-text', `Total: R$ ${totalPrice}`);
   const priceToCreate = createCustomElement('span', 'total-price', totalPrice);
