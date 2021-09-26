@@ -30,15 +30,15 @@ function getSkuFromProductItem(item) {
 
 const divPrice = document.querySelector('.total-price');
 const itemsList = document.querySelector('.cart__items');
+const container = document.querySelector('.container');
+const divloading = document.querySelector('.loading');
 
 let price = 0;
 function cartItemClickListener(event) {
   // coloque seu código aqui
   const list = document.querySelector('.cart__items');
   list.removeChild(event.target);
-  console.log(`${price} - ${event.target.id}`);
   price -= parseFloat(event.target.id);
-  console.log(price);
   divPrice.innerText = `${price.toFixed(1)}`;
 }
 
@@ -52,10 +52,8 @@ function createCartItemElement({ sku, name, salePrice }) {
 }
 
 function totalPrice(elementPrice) {
-  console.log(`${price} + ${elementPrice}`);
   price += elementPrice;
   divPrice.innerText = `${price}`;
-  console.log(price);
 }
 
 const getData = () => {
@@ -75,7 +73,7 @@ const getData = () => {
         product.addEventListener('click', itemClick);
         const itemsSection = document.querySelector('.items');
         itemsSection.appendChild(product);
-      });
+      }); container.removeChild(divloading);
     });
 };
 
