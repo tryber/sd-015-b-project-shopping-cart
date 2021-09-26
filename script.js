@@ -13,11 +13,7 @@ function createCustomElement(element, className, innerText) {
 }
 
 function cartItemClickListener(event) {
-  const item = event.target;
-  item.remove();
-  const olCartRemoved = document.querySelector('ol');
-  localStorage.setItem('olCartElements', olCartRemoved.innerHTML);
-  createTotalPrice();
+  event.target.remove();
 }
 
 const calculateCartPrice = (items) => {
@@ -84,7 +80,6 @@ const createLoading = () => {
 };
 
 const addItemToCart = (itemId) => {
-  createLoading();
   fetch(`https://api.mercadolibre.com/items/${itemId}`)
     .then((response) => response.json())
     .then((data) => {
