@@ -1,5 +1,5 @@
 function calculaValor(preco, operacao) {
-  let total = parseFloat(document.querySelector('.total-price').innerText);
+  let total = parseFloat(document.getElementsByClassName('total-price')[0].innerText);
   if (operacao === 'soma') { 
     total += preco;
   }
@@ -9,6 +9,7 @@ function calculaValor(preco, operacao) {
   if (operacao === 'apaga') {
     total = 0;
   }
+  localStorage.setItem('price', total);
   document.querySelector('.total-price').innerText = total;
 }
 
@@ -47,9 +48,10 @@ function productConsult(id) {
         name: title,
         salePrice: price,
       };
-      const cart = document.querySelector('.cart__items');
+      const cart = document.getElementsByClassName('cart__items')[0];
       cart.appendChild(createCartItemElement(object));
       calculaValor(price, 'soma');
+      localStorage.setItem('listaProdutos', cart.innerHTML);
     });
 }
 
@@ -67,7 +69,7 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
- const apiMarket = () => {
+ const apiMarket = async () => {
   fetch('https://api.mercadolibre.com/sites/MLB/search?q=$computador')
     .then((response) => response.json())
     .then((listItems) => listItems.results.forEach(({ id, title, thumbnail }) => {
@@ -75,7 +77,6 @@ function createProductItemElement({ sku, name, image }) {
       const items = document.querySelector('.items');
       items.appendChild(product);
 }));
-  document.querySelector('.loading').remove();
 };
 
 function ApagaTudo() {
@@ -85,7 +86,16 @@ function ApagaTudo() {
 }
 
 window.onload = () => { 
-  apiMarket();
+  apiMarket().then(() => document.querySelector('.loading').remove());
   const butaoApagar = document.querySelector('.empty-cart');
   butaoApagar.addEventListener('click', ApagaTudo);
+  const cart = document.querySelector('.cart__items');
+  if (localStorage.getItem('listaProdutos')) {
+    cart.innerHTML = localStorage.getItem('listaProdutos');
+    document.querySelector('.total-price').innerText = localStorage.getItem('price');
+    cart.addEventListener('click', (event) => { 
+      const price = event.target.innerText.split('$').pop();
+      cartItemClickListener(event, price);
+    });
+  }
 };
