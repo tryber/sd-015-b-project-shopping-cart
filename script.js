@@ -1,12 +1,27 @@
-function cartItemClickListener(event) {
+function calculaValor(preco, operacao) {
+  let total = parseFloat(document.querySelector('.total-price').innerText);
+  if (operacao === 'soma') { 
+    total += preco;
+  }
+  if (operacao === 'sub') {
+    total -= preco;
+  }
+  if (operacao === 'apaga') {
+    total = 0;
+  }
+  document.querySelector('.total-price').innerText = total;
+}
+
+function cartItemClickListener(event, preco) {
   event.target.remove();
+  calculaValor(preco, 'sub');
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
+  li.addEventListener('click', (event) => { cartItemClickListener(event, salePrice); });
   return li;
 }
 function createProductImageElement(imageSource) {
@@ -34,6 +49,7 @@ function productConsult(id) {
       };
       const cart = document.querySelector('.cart__items');
       cart.appendChild(createCartItemElement(object));
+      calculaValor(price, 'soma');
     });
 }
 
@@ -62,12 +78,10 @@ function createProductItemElement({ sku, name, image }) {
   document.querySelector('.loading').remove();
 };
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
 function ApagaTudo() {
   const cartItems = document.querySelector('.cart__items');
   cartItems.innerText = '';
+  calculaValor(0, 'apaga');
 }
 
 window.onload = () => { 
