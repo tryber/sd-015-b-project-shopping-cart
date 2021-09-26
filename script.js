@@ -1,9 +1,15 @@
+const ol = document.querySelector('.cart__items');
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
   img.src = imageSource;
   return img;
 }
+
+const savelocalStorage = () => {
+  localStorage.setItem('item.cart', ol.innerHTML);
+};
 
 function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
@@ -30,6 +36,7 @@ function getSkuFromProductItem(item) {
 
 function cartItemClickListener(event) {
   event.target.remove();
+  savelocalStorage();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -46,6 +53,7 @@ const apiProduct = async (ids) => {
   const { id, title, price } = jsonID;
   const cartItem = document.querySelector('.cart__items');
   cartItem.appendChild(createCartItemElement({ sku: id, name: title, salePrice: price }));
+  savelocalStorage();
   };
 
 const buttonCart = () => {
@@ -53,6 +61,13 @@ const buttonCart = () => {
     buttonItem.forEach((button) => button.addEventListener('click', (event) => {
       apiProduct(event.target.parentElement.firstChild.innerText);
   }));
+};
+
+const loadLocalStorage = () => {
+  ol.innerHTML = localStorage.getItem('item_cart');
+  ol.childNodes.forEach((li) => {
+    li.addEventListener('click', cartItemClickListener);
+  });
 };
 
 const getComputer = async () => {
@@ -74,4 +89,5 @@ const getComputer = async () => {
 
 window.onload = () => {
   getComputer();
+  loadLocalStorage();
 };
