@@ -57,10 +57,8 @@ function getTotalPrice() {
 function getCartElementIndex(itemName) {
   const cartItemsArray = document.querySelectorAll('.cart__item');
   cartItemsArray.forEach((item, index) => {
-    if (priceOfCart.length === cartItemsArray.length) {
-      if (item.innerText === itemName) {
+    if (priceOfCart.length === cartItemsArray.length && item.innerText === itemName) {
         priceOfCart.splice(index, 1);
-      }
     }
   });
 }
