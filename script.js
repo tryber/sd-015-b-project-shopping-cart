@@ -1,3 +1,5 @@
+const urlML = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -40,4 +42,22 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-window.onload = () => { };
+async function requestFromML(api) {
+  return fetch(api)
+  .then((response) => response.json())
+  .then((itemsInfo) => itemsInfo.results.forEach(({ id, title, thumbnail }) => {
+    const cartItemData = {
+      sku: id,
+      name: title,
+      image: thumbnail,
+    };
+    const itemSection = document.querySelector('.items');
+    const item = createProductItemElement(cartItemData);
+    itemSection.appendChild(item);
+  })).catch(() => console
+  .log('Não foi possível se conectar a API do Mercado Livre para criar os itens da página.'));
+}
+
+window.onload = () => { 
+  requestFromML(urlML);
+};
