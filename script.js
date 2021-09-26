@@ -64,5 +64,13 @@ function createProductItemElement({ sku, name, image }) {
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
+function ApagaTudo() {
+  const cartItems = document.querySelector('.cart__items');
+  cartItems.innerText = '';
+}
 
-window.onload = () => { apiMarket(); };
+window.onload = () => { 
+  apiMarket();
+  const butaoApagar = document.querySelector('.empty-cart');
+  butaoApagar.addEventListener('click', ApagaTudo);
+};
