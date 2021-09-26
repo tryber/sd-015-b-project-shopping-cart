@@ -95,8 +95,14 @@ const getShoppingCart = () => {
   });
 };
 
+const finishedLoading = () => {
+  const loading = document.querySelector('.loading');
+  loading.remove();
+};
+
 window.onload = () => {
   getInfoAPI('computador')
+  .then(() => finishedLoading())
   .then(() => addToCartButton());
   
   getShoppingCart();
