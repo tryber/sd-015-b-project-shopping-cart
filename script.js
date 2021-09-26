@@ -46,18 +46,40 @@ async function requestFromML(api) {
   return fetch(api)
   .then((response) => response.json())
   .then((itemsInfo) => itemsInfo.results.forEach(({ id, title, thumbnail }) => {
-    const cartItemData = {
+    const ItemData = {
       sku: id,
       name: title,
       image: thumbnail,
     };
     const itemSection = document.querySelector('.items');
-    const item = createProductItemElement(cartItemData);
+    const item = createProductItemElement(ItemData);
     itemSection.appendChild(item);
   })).catch(() => console
   .log('Não foi possível se conectar a API do Mercado Livre para criar os itens da página.'));
 }
 
+async function requestID(item) {
+  const productID = getSkuFromProductItem(item);
+  return fetch(`https://api.mercadolibre.com/items/${productID}`)
+  .then((response) => response.json())
+  .then(({ id, title, price }) => {
+    const productData = {
+      sku: id,
+      name: title,
+      salePrice: price,
+    };
+    const cartItems = document.querySelector('.cart__items');
+    cartItems.appendChild(createCartItemElement(productData));
+  });
+}
+
+function addToCart() {
+  const items = document.querySelectorAll('.item');
+  items.forEach((item) => item.lastChild.addEventListener('click', () => requestID(item)));
+}
+
 window.onload = () => { 
-  requestFromML(urlML);
+  requestFromML(urlML)
+  .then(() => addToCart())
+  .catch(() => console.log('Não foi possível adicionar o item ao carrinho.'));
 };
