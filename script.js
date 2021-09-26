@@ -95,6 +95,14 @@ function reloadListOfProducts() {
   }
 }
 
+function emptyCartShopping() {
+  const listOfProduct = document.querySelector('cart__items');
+  listOfProduct.parentNode.removeChild(listOfProduct);
+  localStorage.clear();
+}
+const emptyButton = document.querySelector('.empty-cart');
+emptyButton.addEventListener('click', emptyCartShopping);
+
 window.onload = () => {
   computerListWithFech();
   reloadListOfProducts();
