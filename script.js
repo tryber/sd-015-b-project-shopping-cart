@@ -112,8 +112,22 @@ const restoreCart = () => {
   cartItems.addEventListener('click', cartItemClickListener);
 };
 
+const addEmptyCartEvent = () => {
+  const emptyCartButton = document.querySelector('.empty-cart');
+
+  emptyCartButton.addEventListener('click', () => {
+    const cartItems = document.querySelectorAll('.cart__item');
+
+    for (let i = 0; i < cartItems.length; i += 1) {
+      cartItems[i].remove();
+    }
+    saveCart();
+  });
+};
+
 window.onload = () => { 
   renderItems();
   restoreCart();
   addClickListenerToAllItems();
+  addEmptyCartEvent();
 };
