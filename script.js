@@ -96,9 +96,10 @@ function reloadListOfProducts() {
 }
 
 function emptyCartShopping() {
-  const listOfProduct = document.querySelector('cart__items');
+  const listOfProduct = document.querySelector('.cart__items');
   listOfProduct.parentNode.removeChild(listOfProduct);
   localStorage.clear();
+  document.location.reload(true);
 }
 const emptyButton = document.querySelector('.empty-cart');
 emptyButton.addEventListener('click', emptyCartShopping);
