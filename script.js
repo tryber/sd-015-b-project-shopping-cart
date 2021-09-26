@@ -1,4 +1,6 @@
 const API_URL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
+let totalPrice = 0;
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -29,15 +31,37 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+function calculatePrice(price, type) {
+  const priceTotal2 = document.querySelector('.total-price');
+  if (type === 'plus') { totalPrice += price; }
+  if (type === 'sub') { totalPrice -= price; }
+  priceTotal2.innerText = parseFloat((totalPrice).toFixed(2));
+}
+
 function cartItemClickListener(event) {
+  const itemId = event.target.classList[1];
+  const itemUrl = `https://api.mercadolibre.com/items/${itemId}`;
+  fetch(itemUrl, { method: 'GET' })
+    .then((response) => response.json())
+    .then((data) => calculatePrice(data.price, 'sub'));
   event.target.remove();
+}
+
+function esvaziarCarrinho() {
+  const preçoResetado = document.querySelector('.total-price');
+  preçoResetado.innerText = 0;
+  const dentroCarrinho = document.querySelector('.cart__items');
+  while (dentroCarrinho.firstChild) {
+    dentroCarrinho.removeChild(dentroCarrinho.firstChild);
+  }
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
-  li.className = 'cart__item';
+  li.className = `cart__item, ${sku}`;
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
+
   return li;
 }
 
@@ -56,6 +80,7 @@ async function addElementToCart(event) {
     const item = createCartItemElement(product);
     console.log(item);
     cart.appendChild(item);
+    calculatePrice(data.price, 'plus');
   })
   .catch(() => console.log('Error: invalid ID'));
 }
@@ -65,6 +90,8 @@ function addEvents() {
   for (let i = 0; i < buttons.length; i += 1) {
     buttons[i] = document.addEventListener('click', addElementToCart);
    }
+   const limparBotão = document.querySelector('.empty-cart');
+   limparBotão.addEventListener('click', esvaziarCarrinho);
  }
 
 function fetchAPI() {
