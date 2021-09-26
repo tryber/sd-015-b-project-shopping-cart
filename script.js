@@ -62,6 +62,8 @@ function recuperaDados() {
   const promise = fetch('https://api.mercadolibre.com/sites/MLB/search?q=$computador');
   promise.then((resposta) => {
     const promiseJson = resposta.json();
+    const loading = document.getElementsByClassName('loading');
+    document.body.removeChild(loading[0]);
 
     promiseJson.then((dados) => {
       dados.results.forEach((element) => {
