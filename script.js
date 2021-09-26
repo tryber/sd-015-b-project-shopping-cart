@@ -1,3 +1,5 @@
+const olCartItems = '.cart__items';
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -29,8 +31,9 @@ function getSkuFromProductItem(item) {
 }
 
 const saveShoppingCart = () => {
-  const cartItems = document.querySelectorAll('.cart__items');
-  cartItems.forEach((element) => localStorage.setItem('shoppingCart', JSON.stringify(element.innerHTML)));
+  const cartItems = document.querySelectorAll(olCartItems);
+  cartItems.forEach((element) => localStorage.setItem('shoppingCart', JSON
+    .stringify(element.innerHTML)));
 };
 
 function cartItemClickListener(event) {
@@ -44,7 +47,7 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
-  return li
+  return li;
 }
 
 function addToCartAPI(searckSku) {
@@ -53,15 +56,16 @@ function addToCartAPI(searckSku) {
   fetch(url)
   .then((data) => data.json())
   .then(({ id, title, price }) => {
-    const items = document.querySelector('.cart__items');
+    const items = document.querySelector(olCartItems);
     items.appendChild(createCartItemElement({ sku: id, name: title, salePrice: price }));
     saveShoppingCart();
-  })
-};
+  });
+}
 
 const addToCartButton = () => {
   const sections = document.querySelectorAll('.item');
-  sections.forEach((section) => section.lastChild.addEventListener('click', () => addToCartAPI(section)));
+  sections.forEach((section) => section.lastChild
+    .addEventListener('click', () => addToCartAPI(section)));
 };
 
 async function getInfoAPI(search) {
@@ -76,9 +80,14 @@ async function getInfoAPI(search) {
   }));
 }
 
+const clearCartButton = () => {
+  const cartItemsOl = document.querySelector(olCartItems);
+  cartItemsOl.innerHTML = '';
+  saveShoppingCart();
+};
 
 const getShoppingCart = () => {
-  const cartItems = document.querySelectorAll('.cart__items');
+  const cartItems = document.querySelectorAll(olCartItems);
   cartItems.forEach((element) => {
     const li = element;
     li.innerHTML = JSON.parse(localStorage.getItem('shoppingCart'));
@@ -88,7 +97,10 @@ const getShoppingCart = () => {
 
 window.onload = () => {
   getInfoAPI('computador')
-  .then(() => addToCartButton())
+  .then(() => addToCartButton());
   
   getShoppingCart();
+
+  const emptyCart = document.querySelector('.empty-cart');
+  emptyCart.addEventListener('click', clearCartButton);
 };
