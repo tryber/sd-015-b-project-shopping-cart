@@ -87,7 +87,20 @@ const getComputer = async () => {
   buttonCart();
 };
 
+function buttontClear() {
+  const cartList = document.querySelectorAll('.cart__item');
+  cartList.forEach((li) => {
+    li.remove();
+  });
+}
+
+function buttontClearAll() {
+  const clearBT = document.querySelector('.empty-cart');
+  clearBT.addEventListener('click', buttontClear);
+}
+
 window.onload = () => {
   getComputer();
   loadLocalStorage();
+  buttontClearAll();
 };
