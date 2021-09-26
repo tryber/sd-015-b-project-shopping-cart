@@ -62,7 +62,7 @@ body {
   font-size: 16pt;
   text-align: center;
 }
-
+/* 
 .header {
   background-color: rgb(76, 164, 109);
   display: flex;
@@ -85,7 +85,5 @@ body {
 }
 
 .loading {
-  align-self: center;
-  justify-self: center;
   order: -1;
-}
+} */
