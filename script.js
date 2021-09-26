@@ -68,7 +68,6 @@ items.addEventListener('click', (ev) => {
       .then((product) => {
         userCart.appendChild(createCartItemElement(product));
       });
-
   }
 });
 
