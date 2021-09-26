@@ -15,6 +15,7 @@ function createCustomElement(element, className, innerText) {
   e.innerText = innerText;
   return e;
 }
+
 // Ajusta o preço do carrinho
 function adjustSalePrice(salesPrice, flag) {
   const salePrice = parseFloat(salesPrice);
@@ -33,9 +34,6 @@ function adjustSalePrice(salesPrice, flag) {
 
 // Remove itens do carrinho
 function cartItemClickListener(event, salePrice, flag) {
-  if (!event) {
-    
-  }
   event.target.remove();
   return adjustSalePrice(salePrice, flag);
 }
@@ -104,10 +102,13 @@ async function searchProductToMl() {
   });
 }
 
-function removeAllItemsToCart() {
-  document.querySelectorAll('.cart__items').forEach((produto) => produto.remove());
-}
-buttonRemoveAll.addEventListener('click', removeAllItemsToCart);
+// Remove todos os itens do carrinho
+buttonRemoveAll.addEventListener('click', () => {
+  document.querySelectorAll('.cart__item')
+  .forEach((item) => item.remove());
+  totalPriceClass.innerText = '0';
+});
+
 window.onload = () => {
   // Só deixa a requisição à API ser feita após a pagina estar pronta
   searchProductToMl();
