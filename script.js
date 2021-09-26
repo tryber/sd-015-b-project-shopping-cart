@@ -59,6 +59,7 @@ function createProductItemElement({ sku, name, image }) {
       const items = document.querySelector('.items');
       items.appendChild(product);
 }));
+  document.querySelector('.loading').remove();
 };
 
 function getSkuFromProductItem(item) {
