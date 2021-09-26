@@ -1,10 +1,13 @@
 function calculaValor(preco, operacao) {
-  let total = parseFloat(document.getElementsByClassName('total-price')[0].innerText);
+  // transforma preco(string) em number
+  const preco2 = Number(preco);
+
+  let total = Number(document.getElementsByClassName('total-price')[0].innerText);
   if (operacao === 'soma') { 
-    total += preco;
+    total += preco2;
   }
   if (operacao === 'sub') {
-    total -= preco;
+    total -= preco2;
   }
   if (operacao === 'apaga') {
     total = 0;
@@ -13,8 +16,10 @@ function calculaValor(preco, operacao) {
   document.querySelector('.total-price').innerText = total;
 }
 
-function cartItemClickListener(event, preco) {
-  event.target.remove();
+function cartItemClickListener(event) {
+  const elemento = event.target;
+  const preco = elemento.innerText.split('$').pop();
+  elemento.remove();
   calculaValor(preco, 'sub');
 }
 
@@ -22,7 +27,7 @@ function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', (event) => { cartItemClickListener(event, salePrice); });
+  li.addEventListener('click', cartItemClickListener);
   return li;
 }
 function createProductImageElement(imageSource) {
@@ -91,9 +96,8 @@ window.onload = () => {
   if (localStorage.getItem('listaProdutos')) {
     cart.innerHTML = localStorage.getItem('listaProdutos');
     document.querySelector('.total-price').innerText = localStorage.getItem('price');
-    cart.addEventListener('click', (event) => { 
-      const price = event.target.innerText.split('$').pop();
-      cartItemClickListener(event, price);
-    });
+    // transforma html collection em array usando SPREAD para passar no for each
+    const produtos = [...cart.children];
+    produtos.forEach((produto) => produto.addEventListener('click', cartItemClickListener));
   }
 };
