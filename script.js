@@ -28,6 +28,8 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+const itemsList = document.querySelector('.cart__items');
+
 function cartItemClickListener(event) {
   // coloque seu código aqui
   const list = document.querySelector('.cart__items');
@@ -53,8 +55,7 @@ const getData = () => {
         const product = createProductItemElement(productObj);
         const listItem = createCartItemElement(carItemObj);
         const itemClick = () => {
-          const carList = document.querySelector('.cart__items');
-          carList.appendChild(listItem);
+          itemsList.appendChild(listItem);
         };
         product.addEventListener('click', itemClick);
         const itemsSection = document.querySelector('.items');
@@ -62,6 +63,15 @@ const getData = () => {
       });
     });
 };
+
+function clearCart() {  
+  while (itemsList.firstChild) {
+    itemsList.removeChild(itemsList.firstChild);
+  }
+}
+
+const emptyButton = document.querySelector('.empty-cart');
+emptyButton.addEventListener('click', clearCart);
 
 window.onload = () => {
   getData();
