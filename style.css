@@ -1,3 +1,10 @@
+body {
+  box-sizing: border-box ;
+  color: rgb(50, 50, 50);
+  background: rgb(234, 237, 240);
+
+}
+
 .container {
   display: flex;
   justify-content: space-around;
@@ -37,7 +44,7 @@
 }
 
 .item .item__add {
-  background-color: green;
+  background-color: rgb(76, 164, 109);
   border: 0;
   cursor: pointer;
   margin: 0;
@@ -54,4 +61,31 @@
   flex-basis: 1;
   font-size: 16pt;
   text-align: center;
+}
+
+.header {
+  background-color: rgb(76, 164, 109);
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 20px;
+
+  position: relative;
+  top: 0;
+}
+
+.header-logo, .menu-icon {
+  width: 50px;
+}
+
+.header-title {
+  align-self: center;
+  justify-self: center;
+
+}
+
+.loading {
+  align-self: center;
+  justify-self: center;
+  order: -1;
 }

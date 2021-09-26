@@ -56,19 +56,37 @@ function createCartItemElement({ id, title, price }) {
   return li;
 }
 
+const appendElementTo = (element, parentClass) => {
+  const parent = document.querySelector(`.${parentClass}`);
+  parent.appendChild(element);
+};
+
+const createLoadingText = () => {
+  const loadingText = document.createElement('p');
+  loadingText.innerText = 'Loading...';
+  loadingText.className = 'loading';
+
+  // document.body.appendChild(loadingText);
+  appendElementTo(loadingText, 'container');
+};
+
+const removeLoadingText = () => {
+  const loadingText = document.querySelector('.loading');
+  if (loadingText) {
+    loadingText.remove();
+  }
+};
+
 const getItemFromApi = async (apiUrl, item) => {
   try {
+    createLoadingText();
     const response = await fetch(`${apiUrl}${item}`);
     const itemsData = await response.json();
+    removeLoadingText();
     return itemsData;
   } catch (error) {
     console.log(error);
   }
-};
-
-const appendElementTo = (element, parentClass) => {
-  const parent = document.querySelector(`.${parentClass}`);
-  parent.appendChild(element);
 };
 
 const renderItems = async () => {
