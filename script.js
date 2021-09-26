@@ -1,3 +1,5 @@
+const URL = 'https://api.mercadolibre.com';
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -40,4 +42,24 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-window.onload = () => { };
+// Requisição de busca feita na API
+async function searchProductToMl() {
+  const product = 'computador';
+
+  const searchProduct = await fetch(`${URL}/sites/MLB/search?q=${product}`);
+  // Parse dos dados do produto para JSON
+  const productList = await searchProduct.json();
+  const productListResults = productList.results;
+  productListResults.forEach((result) => {
+    const sku = result.id;
+    const name = result.title;
+    const image = result.thumbnail;
+    const classItems = document.querySelector('.items');
+    classItems.appendChild(createProductItemElement({ sku, name, image }));
+  });
+}
+
+window.onload = () => {
+  // Só deixa a requisição à API ser feita após a pagina estar pronta
+  searchProductToMl();
+ };
