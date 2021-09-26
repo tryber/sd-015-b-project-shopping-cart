@@ -30,6 +30,7 @@ function getSkuFromProductItem(item) {
 
 function cartItemClickListener(event) {
   // coloque seu código aqui
+  console.log('aaaa');
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -41,18 +42,20 @@ function createCartItemElement({ sku, name, salePrice }) {
 }
 
 const getData = () => {
-  const url = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
-  fetch(url)
+  fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
     .then((response) => response.json())
     .then((anuncio) => {
       const productArray = anuncio.results.map((element) => element);
       productArray.forEach((element) => {
-        console.log(element);
-        const sku = element.id;
-        const name = element.title;
-        const image = element.thumbnail;
-        const productObj = { sku, name, image };
+        const productObj = { sku: element.id, name: element.title, image: element.thumbnail };
+        const carItemObj = { sku: element.id, name: element.title, salePrice: element.price };
         const product = createProductItemElement(productObj);
+        const listItem = createCartItemElement(carItemObj);
+        const itemClick = () => {
+          const carList = document.querySelector('.cart__items');
+          carList.appendChild(listItem);
+        };
+        product.addEventListener('click', itemClick);
         const itemsSection = document.querySelector('.items');
         itemsSection.appendChild(product);
       });
