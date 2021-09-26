@@ -1,6 +1,17 @@
 const cart = document.querySelector('.cart__items');
 const loading = document.querySelector('.loading');
 
+// Fiz o requisito 5 consultando o repositorio Flávia Labanca
+// https://github.com/tryber/sd-015-b-project-shopping-cart/pull/113/commits/3cd468ba567d46697eee61394f4de8465f71a302
+function Requisito5(preço, status) {
+  const PreçoTotal = document.querySelector('.total-price');
+  let valor = parseFloat(PreçoTotal.innerText);
+  if (status === 'adicionado') valor += preço;
+  if (status === 'removido') valor -= preço;
+  if (status === 'limpo') valor = 0;
+  PreçoTotal.innerText = valor;
+}
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -32,6 +43,8 @@ function getSkuFromProductItem(item) {
 
 function cartItemClickListener(event) {
   event.target.remove();
+  const salePrice = parseFloat(event.target.innerText.split('$').pop());
+  Requisito5(salePrice, 'removido');
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -39,6 +52,7 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
+  Requisito5(salePrice, 'adicionado');
   return li;
 }
 
@@ -83,7 +97,8 @@ function Requisito1() {
      const vazio = document.querySelector('.empty-cart');
      vazio.addEventListener('click', () => {
        cart.innerHTML = '';
-  });
+      });
+      Requisito5(0, 'limpo');
   }
 
 window.onload = () => { Requisito1(); Requisito6(); };
