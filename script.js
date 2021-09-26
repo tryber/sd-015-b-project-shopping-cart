@@ -69,15 +69,13 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
- const apiMarket = async () => {
-  fetch('https://api.mercadolibre.com/sites/MLB/search?q=$computador')
+ const apiMarket = () => fetch('https://api.mercadolibre.com/sites/MLB/search?q=$computador')
     .then((response) => response.json())
     .then((listItems) => listItems.results.forEach(({ id, title, thumbnail }) => {
       const product = createProductItemElement({ sku: id, name: title, image: thumbnail });
       const items = document.querySelector('.items');
       items.appendChild(product);
 }));
-};
 
 function ApagaTudo() {
   const cartItems = document.querySelector('.cart__items');
