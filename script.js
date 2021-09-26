@@ -15,7 +15,7 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-const savelocalStorage = () => {
+const saveLocalStorage = () => {
   localStorage.setItem('item.cart', ol.innerHTML);
 };
 
@@ -37,7 +37,7 @@ function getSkuFromProductItem(item) {
 
 function cartItemClickListener(event) {
   event.target.remove();
-  savelocalStorage();
+  saveLocalStorage();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -54,7 +54,7 @@ const apiProduct = async (ids) => {
   const { id, title, price } = jsonID;
   const cartItem = document.querySelector('.cart__items');
   cartItem.appendChild(createCartItemElement({ sku: id, name: title, salePrice: price }));
-  savelocalStorage();
+  saveLocalStorage();
   };
 
 const buttonCart = () => {
