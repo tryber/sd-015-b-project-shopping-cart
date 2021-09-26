@@ -2,8 +2,7 @@ const items = document.querySelector('.items');
 const cartItems = document.querySelector('.cart__items');
 const cart = document.querySelector('.cart');
 const priceOfCart = [];
-// const itemsBtn = document.querySelectorAll('.item__add');
-// const emptyCartBtn = document.querySelector('.empty-cart');
+const emptyCartBtn = document.querySelector('.empty-cart');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -107,6 +106,12 @@ items.addEventListener('click', (ev) => {
         createPrice(getTotalPrice());
       });
   }
+});
+
+emptyCartBtn.addEventListener('click', () => {
+  const cartItemsArray = document.querySelectorAll('.cart__item');
+  cartItemsArray.forEach((item) => item.remove());
+  createPrice(0);
 });
 
 window.onload = () => { 
