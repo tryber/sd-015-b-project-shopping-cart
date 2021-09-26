@@ -62,16 +62,18 @@ function createProductItemElement({ sku, name, image }) {
 async function searchProductToMl() {
   const product = 'computador';
   //  Faz a requisição com o Fetch e ajusta a URL para a busca de produto
-  const searchProduct = await fetch(`${URL}/sites/MLB/search?q=${product}`);
   // Parse dos dados do produto para JSON
-  const productList = await searchProduct.json();
-  const productListResults = productList.results;
-  productListResults.forEach((result) => {
-    const sku = result.id;
-    const name = result.title;
-    const image = result.thumbnail;
-    const classItems = document.querySelector('.items');
-    classItems.appendChild(createProductItemElement({ sku, name, image }));
+  const searchProductJson = await (await fetch(`${URL}/sites/MLB/search?q=${product}`)).json();
+
+  const productListResults = searchProductJson.results;
+  productListResults.forEach(({ id, title, thumbnail }) => {
+    const itemObject = {
+      sku: id,
+      name: title,
+      image: thumbnail,
+    };
+    document.querySelector('.items')
+    .appendChild(createProductItemElement(itemObject));
   });
 }
 
