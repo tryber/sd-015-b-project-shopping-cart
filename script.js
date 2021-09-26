@@ -28,20 +28,34 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+const divPrice = document.querySelector('.total-price');
 const itemsList = document.querySelector('.cart__items');
 
+let price = 0;
 function cartItemClickListener(event) {
   // coloque seu código aqui
   const list = document.querySelector('.cart__items');
   list.removeChild(event.target);
+  console.log(`${price} - ${event.target.id}`);
+  price -= parseFloat(event.target.id);
+  console.log(price);
+  divPrice.innerText = `${price.toFixed(1)}`;
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
+  li.id = `${salePrice}`;
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   return li;
+}
+
+function totalPrice(elementPrice) {
+  console.log(`${price} + ${elementPrice}`);
+  price += elementPrice;
+  divPrice.innerText = `${price}`;
+  console.log(price);
 }
 
 const getData = () => {
@@ -53,9 +67,10 @@ const getData = () => {
         const productObj = { sku: element.id, name: element.title, image: element.thumbnail };
         const carItemObj = { sku: element.id, name: element.title, salePrice: element.price };
         const product = createProductItemElement(productObj);
-        const listItem = createCartItemElement(carItemObj);
+        const listItem = createCartItemElement(carItemObj); 
         const itemClick = () => {
           itemsList.appendChild(listItem);
+          totalPrice(element.price);
         };
         product.addEventListener('click', itemClick);
         const itemsSection = document.querySelector('.items');
@@ -68,6 +83,8 @@ function clearCart() {
   while (itemsList.firstChild) {
     itemsList.removeChild(itemsList.firstChild);
   }
+  price = 0;
+  divPrice.innerText = `${price}`;
 }
 
 const emptyButton = document.querySelector('.empty-cart');
