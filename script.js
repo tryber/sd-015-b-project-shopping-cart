@@ -40,7 +40,9 @@ function createPrice(totalPrice) {
   if (price) {
     price.remove();
   }
+  const priceText = createCustomElement('span', 'total-price-text', `Total: R$ ${totalPrice}`);
   const priceToCreate = createCustomElement('span', 'total-price', totalPrice);
+  cart.appendChild(priceText);
   cart.appendChild(priceToCreate);
 } 
 
@@ -55,8 +57,10 @@ function getTotalPrice() {
 function getCartElementIndex(itemName) {
   const cartItemsArray = document.querySelectorAll('.cart__item');
   cartItemsArray.forEach((item, index) => {
-    if (item.innerText === itemName) {
-      priceOfCart.splice(index, 1);
+    if (priceOfCart.length === cartItemsArray.length) {
+      if (item.innerText === itemName) {
+        priceOfCart.splice(index, 1);
+      }
     }
   });
 }
