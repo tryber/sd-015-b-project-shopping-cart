@@ -38,7 +38,8 @@ async function addItemsCart(sku) {
     name: title,
     salePrice: price,
   };
-  document.querySelector('.cart__items').appendChild(createCartItemElement(itemObject));
+  document.querySelector('.cart__items')
+  .appendChild(createCartItemElement(itemObject));
 }
 
 function createProductItemElement({ sku, name, image }) {
