@@ -1,3 +1,9 @@
+const emptyCart = document.getElementsByClassName('empty-cart');
+emptyCart[0].addEventListener('click', () => {
+const cart = document.getElementsByClassName('cart__items');
+cart[0].innerHTML = '';
+});
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
