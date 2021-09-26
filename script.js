@@ -13,7 +13,11 @@ function createCustomElement(element, className, innerText) {
 }
 
 function cartItemClickListener(event) {
-  event.target.remove();
+  const item = event.target;
+  item.remove();
+  const olCartRemoved = document.querySelector('ol');
+  localStorage.setItem('olCartElements', olCartRemoved.innerHTML);
+  createTotalPrice();
 }
 
 const calculateCartPrice = (items) => {
