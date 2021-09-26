@@ -116,7 +116,19 @@ function reloadCart() {
   });
 }
 
+function clearCart() {
+  const ol = document.querySelectorAll('.cart__item');
+  ol.forEach((li) => li.remove());
+  saveToLocalStorage();
+}
+
+function addClearButtonEvent() {
+  const button = document.querySelector('.empty-cart');
+  button.addEventListener('click', clearCart);
+}
+
 window.onload = () => {
   createProductsList(urlApiMercadoLivre);
   reloadCart();
+  addClearButtonEvent();
 };
