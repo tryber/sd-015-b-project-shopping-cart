@@ -16,7 +16,7 @@ function createCustomElement(element, className, innerText) {
 }
 
 const saveLocalStorage = () => {
-  localStorage.setItem('item.cart', ol.innerHTML);
+  localStorage.setItem('item_cart', ol.innerHTML);
 };
 
 function createProductItemElement({ sku, name, image }) {
