@@ -33,13 +33,24 @@ function getSkuFromProductItem(item) {
 const saveShoppingCart = () => {
   const cartItems = document.querySelectorAll(olCartItems);
   cartItems.forEach((element) => localStorage.setItem('shoppingCart', JSON
-    .stringify(element.innerHTML)));
+  .stringify(element.innerHTML)));
 };
+
+// Fonte: https://attacomsian.com/blog/javascript-convert-nodelist-to-array
+// Fonte: https://www.w3schools.com/jsref/jsref_parsefloat.asp
+function updateCartTotalPrice() {
+  const totalPrice = document.querySelector('.total-price');
+  const items = document.querySelectorAll('.cart__item');
+  const prices = Array.from(items).map((item) => parseFloat(item.innerText.split('$')
+    .pop(), 10)).reduce((acc, curr) => acc + curr, 0);
+  totalPrice.innerText = prices;
+}
 
 function cartItemClickListener(event) {
   // coloque seu código aqui
   event.target.remove();
   saveShoppingCart();
+  updateCartTotalPrice();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -59,13 +70,14 @@ function addToCartAPI(searckSku) {
     const items = document.querySelector(olCartItems);
     items.appendChild(createCartItemElement({ sku: id, name: title, salePrice: price }));
     saveShoppingCart();
+    updateCartTotalPrice();
   });
 }
 
 const addToCartButton = () => {
   const sections = document.querySelectorAll('.item');
   sections.forEach((section) => section.lastChild
-    .addEventListener('click', () => addToCartAPI(section)));
+  .addEventListener('click', () => addToCartAPI(section)));
 };
 
 async function getInfoAPI(search) {
@@ -84,6 +96,7 @@ const clearCartButton = () => {
   const cartItemsOl = document.querySelector(olCartItems);
   cartItemsOl.innerHTML = '';
   saveShoppingCart();
+  updateCartTotalPrice();
 };
 
 const getShoppingCart = () => {
@@ -103,10 +116,10 @@ const finishedLoading = () => {
 window.onload = () => {
   getInfoAPI('computador')
   .then(() => finishedLoading())
+  .then(() => updateCartTotalPrice())
   .then(() => addToCartButton());
   
   getShoppingCart();
-
   const emptyCart = document.querySelector('.empty-cart');
   emptyCart.addEventListener('click', clearCartButton);
 };
