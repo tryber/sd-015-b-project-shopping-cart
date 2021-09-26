@@ -16,6 +16,12 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
+// Mostra a mensagem carregando enquanto não aparece os produtos
+function loading() {
+  const carrinho = document.querySelector('.cart');
+  carrinho.appendChild(createCustomElement('li', 'loading', 'Loading'));
+}
+
 // Ajusta o preço do carrinho
 function adjustSalePrice(salesPrice, flag) {
   const salePrice = parseFloat(salesPrice);
@@ -86,6 +92,7 @@ function createProductItemElement({ sku, name, image }) {
 
 // Requisição de busca dos produtos feita na API
 async function searchProductToMl() {
+  loading();
   const product = 'computador';
   //  Faz a requisição com o Fetch e ajusta a URL para a busca de produto
   // Parse dos dados do produto para JSON
@@ -100,6 +107,7 @@ async function searchProductToMl() {
     document.querySelector('.items')
     .appendChild(createProductItemElement(itemObject));
   });
+  document.querySelector('.loading').remove();
 }
 
 // Remove todos os itens do carrinho
