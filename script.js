@@ -28,16 +28,66 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+const divPrice = document.querySelector('.total-price');
+const itemsList = document.querySelector('.cart__items');
+const container = document.querySelector('.container');
+const divloading = document.querySelector('.loading');
+
+let price = 0;
 function cartItemClickListener(event) {
   // coloque seu código aqui
+  const list = document.querySelector('.cart__items');
+  list.removeChild(event.target);
+  price -= parseFloat(event.target.id);
+  divPrice.innerText = `${price.toFixed(1)}`;
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
+  li.id = `${salePrice}`;
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
 
-window.onload = () => { };
+function totalPrice(elementPrice) {
+  price += elementPrice;
+  divPrice.innerText = `${price}`;
+}
+
+const getData = () => {
+  fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
+    .then((response) => response.json())
+    .then((anuncio) => {
+      const productArray = anuncio.results.map((element) => element);
+      productArray.forEach((element) => {
+        const productObj = { sku: element.id, name: element.title, image: element.thumbnail };
+        const carItemObj = { sku: element.id, name: element.title, salePrice: element.price };
+        const product = createProductItemElement(productObj);
+        const listItem = createCartItemElement(carItemObj); 
+        const itemClick = () => {
+          itemsList.appendChild(listItem);
+          totalPrice(element.price);
+        };
+        product.addEventListener('click', itemClick);
+        const itemsSection = document.querySelector('.items');
+        itemsSection.appendChild(product);
+      }); container.removeChild(divloading);
+    });
+};
+
+function clearCart() {  
+  while (itemsList.firstChild) {
+    itemsList.removeChild(itemsList.firstChild);
+  }
+  price = 0;
+  divPrice.innerText = `${price}`;
+}
+
+const emptyButton = document.querySelector('.empty-cart');
+emptyButton.addEventListener('click', clearCart);
+
+window.onload = () => {
+  getData();
+};
