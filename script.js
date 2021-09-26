@@ -1,3 +1,7 @@
+const URL = 'https://api.mercadolibre.com';
+const totalPriceClass = document.querySelector('.total-price');
+const buttonRemoveAll = document.querySelector('.empty-cart');
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -12,32 +16,108 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({ sku, name, image }) {
-  const section = document.createElement('section');
-  section.className = 'item';
-
-  section.appendChild(createCustomElement('span', 'item__sku', sku));
-  section.appendChild(createCustomElement('span', 'item__title', name));
-  section.appendChild(createProductImageElement(image));
-  section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-
-  return section;
+// Mostra a mensagem carregando enquanto não aparece os produtos
+function loading() {
+  const carrinho = document.querySelector('.cart');
+  carrinho.appendChild(createCustomElement('li', 'loading', 'Loading'));
 }
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
+// Ajusta o preço do carrinho
+function adjustSalePrice(salesPrice, flag) {
+  const salePrice = parseFloat(salesPrice);
+  let totalPriceFloat = parseFloat(totalPriceClass.innerText);
+  // Subtrai o valor do item no valor total do carrinho
+  if (flag === '100') {
+    totalPriceFloat -= salePrice;
+    totalPriceClass.innerText = `${totalPriceFloat}`;
+  }
+  // Adiciona o valor do item no valor total do carrinho
+  if (flag === '101') {
+      totalPriceFloat += salePrice;
+      totalPriceClass.innerText = `${totalPriceFloat}`;
+  }
 }
 
-function cartItemClickListener(event) {
-  // coloque seu código aqui
+// Remove itens do carrinho
+function cartItemClickListener(event, salePrice, flag) {
+  event.target.remove();
+  return adjustSalePrice(salePrice, flag);
 }
 
+// Cria o carrinho
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
+  // Escuta o click no carrinho
+  li.addEventListener('click', (event) => 
+  // Passa o valor e a flag 100 para subtrair do valor total 
+  cartItemClickListener(event, salePrice, '100'));
   return li;
 }
 
-window.onload = () => { };
+// Adiciona itens ao carrinho
+async function addItemsCart(sku) {
+  //  Faz a requisição com o Fetch e ajusta a URL para a busca de produto
+  // Parse dos dados do produto para JSON
+  const product = await (await fetch(`https://api.mercadolibre.com/items/${sku}`)).json();
+  const { title, price } = product;
+  const itemObject = {
+    sku,
+    name: title,
+    salePrice: price,
+  };
+  document.querySelector('.cart__items')
+  .appendChild(createCartItemElement(itemObject));
+  // Ao adicionar um item ao carrinho passa o preço do item e a flag 101 de soma
+  adjustSalePrice(price, '101');
+}
+
+function createProductItemElement({ sku, name, image }) {
+  const section = document.createElement('section');
+  section.className = 'item';
+  
+  section.appendChild(createCustomElement('span', 'item__sku', sku));
+  section.appendChild(createCustomElement('span', 'item__title', name));
+  section.appendChild(createProductImageElement(image));
+  // Cria um escutador para o botão 'Adicionar ao carrinho!' para não precisar do forEach
+  const addCartButton = createCustomElement('button', 'item__add', 'Adicionar ao carrinho!');
+  addCartButton.addEventListener('click', () => {
+    addItemsCart(sku);
+  });
+  section.appendChild(addCartButton);   
+
+  return section;
+}
+
+// Requisição de busca dos produtos feita na API
+async function searchProductToMl() {
+  loading();
+  const product = 'computador';
+  //  Faz a requisição com o Fetch e ajusta a URL para a busca de produto
+  // Parse dos dados do produto para JSON
+  const searchProductJson = await (await fetch(`${URL}/sites/MLB/search?q=${product}`)).json();
+  const productListResults = searchProductJson.results;
+  productListResults.forEach(({ id, title, thumbnail }) => {
+    const itemObject = {
+      sku: id,
+      name: title,
+      image: thumbnail,
+    };
+    document.querySelector('.items')
+    .appendChild(createProductItemElement(itemObject));
+  });
+  document.querySelector('.loading').remove();
+}
+
+// Remove todos os itens do carrinho
+buttonRemoveAll.addEventListener('click', () => {
+  document.querySelectorAll('.cart__item')
+  .forEach((item) => item.remove());
+  totalPriceClass.innerText = '0';
+});
+
+window.onload = () => {
+  // Só deixa a requisição à API ser feita após a pagina estar pronta
+  searchProductToMl();
+ };
