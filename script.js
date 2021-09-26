@@ -28,9 +28,15 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+const saveShoppingCart = () => {
+  const cartItems = document.querySelectorAll('.cart__items');
+  cartItems.forEach((element) => localStorage.setItem('shoppingCart', JSON.stringify(element.innerHTML)));
+};
+
 function cartItemClickListener(event) {
   // coloque seu código aqui
   event.target.remove();
+  saveShoppingCart();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -38,7 +44,7 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
-  return li;
+  return li
 }
 
 function addToCartAPI(searckSku) {
@@ -49,29 +55,40 @@ function addToCartAPI(searckSku) {
   .then(({ id, title, price }) => {
     const items = document.querySelector('.cart__items');
     items.appendChild(createCartItemElement({ sku: id, name: title, salePrice: price }));
-  });
-}
+    saveShoppingCart();
+  })
+};
 
 const addToCartButton = () => {
   const sections = document.querySelectorAll('.item');
-  sections.forEach((section) => section.lastChild
-    .addEventListener('click', () => addToCartAPI(section)));
+  sections.forEach((section) => section.lastChild.addEventListener('click', () => addToCartAPI(section)));
 };
 
 async function getInfoAPI(search) {
   const url = `https://api.mercadolibre.com/sites/MLB/search?q=${search}`;
   await fetch(url)
   .then((data) => data.json())
-  .then((data) => data.results)
-  .then((searchedItems) => searchedItems.forEach((item) => {
+  .then(({ results }) => results.forEach(({ id, title, thumbnail }) => {
     const items = document.querySelector('.items');
     items.appendChild(createProductItemElement(
-      { sku: item.id, name: item.title, image: item.thumbnail },
+    { sku: id, name: title, image: thumbnail },
     ));
   }));
 }
 
+
+const getShoppingCart = () => {
+  const cartItems = document.querySelectorAll('.cart__items');
+  cartItems.forEach((element) => {
+    const li = element;
+    li.innerHTML = JSON.parse(localStorage.getItem('shoppingCart'));
+    li.addEventListener('click', cartItemClickListener);
+  });
+};
+
 window.onload = () => {
-getInfoAPI('computador')
-  .then(() => addToCartButton());
+  getInfoAPI('computador')
+  .then(() => addToCartButton())
+  
+  getShoppingCart();
 };
