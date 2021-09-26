@@ -90,6 +90,7 @@ async function requestID(item) {
     };
     const cartItems = document.querySelector('.cart__items');
     cartItems.appendChild(createCartItemElement(productData));
+    saveCart();
   });
 }
 
