@@ -147,11 +147,17 @@ function addClearButtonEvent() {
   button.addEventListener('click', clearCart);
 }
 
+function removeLoading() {
+  const getLoading = document.querySelector('.loading');
+  getLoading.remove();
+}
+
 function constructor() {
   createProductsList(urlApiMercadoLivre)
     .then(() => reloadCart())
     .then(() => addClearButtonEvent())
     .then(() => displayTotalPrice())
+    .then(() => removeLoading())
     .catch((error) => error);
 }
 
