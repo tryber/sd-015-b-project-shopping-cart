@@ -30,8 +30,22 @@ function createCustomElement(element, className, innerText) {
   e.innerText = innerText;
   return e;
 }
+
+const priceSum = () => {
+  const getItem = [...document.querySelectorAll('.cart__item')];
+  const result = getItem.map((value) => {
+    const splited = value.innerText.split('$').reverse()[0];
+    const test = parseFloat(splited, 10);
+    return test;
+  });
+  const reduceResult = result.reduce((accumulator, number) => accumulator + number, 0);
+  document.querySelector('.total-price').innerText = `${reduceResult}`;
+  return reduceResult;
+};
+
 function cartItemClickListener(event) {
 event.target.remove('li.cart__items');
+priceSum();
 setItemLocal();
 }
 
@@ -60,6 +74,7 @@ async function addItemToList(id) {
   };
   const itemLi = createCartItemElement(product);
   itemOl.appendChild(itemLi);
+  priceSum();
   setItemLocal();
   }
 
