@@ -1,3 +1,5 @@
+const strListCartHTML = '.cart__items';
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -23,31 +25,62 @@ function createProductItemElement({ sku, name, image }) {
 
   return section;
 }
+  
+function initialRenderization() {
+  const listCartHTML = document.querySelector(strListCartHTML);
+  if (localStorage.getItem('Cart List') === null) {
+    localStorage.setItem('Cart List', JSON.stringify([]));
+  } else {
+    const productsList = JSON.parse(localStorage.getItem('Cart List'));
+    const listLength = productsList.length - 1;
+    for (let index = 0; index <= listLength; index += 1) {
+      const listElement = document.createElement('li');
+      listElement.className = 'cart__item';
+      listElement.innerText = productsList[index];
+      listCartHTML.appendChild(listElement);
+    }
+  }
+}
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
+function addToLocalStorage(li) {
+  const storageListCart = JSON.parse(localStorage.getItem('Cart List'));
+  const productText = li.innerText;
+  storageListCart.push(productText);
+  localStorage.setItem('Cart List', JSON.stringify(storageListCart));
+}
+
+function rmProductToStorage() {
+  const productCartHTML = document.querySelectorAll('.cart__item');
+  localStorage.removeItem('Cart List');
+  localStorage.setItem('Cart List', JSON.stringify([]));
+  for (let index = 0; index <= productCartHTML.length - 1; index += 1) {
+    addToLocalStorage(productCartHTML[index]);
+  }
 }
 
 function cartItemClickListener(event) {
-  const liCart = document.querySelector('.cart__items');
-   
-  liCart.removeChild(event.target);
+  const listCartHTML = document.querySelector(strListCartHTML);
+  listCartHTML.removeChild(event.target);
+  rmProductToStorage();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
   return li;
 }
 
+function getSkuFromProductItem(item) {
+  return item.querySelector('span.item__sku').innerText;
+}
+
 async function addProductToCart(event) {
-  const itemId = event.target.parentNode.firstChild.innerText;
+  const itemId = getSkuFromProductItem(event.target.parentNode);
   const responseiTem = await fetch(`https://api.mercadolibre.com/items/${itemId}`);
   const dataItem = await responseiTem.json();
 
-  const olHTML = document.querySelector('.cart__items');
+  const olHTML = document.querySelector(strListCartHTML);
   const result = { sku: '', name: '', salePrice: '' };
 
   result.sku = dataItem.id; result.name = dataItem.title; result.salePrice = dataItem.price;
@@ -55,19 +88,14 @@ async function addProductToCart(event) {
 }
 
 function buttonEventListener() {
-  const addToCartButton = document.querySelectorAll('.item__add');
-  for (let i = 0; i < addToCartButton.length; i += 1) {
-    addToCartButton[i].addEventListener('click', addProductToCart);
+  const cartButtons = document.querySelectorAll('.item__add');
+  for (let i = 0; i < cartButtons.length; i += 1) {
+  cartButtons[i].addEventListener('click', addProductToCart);
   }
-  // addToCartButton.forEach((_, i) => addToCartButton[i].addEventListener('click', addProductToCart));
+  document.querySelector(strListCartHTML)
+  .addEventListener('click', cartItemClickListener); 
 }
 
-// async function getImgOfProducts(img) {
-//   const responseImg = await fetch(`https://api.mercadolibre.com/items/${img}`);
-//   const dataImg = await responseImg.json();
-
-//   return dataImg.pictures[0].url;
-// } //(async () => { await getImgOfProducts(productObj.id); })()
 async function getProducts() {
   const response = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
   const data = await response.json();
@@ -84,6 +112,6 @@ async function getProducts() {
 
 window.onload = async () => {
   await getProducts();
+  initialRenderization();
   buttonEventListener();
-  // liCart.appendChild.localStorage.getItem('Cart items');
 };
