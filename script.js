@@ -25,9 +25,19 @@ function createProductItemElement({ sku, name, image }) {
 
   return section;
 }
+
+function clearCart() {
+const rmAllListOfCart = document.querySelector('.empty-cart');
+const listCartHTML = document.querySelector(strListCartHTML);
+
+rmAllListOfCart.addEventListener('click', () => {
+  listCartHTML.innerHTML = ''; 
+});
+}
   
 function initialRenderization() {
   const listCartHTML = document.querySelector(strListCartHTML);
+
   if (localStorage.getItem('Cart List') === null) {
     localStorage.setItem('Cart List', JSON.stringify([]));
   } else {
@@ -80,32 +90,33 @@ async function addProductToCart(event) {
   const responseiTem = await fetch(`https://api.mercadolibre.com/items/${itemId}`);
   const dataItem = await responseiTem.json();
 
-  const olHTML = document.querySelector(strListCartHTML);
+  const listCartHTML = document.querySelector(strListCartHTML);
   const result = { sku: '', name: '', salePrice: '' };
 
   result.sku = dataItem.id; result.name = dataItem.title; result.salePrice = dataItem.price;
-  return olHTML.appendChild(createCartItemElement(result));
+  return listCartHTML.appendChild(createCartItemElement(result));
 }
 
 function buttonEventListener() {
   const cartButtons = document.querySelectorAll('.item__add');
+  const listCartHTML = document.querySelector(strListCartHTML);
+  
   for (let i = 0; i < cartButtons.length; i += 1) {
   cartButtons[i].addEventListener('click', addProductToCart);
   }
-  document.querySelector(strListCartHTML)
-  .addEventListener('click', cartItemClickListener); 
+  listCartHTML.addEventListener('click', cartItemClickListener); 
 }
 
 async function getProducts() {
   const response = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
   const data = await response.json();
-  const divHTMl = document.querySelector('.items');
+  const listCartHTML = document.querySelector('.items');
 
   data.results.forEach((productObj) => {
     const result = { sku: '', name: '', image: '' };
     result.sku = productObj.id; result.name = productObj.title;
     result.image = productObj.thumbnail;
-    const createProducts = divHTMl.appendChild(createProductItemElement(result));
+    const createProducts = listCartHTML.appendChild(createProductItemElement(result));
     return createProducts;
   });
 }
@@ -114,4 +125,5 @@ window.onload = async () => {
   await getProducts();
   initialRenderization();
   buttonEventListener();
+  clearCart();
 };
