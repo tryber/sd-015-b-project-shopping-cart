@@ -1,4 +1,3 @@
-const container = document.querySelector('.container');
 const loading = document.querySelector('.loading');
 
 function createProductImageElement(imageSource) {
@@ -115,8 +114,9 @@ const buttonCart = () => {
         createCartItemElement({ id, title, price });
         calculator(price, 'soma');
       });
+    }); 
   });
-});
+  loading.remove();
 };
 
 // Nessa função, eu busquei pela classe "item__add" que é a classe do botão, a apartir dele eu percorro por todas as classes "item__add". E então com esse forEach eu uso o addEventListener para quando eu clicar: fiz uma logica para isso => que foi atingir o alvo do nó Pai das classes. Dpois, a partir do nó Pai, vou para o texto do html do primeiro nó Filho. Fiz tudo isso para adicionar a API de qualquer Id que eu clicar, qualquer item q eu clicar eu adiciono na lista, pois coloquei a constante "buttonId". E a partir daí, usei o then primeiro para traduzir a API para json, e dps usei para utiliar os objetos dos parâmetros da função "createCartItemElement".
