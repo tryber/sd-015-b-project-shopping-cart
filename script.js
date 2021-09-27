@@ -5,10 +5,31 @@ function createProductImageElement(imageSource) {
   return img;
 }
 
+// REQUISITO 5
+let sum = 0;
+
+const subtractionTotalPrice = (product) => {
+  const priceTotal = document.querySelector('.total-price');
+  const price = Number(product.innerHTML.split('$')[1]);
+ sum -= price;
+ const fixedTwo = sum.toFixed(2);
+ const sumNumber = Number(fixedTwo);
+ priceTotal.innerHTML = sumNumber;
+};
+
+  const sumTotalPrice = (price) => {
+  const priceTotal = document.querySelector('.total-price');
+ sum += price;
+ const fixedTwo = sum.toFixed(2);
+ const sumNumber = Number(fixedTwo);
+ priceTotal.innerHTML = sumNumber;
+ };
+
 // Requisito 3
 function cartItemClickListener(event) {
   const clickRemove = event.target;
   clickRemove.remove();
+  subtractionTotalPrice(clickRemove);
 }
 
 // Requisito 2
@@ -20,7 +41,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
-function getSkuFromProductItem(item) {
+  function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
@@ -30,9 +51,11 @@ const getListProductId = (elementItem) => {
   fetch(API_URL)
     .then((response) => response.json())
     .then((product) => {
+      console.log(product);
       const olOfCartShoppping = document.querySelector('.cart__items');
       const productGoingToCart = createCartItemElement(product);
       olOfCartShoppping.appendChild(productGoingToCart);
+      sumTotalPrice(product.price);
     });
 };
 
@@ -97,12 +120,14 @@ const getListProducts = (product = 'computador') => {
 function removeSkuFromCartShopping(item) {
  const cartItens = item.parentElement.querySelector('ol.cart__items');
  cartItens.innerHTML = '';
+ const totalPrice = document.querySelector('.total-price');
+ totalPrice.innerHTML = '0.00';
+ sum = 0;
 }
  
 const buttonRemoveCart = () => {
 const emptyCart = document.querySelector('.empty-cart');
 emptyCart.addEventListener('click', (event) => {
-// const olCart = document.querySelector('.cart__items');
 const buttonRemove = event.target;
 removeSkuFromCartShopping(buttonRemove);
 });
