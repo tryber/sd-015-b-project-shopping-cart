@@ -31,7 +31,8 @@ const rmAllListOfCart = document.querySelector('.empty-cart');
 const listCartHTML = document.querySelector(strListCartHTML);
 
 rmAllListOfCart.addEventListener('click', () => {
-  listCartHTML.innerHTML = ''; 
+  listCartHTML.innerHTML = '';
+  localStorage.setItem('Cart List', JSON.stringify([]));
 });
 }
   
@@ -67,9 +68,38 @@ function rmProductToStorage() {
   }
 }
 
+const arraySum = [];
+function purchaseSum(price) {
+  const sumSalePriceHTML = document.querySelector('.cart');
+  const span = document.createElement('span');
+  span.className = 'total-price';
+  let totalSum = 0;
+  arraySum.push(price);
+  arraySum.forEach((element) => {
+    totalSum += element;
+  });
+
+  if (arraySum.length === 1) {
+    sumSalePriceHTML.appendChild(span);
+    span.innerText = price;
+    return span; 
+  } 
+  const spanHMTL = document.querySelector('.total-price');
+    spanHMTL.innerText = '';
+    spanHMTL.innerText = totalSum;
+    return spanHMTL;
+}
+
+function withdrawPurchase(event) {
+  const findPrice = event.target.innerText.indexOf('$');
+  const findPriceNum = event.target.innerText.substring(findPrice + 1);
+  return purchaseSum((parseFloat(findPriceNum * -1)));
+}
+
 function cartItemClickListener(event) {
   const listCartHTML = document.querySelector(strListCartHTML);
   listCartHTML.removeChild(event.target);
+  withdrawPurchase(event);
   rmProductToStorage();
 }
 
@@ -90,10 +120,12 @@ async function addProductToCart(event) {
   const responseiTem = await fetch(`https://api.mercadolibre.com/items/${itemId}`);
   const dataItem = await responseiTem.json();
 
-  const listCartHTML = document.querySelector(strListCartHTML);
   const result = { sku: '', name: '', salePrice: '' };
 
   result.sku = dataItem.id; result.name = dataItem.title; result.salePrice = dataItem.price;
+  
+  purchaseSum(result.salePrice);
+  const listCartHTML = document.querySelector(strListCartHTML);
   return listCartHTML.appendChild(createCartItemElement(result));
 }
 
@@ -118,10 +150,10 @@ function setLoading(cond) {
 }
 
 async function getProducts() {
+  setLoading(true);
   const response = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
-  this.setLoading(true);
   const data = await response.json();
-  this.setLoading(false);
+  setLoading(false);
   const itemsHTML = document.querySelector('.items');
 
   data.results.forEach((productObj) => {
