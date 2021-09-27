@@ -77,7 +77,21 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
+function createLoading() {
+  const infoContainer = document.querySelector('.info-container');
+  const LoadingText = document.createElement('p');
+  LoadingText.innerText = 'Loading API...';
+  LoadingText.className = 'loading';
+  infoContainer.appendChild(LoadingText);
+}
+
+function removeLoading() {
+  const loading = document.querySelector('.loading');
+  if (loading) loading.remove();
+}
+
 async function requestFromML(api) {
+  createLoading();
   return fetch(api)
   .then((response) => response.json())
   .then((itemsInfo) => itemsInfo.results.forEach(({ id, title, thumbnail }) => {
@@ -89,12 +103,14 @@ async function requestFromML(api) {
     const itemSection = document.querySelector('.items');
     const item = createProductItemElement(ItemData);
     itemSection.appendChild(item);
+    removeLoading();
   })).catch(() => console
   .log('Não foi possível se conectar a API do Mercado Livre para criar os itens da página.'));
 }
 
 async function requestID(item) {
   const productID = getSkuFromProductItem(item);
+  createLoading();
   return fetch(`https://api.mercadolibre.com/items/${productID}`)
   .then((response) => response.json())
   .then(({ id, title, price }) => {
@@ -107,6 +123,7 @@ async function requestID(item) {
     cartItems.appendChild(createCartItemElement(productData));
     cartPrice();
     saveCart();
+    removeLoading();
   });
 }
 
