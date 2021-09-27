@@ -9,7 +9,7 @@ function createProductImageElement(imageSource) {
 }
 
 function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
+  return item.querySelector('p.item__sku').innerText;
 }
 
 const saveCartLocalStorage = () => {
@@ -85,39 +85,48 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({ sku, name, image }) {
+function createProductItemElement({ sku, name, image, price }) {
   const section = document.createElement('section');
   section.className = 'item';
 
-  section.appendChild(createCustomElement('span', 'item__sku', sku));
-  section.appendChild(createCustomElement('span', 'item__title', name));
+  section.appendChild(createCustomElement('p', 'item__sku', sku));
+  section.appendChild(createCustomElement('p', 'item__title', name));
   section.appendChild(createProductImageElement(image));
-  section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
+  section.appendChild(createCustomElement('p', 'item__price', `R$: ${price.toFixed(2)}`));
+  section.appendChild(createCustomElement('button', 'item__add', 'COMPRAR'));
 
   return section;
 }
 
 const loadingScreen = () => {
-  setTimeout(() => {
-    const mainContainer = document.querySelector('.container');
-    const body = document.querySelector('body');
-    const div = document.createElement('div');
+  const mainContainer = document.querySelector('.container');
+  const body = document.querySelector('body');
+  const loadingContainer = document.createElement('div');
+  const loadingText = document.createElement('span');
 
-    mainContainer.style.display = 'none';
-    div.innerText = 'loading...';
-    div.className = 'loading';
-    body.append(div);
-  }, 100);
+  mainContainer.style.display = 'none';
+  loadingContainer.className = 'loading-container';
+  for (let i = 0; i <= 2; i += 1) {
+    const circle = document.createElement('div');
+    const shadow = document.createElement('div');
+    circle.className = `circle circle${i}`;
+    shadow.className = `shadow shadow${i}`;
+    loadingContainer.append(circle);
+    loadingContainer.append(shadow);
+  }
+  loadingText.innerText = 'LOADING';
+  loadingContainer.append(loadingText);
+  body.appendChild(loadingContainer);
 };
 
 const reloadScreen = () => {
   setTimeout(() => {
     const mainContainer = document.querySelector('.container');
-    const div = document.querySelector('.loading');
+    const div = document.querySelector('.loading-container');
 
     div.remove();
     mainContainer.style.display = 'flex';
-  }, 100);
+  }, 200);
 };
 
 const getUserSearch = () => {
@@ -130,16 +139,16 @@ const getUserSearch = () => {
 
 const createItemProductSection = async () => {
   loadingScreen();
-
   const userSearch = getUserSearch();
   const url = `https://api.mercadolibre.com/sites/MLB/search?q=${userSearch}`;
-
   try {
     const itemsSection = document.querySelector('.items');
     const { results } = await fetchAPI(url);
 
-    results.forEach(({ id, title, thumbnail }) => {
-      const itemToRender = createProductItemElement({ sku: id, name: title, image: thumbnail });
+    results.forEach(({ id, title, thumbnail, price }) => {
+      const itemToRender = createProductItemElement(
+        { sku: id, name: title, image: thumbnail, price },
+      );
       itemsSection.append(itemToRender);
     });
   } catch (e) {
@@ -176,5 +185,7 @@ window.onload = () => {
   emptyCartButton.addEventListener('click', emptyCart);
 
   const userSearch = document.querySelector('.input-search');
-  userSearch.addEventListener('input', createItemProductSection);
+  userSearch.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') createItemProductSection();
+  });
 };
