@@ -114,10 +114,18 @@ function addToCart() {
   items.forEach((item) => item.lastChild.addEventListener('click', () => requestID(item)));
 }
 
+function emptyCart() {
+  const cartItems = document.querySelectorAll('.cart__item');
+  cartItems.forEach((item) => item.remove());
+  cartPrice();
+}
+
 window.onload = () => { 
+  const emptyCartBtn = document.querySelector('.empty-cart');
   requestFromML(urlML)
   .then(() => addToCart())
   .then(() => cartPrice())
   .catch(() => console.log('Não foi possível adicionar o item ao carrinho.'));
   if (storagedCart) createLastCart();
+  emptyCartBtn.addEventListener('click', emptyCart);
 };
