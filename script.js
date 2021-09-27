@@ -1,3 +1,17 @@
+const localStorageKart = JSON.parse(localStorage.getItem('Kart'));
+let itensKart = localStorage.getItem('Kart') !== null ? localStorageKart : [];
+const ol = document.querySelector('.cart__items');
+
+function updateLocalStorage() {
+  localStorage.setItem('Kart', JSON.stringify(itensKart));
+}
+
+function removeItemLocalStorage(text) {
+  itensKart = itensKart.lenght === 1 ? itensKart = [] : itensKart
+    .filter((element) => element !== text);
+  updateLocalStorage();
+}
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -29,8 +43,8 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener() {
-  const elemento = document.querySelector('.cart__items');
-  elemento.removeChild(this);
+  removeItemLocalStorage(this.innerText);
+  ol.removeChild(this);
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -38,6 +52,7 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
+  
   return li;
 }
 
@@ -56,14 +71,33 @@ const fetchGetComputers = () => {
   return fetcH;
 };
 
-function getFetchProductId(idItem) {
+function getFetchItenId(idItem) {
   const url = `https://api.mercadolibre.com/items/${idItem}`;
-  const ol = document.querySelector('.cart__items');
 
   fetch(url)
   .then((response) => response.json())
   .then(({ id, title, price }) => {
     ol.appendChild(createCartItemElement({ sku: id, name: title, salePrice: price }));
+    itensKart.push(`SKU: ${id} | NAME: ${title} | PRICE: $${price}`);
+    updateLocalStorage();
+  });
+}
+
+function getKartLocalStorage() {
+  localStorageKart.forEach((element) => {
+    const li = document.createElement('li');
+    li.innerText = element;
+    li.addEventListener('click', cartItemClickListener);
+    ol.appendChild(li);
+  });
+}
+
+function addListenerIten() {
+  const produtos = [...document.getElementsByClassName('item')];
+  produtos.forEach((element) => {
+    element.childNodes[3].addEventListener('click', () => {
+      getFetchItenId(getSkuFromProductItem(element));
+    });
   });
 }
 
@@ -76,11 +110,10 @@ window.onload = () => {
       });
     })
     .then(() => {
-      const produtos = [...document.getElementsByClassName('item')];
-      produtos.forEach((element) => {
-        element.childNodes[3].addEventListener('click', () => {
-          getFetchProductId(element.firstChild.textContent);
-        });
-      });
+      updateLocalStorage();
+      addListenerIten();
+    })
+    .then(() => {
+      getKartLocalStorage();
     });
 };
