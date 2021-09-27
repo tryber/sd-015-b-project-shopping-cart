@@ -1,5 +1,3 @@
-const apiMercadoLivre = fetch('https://api.mercadolibre.com/sites/MLB/search?q=$computador');
-
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -14,7 +12,7 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({ sku, name, image }) {
+function createProductItemElement({id: sku,title: name,thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
 
@@ -42,6 +40,20 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
+const createListwithItens = (object) => {
+const itemList = document.querySelector('.items');
+for (let i = 0; i < object.length; i += 1) {
+  const createItems = createProductItemElement(object[i]);
+  itemList.appendChild(createItems);
+}
+}
+
+const makingApiWork = () => {
+  fetch('https://api.mercadolibre.com/sites/MLB/search?q=$computador')
+  .then((response) => response.json())
+  .then((object) => createListwithItens(object.results));
+}
 
 window.onload = () => {
+  makingApiWork();
 };
