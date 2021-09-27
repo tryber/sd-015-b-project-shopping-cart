@@ -1,5 +1,4 @@
 let price = 0;
-const storageItem = ((id, li) => window.localStorage.setItem(id, li.innerText));
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -67,9 +66,10 @@ function cartItemRemove(event) {
   const itemClicked = event.target;
   const text = itemClicked.innerText;
   const itemSplit = text.split('|');
+  const itemSku = itemSplit[0].split(' ')[1];
   const salePrice = itemSplit[2].slice(9);
   cartTotalPrice(salePrice, '-');
-  window.localStorage.removeItem(text);
+  window.localStorage.removeItem(itemSku);
   itemClicked.remove();
 }
 
@@ -78,7 +78,6 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemRemove);
-  storageItem(sku, li);
   return li;
 }
 
@@ -88,9 +87,9 @@ const fetchItem = await fetch(`https://api.mercadolibre.com/items/${productId}`)
 const product = await fetchItem.json();
 
 const cartList = document.querySelector('.cart__items');
-cartList.appendChild(createCartItemElement(
-  { sku: product.id, name: product.title, salePrice: product.price },
-));
+const data = { sku: product.id, name: product.title, salePrice: product.price };
+cartList.appendChild(createCartItemElement(data));
+localStorage.setItem(data.sku, JSON.stringify(data));
 cartTotalPrice(product.price, '+');
 }
 
@@ -112,7 +111,12 @@ async function createProducts() {
 }
 
 function loadCartItems() {
-  const items = document.querySelectorAll('.cart__item');
+  const items = document.querySelector('.cart__items');
+  for (let index = 0; index < localStorage.length; index += 1) {
+    const product = JSON.parse(localStorage.getItem(localStorage.key(index)));
+    const data = { sku: product.sku, name: product.name, salePrice: product.salePrice };
+    items.appendChild(createCartItemElement(data));
+  }
 }
 
 window.onload = async () => {
@@ -120,4 +124,7 @@ window.onload = async () => {
   createProducts();
   loadCartItems();
   eraseCartButton();
+  if (localStorage.length > 0) {
+    loadCartItems();
+  }
  };
