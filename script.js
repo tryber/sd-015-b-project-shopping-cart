@@ -73,10 +73,16 @@ function createdObjetctToProducts(listOfComputers) {
   addProductShoppingCar();
 }
 
+function removeMessageLoad() {
+  const removeMessage = document.querySelector('.loading');
+    removeMessage.remove();
+}
+
 function computerListWithFech() {
   fetch('https://api.mercadolibre.com/sites/MLB/search?q=$computador')
   .then((response) => response.json())
-  .then((listOfComputers) => createdObjetctToProducts(listOfComputers.results));
+  .then((listOfComputers) => createdObjetctToProducts(listOfComputers.results))
+  .then(() => removeMessageLoad());
 }
 
 function removeProductShoppingCar() {
@@ -103,7 +109,14 @@ function emptyCartShopping() {
 const emptyButton = document.querySelector('.empty-cart');
 emptyButton.addEventListener('click', emptyCartShopping);
 
+function addMessageLoad() {
+  const addMessage = document.querySelector('.loading');
+  const textMessage = 'loading...';
+  addMessage.innerHTML = textMessage;
+}
+
 window.onload = () => {
   computerListWithFech();
   reloadListOfProducts();
+  addMessageLoad();
 };
