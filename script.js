@@ -62,7 +62,7 @@ function createLastCart() {
   lastCart.forEach((cartItem) => {
     const newCartItem = document.createElement('li');
     newCartItem.innerHTML = cartItem;
-    newCartItem.className = 'cart__item';
+    newCartItem.classList.add('cart__item', 'empty');
     newCartItem.addEventListener('click', cartItemClickListener);
     cartItemsContainer.appendChild(newCartItem);
   });
@@ -70,8 +70,7 @@ function createLastCart() {
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
-  li.className = 'cart__item';
-  li.classList.add('empty');
+  li.classList.add('cart__item', 'empty');
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   return li;
@@ -136,6 +135,7 @@ function emptyCart() {
   const cartItems = document.querySelectorAll('.empty');
   cartItems.forEach((item) => item.remove());
   cartPrice();
+  saveCart();
 }
 
 window.onload = () => { 
