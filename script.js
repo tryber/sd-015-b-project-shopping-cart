@@ -110,9 +110,7 @@ const emptyButton = document.querySelector('.empty-cart');
 emptyButton.addEventListener('click', emptyCartShopping);
 
 function addMessageLoad() {
-  const addMessage = document.querySelector('.loading');
-  const textMessage = 'loading...';
-  addMessage.innerHTML = textMessage;
+  createCustomElement('div', 'loading', 'loading...');
 }
 
 window.onload = () => {
