@@ -71,6 +71,7 @@ function createLastCart() {
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
+  li.classList.add('empty');
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   return li;
@@ -115,7 +116,7 @@ function addToCart() {
 }
 
 function emptyCart() {
-  const cartItems = document.querySelectorAll('.cart__item');
+  const cartItems = document.querySelectorAll('.empty');
   cartItems.forEach((item) => item.remove());
   cartPrice();
 }
