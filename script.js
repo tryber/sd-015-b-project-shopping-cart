@@ -176,8 +176,23 @@ function creatBodyListeners() {
     }
   });
 }
+
+const addEmptyCartEvent = () => {
+  const emptyCartButton = document.querySelector('.empty-cart');
+
+  emptyCartButton.addEventListener('click', () => {
+    const cartItems0 = document.querySelectorAll('.cart__item');
+
+    for (let i = 0; i < cartItems0.length; i += 1) {
+      cartItems0[i].remove();
+    }
+    saveCart();
+  });
+};
+
 window.onload = async () => {
   generateProductList('computador');
   creatBodyListeners();
   await getSavedCart();
+  addEmptyCartEvent();
 };
