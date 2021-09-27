@@ -1,3 +1,6 @@
+const container = document.querySelector('.container');
+const loading = document.querySelector('.loading');
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -46,19 +49,36 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-function cartItemClickListener(event) {
+let acumulador = 0;
+const calculator = (price, operador) => {
+  const paragrafo = document.querySelector('.total-price');
+  if (operador === 'soma') {
+     acumulador += price; 
+    }
+  if (operador === 'subtracao') {
+    acumulador -= price;
+  }
+  paragrafo.innerHTML = `${(acumulador)}`;
+};
+
+// parseFloat((acumulador).toFixed(2))
+// aqui eu fiz os caluculos dos preços sempre que vão adicionando no carrinho. Usei a função parseFloat, porque eu consigo pegar uma string e converter ela para Number, sendo números flutuantes.
+
+function cartItemClickListener(event, price) {
   const removeList = event.target;
   removeList.parentElement.removeChild(removeList);
+  calculator(price, 'subtracao');
 }
 
 // aqui usei target para atingir o alvo do parâmetro, e removi os filhos da ol.
+
+const ol = document.querySelector('.cart__items');
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   console.log(name);
-  li.className = 'cart__item';
+  li.className = `cart__item ${sku}`;
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
-  const ol = document.querySelector('.cart__items');
+  li.addEventListener('click', (event) => cartItemClickListener(event, salePrice));
   ol.appendChild(li);
   return li;
 }
@@ -70,6 +90,16 @@ const API = async (pesquisa) => {
 };
 
   // Nessa função eu peguei a API do mercado livre, passei para json, e já traduzido para json  acessei o results com o, para chamar ela na outra função, na addCarrinho
+
+  const saveStorange = () => {
+    const itemsToSend = [];
+    ol.forEach((elemento) => {
+      itemsToSend.push(elemento.innerHTML);
+    });
+    localStorage.setItem('itensCarrinho', JSON.stringify(itemsToSend));
+  };  
+
+// fiz um localStorange para salvar meus itens
 
 const buttonCart = () => {
   const buttons = document.querySelectorAll('.item__add');
@@ -83,6 +113,7 @@ const buttonCart = () => {
       .then((result) => {
         const { id, title, price } = result;
         createCartItemElement({ id, title, price });
+        calculator(price, 'soma');
       });
   });
 });
@@ -110,9 +141,9 @@ const removeOl = () => {
     listaOl.innerHTML = '';
 };
 
-// aqui eu apenas criei uma função, que utiliza o botao com a classe "empty-cart" que ativa a função "removeOl", e dentro dessa função eu troco o innerHTML por uma string vazia, sempre que clicar no botao de limpar.
-
 butao.addEventListener('click', removeOl);
+
+// aqui eu apenas criei uma função, que utiliza o botao com a classe "empty-cart" que ativa a função "removeOl", e dentro dessa função eu troco o innerHTML por uma string vazia, sempre que clicar no botao de limpar.
 
 window.onload = () => {
   addApiMercadoLivre();
