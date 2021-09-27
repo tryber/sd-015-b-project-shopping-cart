@@ -46,8 +46,9 @@ function cartPrice() {
     const floatItemPrice = parseFloat(strItemPrice);
     return floatItemPrice;
   });
-  const total = values.reduce((acc, float) => acc + float, 0);
-  price.innerText = `${total}`;
+  const total = values.reduce((acc, float) => acc + float, 0).toFixed(2);
+  price.innerText = `Seu carrinho vale: R$ ${total}`;
+  if (cartItems.length === 0) price.innerHTML = '';
 }
 
 function cartItemClickListener(event) {
