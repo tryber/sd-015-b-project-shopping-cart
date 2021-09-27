@@ -5,13 +5,32 @@ function criarItemProduto(produto, className, innerText) {
   const itemProduto = document.createElement(produto);
   itemProduto.className = className;
   itemProduto.innerText = innerText;
+  
   return itemProduto;
+}
+
+function calcularTotalCompra() {
+  const todosProdutos = [...document.querySelectorAll('#valorProduto')];
+  const totalPrice = document.querySelector('.total-price');
+
+  const valores = todosProdutos.map((item) => {
+    const valor = item.innerText.split('$').reverse()[0];
+    const valorTratado = parseFloat(valor, 10);
+
+    return valorTratado;
+  });
+
+  const sum = valores.reduce((total, current) => (total + current), 0);
+  totalPrice.innerText = `Valor Total: ${sum}`;
+
+  return totalPrice;
 }
 
 function criarItemImagem(img) {
   const imagem = document.createElement('img');
   imagem.className = 'image';
   imagem.src = img;
+
   return imagem;
 }
 
@@ -45,6 +64,8 @@ function getProdutos() {
 function criarCart(event) {
   // coloque seu código aqui
   event.target.remove();
+
+  calcularTotalCompra();
   getProdutos();
 }
 
@@ -56,7 +77,9 @@ function salvarCart() {
     const li = document.createElement('li');
     li.innerHTML = item;
     li.classList.add('cart__item');
+    li.id = 'valorProduto';
     li.addEventListener('click', criarCart);
+    
     olCartLista.appendChild(li);
   });
 }
@@ -66,13 +89,14 @@ function limparCart() {
   const section = document.querySelector('.cart');
   const olCartLista = document.querySelectorAll('.cart__item');
 
-  olCartLista.forEach((param) => {
-    param.remove();
+  olCartLista.forEach((removerCart) => {
+    removerCart.remove();
   });
   
   ol.classList.add('cart__items');
   section.appendChild(ol);
-  
+
+  calcularTotalCompra();
   getProdutos();
 }
 
@@ -80,7 +104,9 @@ function criarElementoCart({ sku, name, salePrice }) {
   const li = document.createElement('li');
 
   li.className = 'cart__item';
+  li.id = 'valorProduto';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  
   li.addEventListener('click', criarCart);
 
   return li;
@@ -102,6 +128,7 @@ async function addItem(element) {
       const olCartList = document.querySelector('.cart__items');
 
       olCartList.append(criarElementoCart(carList));
+      calcularTotalCompra();
       getProdutos();
     });
 }
@@ -139,4 +166,6 @@ window.onload = () => {
     botao.addEventListener('click', limparCart);
 
     if (retrieveCart) salvarCart();
+
+    calcularTotalCompra();
 };
