@@ -89,6 +89,7 @@ async function getProducts() {
 
 async function createProducts() {
   const products = await getProducts();
+    await document.querySelector('.loading').remove();
     await products.forEach((product) => {
       items.appendChild(createProductItemElement(product));
     });
