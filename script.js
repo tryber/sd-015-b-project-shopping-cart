@@ -1,3 +1,5 @@
+const totalPriceClass = '.total-price';
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -9,16 +11,16 @@ function createProductImageElement(imageSource) {
 let sum = 0;
 
 const subtractionTotalPrice = (product) => {
-  const priceTotal = document.querySelector('.total-price');
+  const priceTotal = document.querySelector(totalPriceClass);
   const price = Number(product.innerHTML.split('$')[1]);
- sum -= price;
- const fixedTwo = sum.toFixed(2);
- const sumNumber = Number(fixedTwo);
- priceTotal.innerHTML = sumNumber;
+  sum -= price;
+  const fixedTwo = sum.toFixed(2);
+  const sumNumber = Number(fixedTwo);
+  priceTotal.innerHTML = sumNumber;
 };
 
   const sumTotalPrice = (price) => {
-  const priceTotal = document.querySelector('.total-price');
+  const priceTotal = document.querySelector(totalPriceClass);
  sum += price;
  const fixedTwo = sum.toFixed(2);
  const sumNumber = Number(fixedTwo);
@@ -120,7 +122,7 @@ const getListProducts = (product = 'computador') => {
 function removeSkuFromCartShopping(item) {
  const cartItens = item.parentElement.querySelector('ol.cart__items');
  cartItens.innerHTML = '';
- const totalPrice = document.querySelector('.total-price');
+ const totalPrice = document.querySelector(totalPriceClass);
  totalPrice.innerHTML = '0.00';
  sum = 0;
 }
