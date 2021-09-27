@@ -1,3 +1,35 @@
+const cartItems = '.cart__items';
+// O requisito 4 e 5 foram feitos com consulta ao repo do Erickson Siqueira link: https://github.com/tryber/sd-015-b-project-shopping-cart/pull/44/commits/ebac16666cc1ccc8b67201279c4610a6e84e241c
+function attTotalPrice(value) {
+  const totalPriceSpan = document.querySelector('.total-price');
+  localStorage.setItem('cartTotalPrice', JSON.stringify(value));
+  totalPriceSpan.innerText = value;
+}
+
+function removeItemPrice(value) {
+  const localValue = JSON.parse(localStorage.getItem('cartTotalPrice'));
+  const localValueOperation = localValue - value;
+  const newLocalValueText = localValueOperation === 0 ? 0 : localValueOperation.toFixed(2);
+  const newLocalValue = parseFloat(newLocalValueText);
+  console.log(newLocalValue);
+  attTotalPrice(newLocalValue);
+}
+
+function addItemPrice(value) {
+  const localValue = JSON.parse(localStorage.getItem('cartTotalPrice'));
+  const newLocalValue = localValue + value;
+  attTotalPrice(newLocalValue);
+}
+
+function getSavedCartValue() {
+  if (localStorage.cartTotalPrice) {
+    const cartSavedValue = JSON.parse(localStorage.getItem('cartTotalPrice'));
+    attTotalPrice(cartSavedValue);
+  } else {
+    localStorage.setItem('cartTotalPrice', 0);
+  }
+}
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -26,19 +58,6 @@ function createProductItemElement({ sku, name, image }) {
 
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
-}
-
-function cartItemClickListener(event) {
-  // coloque seu código aqui
-  event.target.remove();
-}
-
-function createCartItemElement({ sku, name, salePrice }) {
-  const li = document.createElement('li');
-  li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
-  return li;
 }
 
 // Consultei o Erickson Siqueira para resolução desse requisito - link rep: https://github.com/tryber/sd-015-b-project-shopping-cart/pull/44/commits/e0863c5719b2f71b4ba9d503f045f084a9270797
@@ -82,26 +101,83 @@ async function getSingleProduct(id) {
   return productConverted;
 }
 
+function getCartProductIdList() {
+  const cartOl = document.querySelector('.cart__items');
+  const cartProductsLis = cartOl.querySelectorAll('li');
+  const cartProductsIds = [];
+  cartProductsLis.forEach((product) => {
+    cartProductsIds.push(product.innerHTML);
+  });
+  return cartProductsIds;
+}
+
+async function saveCart() {
+  const cartProductsIdsList = getCartProductIdList();
+  localStorage.setItem('cartProductsIds', JSON.stringify(cartProductsIdsList));
+}
+
+function cartItemClickListener(event) {
+  // coloque seu código aqui
+const element = event.target;
+const elementInnerText = element.innerText;
+const elementPriceText = elementInnerText.split('PRICE: $')[1];
+const elementPriceValue = parseFloat(elementPriceText);
+removeItemPrice(elementPriceValue);
+element.remove();
+saveCart();
+}
+
+function createCartItemElement({ sku, name, salePrice }) {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.addEventListener('click', cartItemClickListener);
+  return li;
+}
 async function addItemToCart(id) {
   const productPromise = await getSingleProduct(id);
-  const cartItemsSection = document.querySelector('.cart__items');
+  const cartItemsSection = document.querySelector(cartItems);
   const cartProductObj = makeObjForCartItem(productPromise);
+  addItemPrice(cartProductObj.salePrice);
   const cartItemElement = createCartItemElement(cartProductObj);
   cartItemsSection.appendChild(cartItemElement);
 }
+function creatSavedLi(innerHtml) {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = innerHtml;
+  li.addEventListener('click', cartItemClickListener);
+  return li;
+}
+function addSavedProductToCart(product) {
+  const cartItemsSection = document.querySelector(cartItems);
+  const cartSavedLi = creatSavedLi(product);
+  cartItemsSection.appendChild(cartSavedLi);
+}
+function getSavedCart() {
+  if (localStorage.cartProductsIds) {
+    const savedCartProducts = JSON.parse(localStorage.getItem('cartProductsIds'));
+    if (savedCartProducts.length > 0) {
+      savedCartProducts.forEach((product) => addSavedProductToCart(product));
+    }
+  }
+  getSavedCartValue();
+}
 
 function creatBodyListeners() {
-  document.body.addEventListener('click', (event) => {
+  document.body.addEventListener('click', async (event) => {
     const element = event.target;
     if (element.classList.contains('item__add')) {
       const productElement = element.parentElement;
       const productId = getSkuFromProductItem(productElement);
-      addItemToCart(productId);
+      await addItemToCart(productId);
+      console.log('aqui');
+      saveCart();
     }
   });
 }
-
-window.onload = () => {
+window.onload = async () => {
   generateProductList('computador');
   creatBodyListeners();
+  await getSavedCart();
 };
