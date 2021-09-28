@@ -19,7 +19,6 @@ function sumPriceKart(price) {
 }
 
 function subPriceKart(price) {
-  const sectionPrice = document.querySelector('.total-price');
   let valor = 0;
   if (sectionPrice.innerText !== '') {
     valor = parseFloat(sectionPrice.innerText);
