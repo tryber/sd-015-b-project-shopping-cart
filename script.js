@@ -48,12 +48,12 @@ function createItemSelector(event) {
   .then((response) => response.json())
   .then((item) => productList.appendChild(createCartItemElement(
     { sku: item.id, name: item.title, salePrice: item.price },
-  )))
-};
+  )));
+}
 
-function createAdicionalProduct () {
+function createAdicionalProduct() {
   const addProductButton = document.querySelectorAll('.item__add');
-  addProductButton.forEach((buttons) => buttons.addEventListener('click', createItemSelector))
+  addProductButton.forEach((buttons) => buttons.addEventListener('click', createItemSelector));
 }
 
 const createListwithItens = (object) => {
