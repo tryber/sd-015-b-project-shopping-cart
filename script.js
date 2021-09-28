@@ -1,8 +1,21 @@
+const totalPrice = [];
+const totalPriceElemet = document.getElementsByClassName('total-price');
+const recupera = JSON.parse(localStorage.getItem('cart'));
+const savedCart = localStorage.getItem('cart') !== null ? recupera : [];
+const cart = document.querySelector('.cart__items');
+
 const emptyCart = document.getElementsByClassName('empty-cart');
 emptyCart[0].addEventListener('click', () => {
-const cart = document.getElementsByClassName('cart__items');
-cart[0].innerHTML = '';
+cart.innerHTML = '';
+totalPriceElemet[0].innerText = 'Preço total: $0';
 });
+
+function sumPrice(salePrice) {
+ totalPrice.push(salePrice);
+ const totalNumber = totalPrice.reduce((total, numero) => total + numero, 0);
+ console.log(totalNumber);
+ totalPriceElemet[0].innerText = `Preço total: $${totalNumber}`;
+}
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -13,7 +26,6 @@ function createProductImageElement(imageSource) {
 
 function cartItemClickListener(item) {
  const itemClicado = item.target;
- const cart = document.querySelector('.cart__items');
  cart.removeChild(itemClicado);
 }
 
@@ -22,6 +34,9 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
+  savedCart.push(`SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`);
+  localStorage.setItem('cart', JSON.stringify(savedCart));
+  sumPrice(salePrice);
   return li;
 }
 
@@ -36,9 +51,9 @@ function createCustomElement(element, className, innerText, sku) {
       promise.then((resposta) => {
         const promiseJson = resposta.json();
         promiseJson.then((data) => {
-          const name = data.title;
-          const salePrice = data.price; const cart = document.querySelector('.cart__items');
-          cart.appendChild(createCartItemElement({ sku, name, salePrice }));
+        const name = data.title; 
+        const salePrice = data.price;
+        cart.appendChild(createCartItemElement({ sku, name, salePrice }));
         });
       });
     });
@@ -77,10 +92,20 @@ function recuperaDados() {
   });
 }
 
+function recoverCart() {
+  savedCart.forEach((element) => {
+  const cartItem = document.createElement('li');
+  cartItem.innerText = element;
+  cartItem.addEventListener('click', cartItemClickListener);
+  cart.appendChild(cartItem);
+  });
+}
+
 // function getSkuFromProductItem(item) {
 //   return item.querySelector('span.item__sku').innerText;
 // }
 
 window.onload = () => { 
   recuperaDados();
+  recoverCart();
 };
