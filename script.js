@@ -74,7 +74,7 @@ for (let i = 0; i < object.length; i += 1) {
   const createItems = createProductItemElement(object[i]);
   itemList.appendChild(createItems);
 }
-};
+}
 
 function loadingList() {
   const cart = document.querySelector('.cart');
@@ -91,7 +91,7 @@ function loadingList() {
     .then((response) => response.json())
     .then((object) => createListwithItens(object.results))
     .then(() => createAdicionalProductButton());
-  };
+  }
 
 window.onload = () => {
   makingApiWork();
