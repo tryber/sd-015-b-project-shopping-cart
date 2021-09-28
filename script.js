@@ -121,11 +121,8 @@ function addListenerIten() {
   });
 }
 
-function cleraKart() {
-  localStorageKart.forEach(() => {
-    console.log('apagou');
-    ol.removeChild(liS[0]);
-  });
+function clearKart() {
+  ol.innerHTML = '';
   itensKart = [];
   updateLocalStorage();
   sectionPrice.innerText = '';
@@ -143,7 +140,7 @@ function removeH1Loadind() {
 }
 
 window.onload = () => {
-  button.addEventListener('click', cleraKart);
+  button.addEventListener('click', clearKart);
   h1Loanding();
   fetchGetComputers()
     .then((response) => {
