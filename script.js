@@ -83,6 +83,17 @@ for (let i = 0; i < object.length; i += 1) {
 }
 };
 
+function loadingList() {
+  const cart = document.querySelector('.cart');
+  const savedCart = localStorage.getItem('cartList);
+  if (savedCart) {
+    cart.innerHTML = savedCart;
+    }
+    const cartItem = document.querySelector('.cart__items');
+    cartItem.forEach((item) => item.addEventListener('click', cartItemClickListener));
+  }
+
+
 window.onload = () => {
   makingApiWork();
 };
