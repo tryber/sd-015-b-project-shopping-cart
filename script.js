@@ -9,7 +9,8 @@ function criarItemProduto(produto, className, innerText) {
   return itemProduto;
 }
 
-function calcularTotalCompra() {
+// Material utilizado para consulta: https://github.com/tryber/sd-015-b-project-shopping-cart/pull/2/commits/429533047ef3f9d1453a241cdd3c95aa6971a521
+async function calcularTotalCompra() {
   const todosProdutos = [...document.querySelectorAll('#valorProduto')];
   const totalPrice = document.querySelector('.total-price');
 
@@ -21,7 +22,7 @@ function calcularTotalCompra() {
   });
 
   const sum = valores.reduce((total, current) => (total + current), 0);
-  totalPrice.innerText = `Valor Total: ${sum}`;
+  totalPrice.innerText = `${sum}`;
 
   return totalPrice;
 }
@@ -135,11 +136,14 @@ async function addItem(element) {
 
 function criarEventButton() {
   const section = document.querySelectorAll('.item');
+  const loading = document.querySelector('.loading');
 
   section.forEach((carItem) => carItem.lastChild
     .addEventListener('click', (() => {
       addItem(carItem);
     })));
+
+  loading.remove();
 }
 
 async function getUrl(url) {
