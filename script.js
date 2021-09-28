@@ -5,6 +5,10 @@ function createProductImageElement(imageSource) {
   return img;
 }
 
+function calculator(price, operation) {
+let total = parseFloat(document.querySelector('.total-price').innerText);
+}
+
 function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
   e.className = className;
