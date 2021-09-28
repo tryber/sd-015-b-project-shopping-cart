@@ -23,8 +23,6 @@ async function calcularTotalCompra() {
 
   const sum = valores.reduce((total, current) => (total + current), 0);
   totalPrice.innerText = `${sum}`;
-
-  return totalPrice;
 }
 
 function criarItemImagem(img) {
@@ -156,8 +154,10 @@ async function getUrl(url) {
           name: title,
           image: thumbnail,
         };
+        
       const selecionaItem = document.querySelector('.items');
       const criaItem = pegarElementosProdutos(items);
+
       selecionaItem.append(criaItem);
     }));
 }
