@@ -98,7 +98,7 @@ for (let i = 0; i < object.length; i += 1) {
       const loadingSign = document.querySelector('.loading');
       loadingSign.remove();
     });
-  };
+  }
 
   function clearCart() {
     const cartItem = document.querySelector('.cart__items');
