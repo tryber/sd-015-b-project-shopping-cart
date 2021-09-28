@@ -6,8 +6,8 @@
 // } 
 // function getImgOfProducts(img) {
 // return fetch(`https://api.mercadolibre.com/items/${img}`)
-// .then((responseImg) => responseImg.json()
-// .then((dataImg) => dataImg.pictures[0].url));
+// .then((responseImg) => responseImg.json())
+// .then((dataImg) => dataImg.pictures[0].url);
 // }
 
 // async function getProducts() {

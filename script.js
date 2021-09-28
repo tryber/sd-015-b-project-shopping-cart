@@ -53,7 +53,7 @@ function initialRenderization() {
 }
 
 function addToLocalStorage(li) {
-  const storageListCart = JSON.parse(localStorage.getItem('Cart List'));
+  const storageListCart = JSON.parse(localStorage.getItem('Cart List')) || [];
   const productText = li.innerText;
   storageListCart.push(productText);
   localStorage.setItem('Cart List', JSON.stringify(storageListCart));
@@ -70,7 +70,7 @@ function rmProductToStorage() {
 
 const arraySum = [];
 function purchaseSum(price) {
-  const sumSalePriceHTML = document.querySelector('.cart');
+  const sumSalePriceHTML = document.querySelector('.cart__total');
   const span = document.createElement('span');
   span.className = 'total-price';
   let totalSum = 0;
@@ -107,7 +107,7 @@ function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  // addToLocalStorage(li);
+  addToLocalStorage(li);
   return li;
 }
 
@@ -159,7 +159,8 @@ async function getProducts() {
   data.results.forEach((productObj) => {
     const result = { sku: '', name: '', image: '' };
     result.sku = productObj.id; result.name = productObj.title;
-    result.image = productObj.thumbnail;
+    const imageRequest = productObj.thumbnail;
+    result.image = imageRequest;
     const createProducts = itemsHTML.appendChild(createProductItemElement(result));
     return createProducts;
   });
