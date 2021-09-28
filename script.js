@@ -26,9 +26,7 @@ function calculator() {
    const reduceResult = result.reduce((accumulator, number) => accumulator + number, 0);
    document.querySelector('.total-price').innerText = `${reduceResult}`;
    return reduceResult;
-
  };
-
 
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
@@ -51,7 +49,7 @@ function cartItemClickListener(event) {
   event.target.remove()
   savingList();
   calculator();
-}
+};
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
@@ -61,6 +59,13 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
+function handleItem(item) {
+  const cartItem = document.querySelector('.cart__items');
+  const itemAdd = createCartItemElement(item);
+  cartItem.appendChild(itemAdd);
+  calculator();
+  }
+
 function createItemSelector(event) {
   const product = event.target.parentElement;
   const productChildren = product.children[0].innerText;
@@ -69,13 +74,6 @@ function createItemSelector(event) {
   .then((item) => handleItem(item))
   .then(() => savingList())
 }
-
-function handleItem(item) {
-  const cartItem = document.querySelector('.cart__items');
-  const itemAdd = createCartItemElement(item);
-  cartItem.appendChild(itemAdd);
-  calculator();
-  }
 
 function createAdicionalProductButton() {
   const addProductButton = document.querySelectorAll('.item__add');
