@@ -15,10 +15,10 @@ totalPrice = [];
 function sumPrice(salePrice) {
  totalPrice.push(salePrice);
  const totalNumber = totalPrice.reduce((total, numero) => total + numero, 0);
- if (Number.isInteger(totalNumber)) {
-  console.log(`${totalNumber.toFixed(0)}`);
+ if (Number.isInteger(totalNumber) === true) {
+  totalPriceElemet[0].innerText = `${totalNumber.toFixed(0)}`;
  } else {
-  console.log(`${totalNumber.toFixed(2)}`);
+  totalPriceElemet[0].innerText = `${totalNumber.toFixed(2)}`;
  }
 }
 
