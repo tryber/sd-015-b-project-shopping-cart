@@ -1,24 +1,4 @@
-function forInApi(dados) {
-  for (const key in dados) {
-      const element = dados[key];
-      const produto = {
-        sku: element.id,
-        name: element.title,
-        image: element.thumbnail,
-      };
-      const sectionElement = document.querySelector('.items');
-      console.log(sectionElement);
-      sectionElement.appendChild(createProductItemElement(produto));
-  }
-}
-
-function getAPI() {
-   fetch('https://api.mercadolibre.com/sites/MLB/search?q=$computador')
-  .then((resposta) => resposta.json())
-  .then((dados) => forInApi(dados.results));
-}
-
-function createProductImageElement(imageSource) {
+  function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
   img.src = imageSource;
@@ -44,12 +24,36 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
+function forInApi(dados) {
+  for (const key in dados) {
+      const element = dados[key];
+      const produto = {
+        sku: element.id,
+        name: element.title,
+        image: element.thumbnail,
+      };
+      const sectionElement = document.querySelector('.items');
+      sectionElement.appendChild(createProductItemElement(produto));
+  }
+}
+
+function getAPI() {
+   fetch('https://api.mercadolibre.com/sites/MLB/search?q=$computador')
+  .then((resposta) => resposta.json())
+  .then((dados) => forInApi(dados.results));
+}
+
+function getCartAPI(id) {
+  fetch(`https://api.mercadolibre.com/items/${id}`)
+  .then((resposta) => resposta.json())
+  .then((dados) => forInApi(dados.results));
+}
+
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -60,6 +64,13 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
+function buttonAddCart() {
+  const addToCart = document.querySelector('.item__add');
+  const olCart = document.querySelector('.cart__items');
+  addToCart.addEventListener('click', )
+}
+
 window.onload = () => {
   getAPI();
+  // console.log(createCartItemElement({sku: 'MLB1341706310', name: 'Processador Amd Ryzen 5 2600 6 Núcleos 64 Gb', salePrice: '879' }));
 };
