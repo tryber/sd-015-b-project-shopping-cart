@@ -86,6 +86,16 @@ for (let i = 0; i < object.length; i += 1) {
     });
   }
 
+  function clearCart() {
+    const cartItem = document.querySelector('.cart__items');
+    cartItem.innerHTML = '';
+  }
+
+  function clearButton() {
+    const emptyCartButton = document.querySelector('.empty-cart');
+    emptyCartButton.addEventListener('click', clearCart)
+  }
+
   function loadingList() {
     const cart = document.querySelector('.cart');
     const savedCart = localStorage.getItem('cartList');
@@ -99,4 +109,5 @@ for (let i = 0; i < object.length; i += 1) {
 window.onload = () => {
   makingApiWork();
   loadingList();
+  clearButton();
 };
