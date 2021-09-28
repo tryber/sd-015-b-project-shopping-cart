@@ -19,17 +19,18 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
-  section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-
+  const buttonTest = createCustomElement('button', 'item__add', 'Adicionar ao carrinho!');
+  buttonTest.id = sku;
+  section.appendChild(buttonTest);
   return section;
 }
 
-/* function getSkuFromProductItem(item) {
+function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
+  event.target.remove();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -38,7 +39,22 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   return li;
-} */
+}
+
+function createItemSelector(event) {
+  const product = getSkuFromProductItem(event.target.parentElement);
+  const productList = document.querySelector('.cart__items');
+  fetch(`https://api.mercadolibre.com/items/${product}`)
+  .then((response) => response.json())
+  .then((item) => productList.appendChild(createCartItemElement(
+    { sku: item.id, name: item.title, salePrice: item.price },
+  )))
+};
+
+function createAdicionalProduct () {
+  const addProductButton = document.querySelectorAll('.item__add');
+  addProductButton.forEach((buttons) => buttons.addEventListener('click', createItemSelector))
+}
 
 const createListwithItens = (object) => {
 const itemList = document.querySelector('.items');
@@ -47,6 +63,8 @@ for (let i = 0; i < object.length; i += 1) {
   itemList.appendChild(createItems);
 }
 };
+
+createAdicionalProduct();
 
 const makingApiWork = () => {
   fetch('https://api.mercadolibre.com/sites/MLB/search?q=$computador')
