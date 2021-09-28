@@ -83,7 +83,7 @@ function loadingList() {
     cart.innerHTML = savedCart;
     }
     const cartItem = document.querySelector('.cart__items');
-    cartItem.forEach((item) => item.addEventListener('click', cartItemClickListener));
+    //cartItem.forEach((item) => item.addEventListener('click', cartItemClickListener));
   }
 
   function makingApiWork() {
