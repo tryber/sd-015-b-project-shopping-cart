@@ -28,7 +28,7 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-function cartItemClickListener(event) {
+ function cartItemClickListener(event) {
   // coloque seu código aqui
 }
 
@@ -40,7 +40,16 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-const selectListItem = (searchedItem) => {
+const addProductToCart = () => {
+  fetch('https://api.mercadolibre.com/items/MLB1341706310')
+    .then((response) => response.json())
+    .then(({ id, title, price }) => {
+      const ol = document.querySelector('.cart__items');
+      ol.appendChild(createCartItemElement({ sku: id, name: title, salePrice: price }));
+    });  
+};
+
+const requesttListItem = (searchedItem) => {
   fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${searchedItem}`)
     .then((response) => response.json())
     .then((data) => data.results)
@@ -53,5 +62,6 @@ const selectListItem = (searchedItem) => {
 };
 
 window.onload = () => {
-  selectListItem('computador');
+  requesttListItem();
+  addProductToCart();
 };
