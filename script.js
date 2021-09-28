@@ -3,28 +3,21 @@ let itensKart = localStorage.getItem('Kart') !== null ? localStorageKart : [];
 const ol = document.querySelector('.cart__items');
 const sectionPrice = document.querySelector('.total-price');
 const button = document.querySelector('.empty-cart');
-const liS = document.getElementsByClassName('cart__item');
 
 function updateLocalStorage() {
   localStorage.setItem('Kart', JSON.stringify(itensKart));
 }
 
 function sumPriceKart(price) {
-  let valor = 0;
-  if (sectionPrice.innerText !== '') {
-    valor = parseFloat(sectionPrice.innerText);
-  }
-  const sum = valor + price;
-  sectionPrice.innerText = sum.toFixed(2);
+  const valor = Number(sectionPrice.innerText);
+  const sum = (valor + Number(price)) * 100;
+  sectionPrice.innerText = Math.round(sum) / 100;
 }
 
 function subPriceKart(price) {
-  let valor = 0;
-  if (sectionPrice.innerText !== '') {
-    valor = parseFloat(sectionPrice.innerText);
-  }
-  const sum = valor - price;
-  sectionPrice.innerText = sum.toFixed(2);
+  const valor = Number(sectionPrice.innerText);
+  const sum = (valor - Number(price)) * 100;
+  sectionPrice.innerText = Math.round(sum) / 100;
 }
 
 function removeItemLocalStorage(sku, price) {
