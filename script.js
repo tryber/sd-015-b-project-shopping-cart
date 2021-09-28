@@ -93,7 +93,7 @@ for (let i = 0; i < object.length; i += 1) {
 
   function clearButton() {
     const emptyCartButton = document.querySelector('.empty-cart');
-    emptyCartButton.addEventListener('click', clearCart)
+    emptyCartButton.addEventListener('click', clearCart);
   }
 
   function loadingList() {
