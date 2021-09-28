@@ -6,9 +6,32 @@ function updateLocalStorage() {
   localStorage.setItem('Kart', JSON.stringify(itensKart));
 }
 
-function removeItemLocalStorage(text) {
-  itensKart = itensKart.lenght === 1 ? itensKart = [] : itensKart
-    .filter((element) => element !== text);
+function sumPriceKart(price) {  
+  const sectionPrice = document.querySelector('.total-price');
+  let valor = 0;
+  if (sectionPrice.innerText !== '') {
+    valor = parseFloat(sectionPrice.innerText);
+  }
+  const sum = valor + price;
+  sectionPrice.innerText = sum.toFixed(2);
+}
+
+function subPriceKart(price) {
+  const sectionPrice = document.querySelector('.total-price');
+  let valor = 0;
+  if (sectionPrice.innerText !== '') {
+    valor = parseFloat(sectionPrice.innerText);
+  }
+  const sum = valor - price;
+  sectionPrice.innerText = sum.toFixed(2);
+}
+
+function removeItemLocalStorage(sku, price) {
+  if (itensKart.lenght === 1) {
+    itensKart = [];
+  }
+  itensKart = itensKart.filter(([id]) => id[1] !== sku);
+  subPriceKart(price);
   updateLocalStorage();
 }
 
@@ -42,17 +65,14 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-function cartItemClickListener() {
-  removeItemLocalStorage(this.innerText);
-  ol.removeChild(this);
-}
-
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
-  
+  li.addEventListener('click', () => {  
+      removeItemLocalStorage(sku, salePrice);
+      ol.removeChild(li);
+    });
   return li;
 }
 
@@ -78,17 +98,16 @@ function getFetchItenId(idItem) {
   .then((response) => response.json())
   .then(({ id, title, price }) => {
     ol.appendChild(createCartItemElement({ sku: id, name: title, salePrice: price }));
-    itensKart.push(`SKU: ${id} | NAME: ${title} | PRICE: $${price}`);
+    itensKart.push(Object.entries({ sku: id, name: title, salePrice: price }));
+    sumPriceKart(price);
     updateLocalStorage();
   });
 }
 
 function getKartLocalStorage() {
-  localStorageKart.forEach((element) => {
-    const li = document.createElement('li');
-    li.innerText = element;
-    li.addEventListener('click', cartItemClickListener);
-    ol.appendChild(li);
+  localStorageKart.forEach(([id, title, price]) => {
+    ol.appendChild(createCartItemElement({ sku: id[1], name: title[1], salePrice: price[1] }));
+    sumPriceKart(price[1]);
   });
 }
 
