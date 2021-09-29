@@ -1,3 +1,5 @@
+const olCart = document.querySelector('.cart__items');
+  
   function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -15,6 +17,7 @@ function createCustomElement(element, className, innerText) {
 function createProductItemElement({ sku, name, image }) {
   const section = document.createElement('section');
   section.className = 'item';
+  // section.addEventListener('click', getSkuFromProductItem());
 
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
@@ -25,6 +28,7 @@ function createProductItemElement({ sku, name, image }) {
 }
 
 function forInApi(dados) {
+  const sectionElement = document.querySelector('.items');
   for (const key in dados) {
       const element = dados[key];
       const produto = {
@@ -32,9 +36,9 @@ function forInApi(dados) {
         name: element.title,
         image: element.thumbnail,
       };
-      const sectionElement = document.querySelector('.items');
       sectionElement.appendChild(createProductItemElement(produto));
   }
+  buttonAddCart();
 }
 
 function getAPI() {
@@ -43,17 +47,12 @@ function getAPI() {
   .then((dados) => forInApi(dados.results));
 }
 
-function getCartAPI(id) {
-  fetch(`https://api.mercadolibre.com/items/${id}`)
-  .then((resposta) => resposta.json())
-  .then((dados) => forInApi(dados.results));
-}
-
 function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
+ return item.querySelector('span.item__sku').innerText;
 }
 
 function cartItemClickListener(event) {
+  olCart.removeChild(event.target);
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -64,13 +63,53 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
+function getCartAPI(id) {
+  fetch(`https://api.mercadolibre.com/items/${id}`)
+ .then((resposta) => resposta.json())
+ .then((dados) => {
+   const dadosAPI = {
+     sku: dados.id,
+     name: dados.title,
+     salePrice: dados.price,
+   };
+   const criarLi = createCartItemElement(dadosAPI);
+   const ondeVaiLi = document.querySelector('.cart__items');
+   ondeVaiLi.appendChild(criarLi);
+ });
+}
+
+function buttonClick(itemSection) {
+  const pegarId = getSkuFromProductItem(itemSection);
+  getCartAPI(pegarId);
+}
+
 function buttonAddCart() {
-  const addToCart = document.querySelector('.item__add');
-  const olCart = document.querySelector('.cart__items');
-  addToCart.addEventListener('click', )
+  const addToCart = document.querySelectorAll('.item__add');
+  addToCart.forEach((eachButton) => {
+    const itemAddToCart = eachButton.closest('section');
+    eachButton.addEventListener('click', () => {
+      buttonClick(itemAddToCart);
+    });
+    // eachButton.addEventListener('click', function () {
+    //   console.log(itemAddToCart);
+    });
+}
+
+function emptyClick() {
+  olCart.innerHTML = '';
+  // console.log('a');
+}
+
+function emptyCart() {
+  const emptyButton = document.querySelector('.empty-cart');
+  emptyButton.addEventListener('click', emptyClick);
 }
 
 window.onload = () => {
+  emptyCart();
   getAPI();
   // console.log(createCartItemElement({sku: 'MLB1341706310', name: 'Processador Amd Ryzen 5 2600 6 Núcleos 64 Gb', salePrice: '879' }));
+};
+
+window.onunload = () => {
 };
