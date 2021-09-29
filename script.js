@@ -30,7 +30,7 @@ function getSkuFromProductItem(item) {
 
  function cartItemClickListener(event) {
   // coloque seu código aqui
-  const listItems = document.querySelectorAll('.cart__items');
+  const listItems = document.querySelector('.cart__items');
   listItems.removeChild(event.target);
 }
 
