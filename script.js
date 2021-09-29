@@ -1,5 +1,5 @@
 let totalPrice = [];
-const totalPriceElemet = document.getElementsByClassName('total-price');
+const totalPriceElemet = document.querySelector('.total-price');
 const recupera = JSON.parse(localStorage.getItem('cart'));
 const savedCart = localStorage.getItem('cart') !== null ? recupera : [];
 const cart = document.querySelector('.cart__items');
@@ -8,17 +8,17 @@ const emptyCart = document.querySelector('.empty-cart');
 emptyCart.addEventListener('click', () => {
 cart.innerHTML = '';
 localStorage.clear();
-totalPriceElemet[0].innerText = 'Preço total: $0';
+totalPriceElemet.innerText = 'Preço total: $0';
 totalPrice = [];
 });
 
 function sumPrice(salePrice) {
  totalPrice.push(salePrice);
  const totalNumber = totalPrice.reduce((total, numero) => total + numero, 0);
- if (Number.isInteger(totalNumber) === true) {
-  totalPriceElemet[0].innerText = `${totalNumber.toFixed(0)}`;
+  if (Number.isInteger(totalNumber) === true) {
+  totalPriceElemet.innerText = `${totalNumber.toFixed(0)}`;
  } else {
-  totalPriceElemet[0].innerText = `${totalNumber.toFixed(2)}`;
+  totalPriceElemet.innerText = `${Number(totalNumber)}`;
  }
 }
 
@@ -39,6 +39,14 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
+  li.addEventListener('click', () => {
+    const totalNumber = totalPrice.reduce((total, numero) => total + numero, 0);
+    if (Number.isInteger(totalNumber) === true) {
+      totalPriceElemet.innerText = `${totalNumber.toFixed(0) - salePrice}`;
+     } else {
+      totalPriceElemet.innerText = `${Number(totalNumber) - salePrice}`;
+     }
+  });
   savedCart.push(`SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`);
   localStorage.setItem('cart', JSON.stringify(savedCart));
   return li;
@@ -48,7 +56,6 @@ function createCustomElement(element, className, innerText, sku) {
   const e = document.createElement(element);
   e.className = className;
   e.innerText = innerText;
-
   if (className === 'item__add') {
     e.addEventListener('click', () => {
       const promise = fetch(`https://api.mercadolibre.com/items/${sku}`);
@@ -56,7 +63,8 @@ function createCustomElement(element, className, innerText, sku) {
         const promiseJson = resposta.json();
         promiseJson.then((data) => {
         const name = data.title; 
-        const salePrice = data.price; sumPrice(salePrice);
+        const salePrice = data.price;
+        sumPrice(salePrice);
         cart.appendChild(createCartItemElement({ sku, name, salePrice }));
         });
       });
