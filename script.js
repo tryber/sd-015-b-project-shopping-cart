@@ -75,8 +75,7 @@ const requestListItem = (searchedItem) => {
           { sku: element.id, name: element.title, image: element.thumbnail },
         ));
     }))
-    .then((element) => {
-      console.log(element);
+    .then(() => {
       selectItemCart();
     });
 };
