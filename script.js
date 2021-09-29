@@ -1,4 +1,10 @@
 const olCart = document.querySelector('.cart__items');
+const somaPreçosLiCart = document.querySelector('.total-price');
+let contador = 0;
+
+function somarPreços() {
+  somaPreçosLiCart.innerText = contador;
+  }
   
   function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -75,7 +81,9 @@ function getCartAPI(id) {
    const criarLi = createCartItemElement(dadosAPI);
    const ondeVaiLi = document.querySelector('.cart__items');
    ondeVaiLi.appendChild(criarLi);
- });
+   contador += dadosAPI.salePrice;
+   somarPreços();
+});
 }
 
 function buttonClick(itemSection) {
@@ -95,15 +103,17 @@ function buttonAddCart() {
     });
 }
 
-function emptyClick() {
-  olCart.innerHTML = '';
-  // console.log('a');
-}
-
-function emptyCart() {
-  const emptyButton = document.querySelector('.empty-cart');
-  emptyButton.addEventListener('click', emptyClick);
-}
+  function emptyClick() {
+    olCart.innerHTML = '';
+    contador = 0;
+    somarPreços();
+    // console.log('a');
+  }
+  
+  function emptyCart() {
+    const emptyButton = document.querySelector('.empty-cart');
+    emptyButton.addEventListener('click', emptyClick);
+  }
 
 window.onload = () => {
   emptyCart();
