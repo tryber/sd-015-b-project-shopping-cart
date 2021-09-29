@@ -107,8 +107,14 @@ function getItemLocalStorage() {
   }
 } 
 
-window.onload = () => {  
+window.onload = () => {
+  const container = document.querySelector('.container');
+  const p = document.createElement('span');
+  p.innerText = 'loading';
+  p.className = 'loading';
+  container.appendChild(p);
   requestProduct()
+    .then(() => p.remove())
     .then(() => itemClickListener());
   getItemLocalStorage();
 };
