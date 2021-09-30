@@ -55,6 +55,27 @@ const fetchComputer = () => fetch('https://api.mercadolibre.com/sites/MLB/search
       foundItems.appendChild(item);
     }));
 
+const fetchId = (item) => {
+  const urlId = getSkuFromProductItem(item);
+  return fetch(`https://api.mercadolibre.com/items/${urlId}`)
+  .then((response) => response.json())
+  .then(({ id, title, price }) => {
+    const objDetails = {
+      sku: id,
+      name: title,
+      salePrice: price,
+    };
+    const foundCartItems = document.querySelector('.cart__items');
+    foundCartItems.appendChild(createCartItemElement(objDetails));
+  });
+};
+
+const addCartItem = () => {
+  const allItems = document.querySelectorAll('.item');
+  allItems.forEach((item) => item.lastChild.addEventListener('click', () => fetchId(item)));
+};
+
 window.onload = () => {
-  fetchComputer();
+  fetchComputer()
+  .then(() => addCartItem());
 };
