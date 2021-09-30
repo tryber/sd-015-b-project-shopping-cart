@@ -12,24 +12,13 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({ id: sku, title: name, tumbnail: image }) {
-  const section = document.createElement('section');
-  section.className = 'item';
-
-  section.appendChild(createCustomElement('span', 'item__sku', sku));
-  section.appendChild(createCustomElement('span', 'item__title', name));
-  section.appendChild(createProductImageElement(image));
-  section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-
-  return section;
-}
-
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
+// function getSkuFromProductItem(item) {
+//   return item.querySelector('span.item__sku').innerText;
+// }
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
+  const evento = event;
+  console.log(evento);
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -38,6 +27,35 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   return li;
+}
+
+function addItemtoCart(item) {
+  console.log(item);
+  fetch(`https://api.mercadolibre.com/items/${item}`)
+  .then((response) => response.json())
+  .then(({ id, title, price }) => {
+    const itemInfo = {
+      sku: id,
+      name: title,
+      salePrice: price,
+    };
+    const cartList = document.querySelector('.cart__items');
+    cartList.appendChild(createCartItemElement(itemInfo));
+  });
+}
+
+function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
+  const section = document.createElement('section');
+  section.className = 'item';
+
+  section.appendChild(createCustomElement('span', 'item__sku', sku));
+  section.appendChild(createCustomElement('span', 'item__title', name));
+  section.appendChild(createProductImageElement(image));
+  const addBttn = createCustomElement('button', 'item__add', 'Adicionar ao carrinho!');
+  section.appendChild(addBttn);
+  addBttn.addEventListener('click', () => addItemtoCart(sku));
+
+  return section;
 }
 
 function createObjectProduct(dados) {
@@ -54,3 +72,7 @@ function getApi() {
   .then((dados) => dados.results)
   .then((results) => createObjectProduct(results));
 }
+
+window.onload = () => {
+  getApi();
+};
