@@ -27,6 +27,7 @@ function somarPreços() {
     contador = 0;
   }
   somaPreçosLiCart.innerText = contador;
+  saveLocal();
   }
   
   function createProductImageElement(imageSource) {
@@ -167,6 +168,6 @@ window.onload = () => {
   // console.log(createCartItemElement({sku: 'MLB1341706310', name: 'Processador Amd Ryzen 5 2600 6 Núcleos 64 Gb', salePrice: '879' }));
 };
 
-window.onunload = () => {
-  saveLocal();
-};
+// window.onunload = () => {
+//   saveLocal();
+// };
