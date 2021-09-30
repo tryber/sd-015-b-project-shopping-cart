@@ -72,8 +72,20 @@ const selectItemCart = () => {
   });
 };
 
+// Requisito 7 - Referencia: https://github.com/tryber/sd-015-b-project-shopping-cart/pull/104/files
+const setLoading = (element) => {
+  const items = document.querySelector('.items');
+  if (element === true) {
+    const h1 = document.createElement('h1');
+    h1.className = 'loading';
+    h1.innerText = 'loading...';
+    return items.appendChild(h1);
+  } if (element === false) items.firstChild.remove();
+};
+
 // requisito 1
 const requestListItem = (searchedItem) => {
+  setLoading(true);
   fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${searchedItem}`)
     .then((response) => response.json())
     .then((data) => data.results)
@@ -84,6 +96,7 @@ const requestListItem = (searchedItem) => {
         ));
     }))
     .then(() => {
+      setLoading(false);
       selectItemCart();
     });
 };
