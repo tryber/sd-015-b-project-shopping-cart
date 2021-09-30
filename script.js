@@ -2,6 +2,27 @@ const olCart = document.querySelector('.cart__items');
 const somaPreçosLiCart = document.querySelector('.total-price');
 let contador = 0;
 
+function saveLocal() {
+  localStorage.setItem('cartOl', olCart.innerHTML);
+  const total = document.querySelector('.total-price');
+  localStorage.setItem('totalPrice', total.innerText);
+}
+
+function getLocal() {
+  const recuperarOl = localStorage.getItem('cartOl');
+  const objRecuperarOl = recuperarOl;
+  olCart.innerHTML = objRecuperarOl;
+  const cartLi = document.querySelectorAll('.cart__item');
+  cartLi.forEach((cartItem) => {
+  cartItem.addEventListener('click', cartItemClickListener);
+  });
+  const total = document.querySelector('.total-price');
+  const recuperarTotal = localStorage.getItem('totalPrice');
+  contador = parseFloat(recuperarTotal);
+  total.innerText = recuperarTotal;
+  // console.log(cartLi);
+}
+
 function addLoading() {
   const sectionContainer = document.querySelector('.container');
   const h1Loading = document.createElement('h1');
@@ -18,6 +39,11 @@ sectionContainer.removeChild(h1Loading);
 
 function somarPreços() {
   somaPreçosLiCart.innerText = contador;
+  const cartLi = document.querySelectorAll('.cart__item');
+  if (cartLi.length === 0) {
+    contador = 0;
+  }
+  
   }
   
   function createProductImageElement(imageSource) {
@@ -52,7 +78,8 @@ function getSkuFromProductItem(item) {
  }
  
  function cartItemClickListener(event) {
-  olCart.removeChild(event.target);
+  // olCart.removeChild(event.target);
+  event.target.remove();
   const pegarPreço = event.target.innerText.split('$');
   const precoEmNumero = parseFloat(pegarPreço[1]);
   contador -= precoEmNumero;
@@ -138,8 +165,10 @@ function getAPI() {
 window.onload = () => {
   emptyCart();
   getAPI();
+  getLocal();
   // console.log(createCartItemElement({sku: 'MLB1341706310', name: 'Processador Amd Ryzen 5 2600 6 Núcleos 64 Gb', salePrice: '879' }));
 };
 
 window.onunload = () => {
+  saveLocal();
 };
