@@ -1,5 +1,16 @@
 const listOfProducts = document.querySelector('.cart__items');
 
+function priceOfList() {
+  const li = document.querySelectorAll('.cart__item');
+  const listLi = [...li];
+  const createdTotalPrice = listLi.reduce((acumulator, current) => {
+  const priceOfProduct = current.innerText.split('$')[1];
+  return (acumulator + Number(priceOfProduct));
+  }, 0);
+  const totalPrice = document.querySelector('.total-price');
+  totalPrice.innerText = createdTotalPrice;
+}
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -37,6 +48,7 @@ function cartItemClickListener(event) {
 
   const removeFromLocalStorage = (classProducts.innerText.substring(5, 18));
   localStorage.removeItem(removeFromLocalStorage);
+  priceOfList();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -54,8 +66,8 @@ function APIToSelectItem(event) {
   .then((response) => response.json())
   .then((item) => listOfProducts.appendChild(createCartItemElement(
         { sku: item.id, name: item.title, salePrice: item.price },
-    )));
-
+        )))
+  .then(() => priceOfList());
   localStorage.setItem(getItemOfProduct, getItemOfProduct);
 }
 
@@ -97,7 +109,8 @@ function reloadListOfProducts() {
     .then((response) => response.json())
     .then((item) => listOfProduct.appendChild(createCartItemElement(
           { sku: item.id, name: item.title, salePrice: item.price },
-      )));
+          )))
+    .then(() => priceOfList());
   }
 }
 
