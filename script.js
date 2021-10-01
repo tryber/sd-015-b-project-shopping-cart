@@ -1,3 +1,5 @@
+const classCartItems = '.cart__items';
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -28,20 +30,36 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+// Requisito 4 - Cria o array vazio caso não exita uma array já criado;
+const containLocalStorage = () => {
+  if (!localStorage.getItem('Cart List')) {
+    localStorage.setItem('Cart List', JSON.stringify([]));
+  }
+};
+
+// Requisito 4 - recupera o array, converte em array novamente, insere as informações no array em forma de obj e adiciona as informações ao 'CarT List'; 
+const addTolocalStorage = (sku, name, salePrice) => {
+  const itemsStore = JSON.parse(localStorage.getItem('Cart List'));
+  itemsStore.push({ id: sku, title: name, price: salePrice });
+  
+  localStorage.setItem('Cart List', JSON.stringify(itemsStore));
+};
+
+// Requisitos 3
+function cartItemClickListener(event) {
+  // coloque seu código aqui
+  event.target.remove();
+}
+
 // Requisito 6
 const clearCart = () => {
   const removeListCart = document.querySelector('.empty-cart');
-  const listCartHTML = document.querySelector('.cart__items');
+  const listCartHTML = document.querySelector(classCartItems);
   
   removeListCart.addEventListener('click', () => {
     listCartHTML.innerHTML = '';
   });
 };
-
- function cartItemClickListener(event) {
-  // coloque seu código aqui
-  event.target.remove();
-}
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
@@ -51,17 +69,27 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
+// Requisito 4 - Recupera as informações dentro do local storage e apenda novamente na tela caso a pagina atualize;
+const requestLocalStorage = () => {
+  const items = JSON.parse(localStorage.getItem('Cart List'));
+  const ol = document.querySelector(classCartItems);
+  items.forEach(({ id, title, price }) => {
+    ol.appendChild(createCartItemElement({ sku: id, name: title, salePrice: price }));
+  });
+};
+
 // requistio 2
 const addProductToCart = (idItem) => {
   fetch(`https://api.mercadolibre.com/items/${idItem}`)
     .then((response) => response.json())
     .then(({ id, title, price }) => {
-      const ol = document.querySelector('.cart__items');
+      const ol = document.querySelector(classCartItems);
       ol.appendChild(createCartItemElement({ sku: id, name: title, salePrice: price }));
-    });  
+      addTolocalStorage(id, title, price);    
+    });
 };
 
-// requisito 2
+// requisito 2 - recupera a classe, percorre os itens adicionando ao botoes o evento de click
 const selectItemCart = () => {
   const listButtons = document.querySelectorAll('.item__add');
   listButtons.forEach((allButtons) => {
@@ -83,7 +111,7 @@ const setLoading = (element) => {
   } if (element === false) items.firstChild.remove();
 };
 
-// requisito 1
+// requisito 1, 7 e 2
 const requestListItem = (searchedItem) => {
   setLoading(true);
   fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${searchedItem}`)
@@ -103,5 +131,7 @@ const requestListItem = (searchedItem) => {
 
 window.onload = () => {
    requestListItem('computador');
+   containLocalStorage();
+   requestLocalStorage();
    clearCart();
 };
