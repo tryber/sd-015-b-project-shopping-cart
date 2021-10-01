@@ -1,4 +1,5 @@
 const items = document.querySelector('.items');
+const loading = document.querySelector('.loading');
 const totalPrice = document.querySelector('.total-price');
 const ol = document.querySelector('.cart__items');
 function createProductImageElement(imageSource) {
@@ -73,7 +74,8 @@ function createCartItemElement({ sku, name, salePrice }) {
 async function getApiItems() {
   const response = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
   const objectJason = await response.json();
-  const objectResults = objectJason.results;  
+  const objectResults = objectJason.results; 
+  loading.remove(); 
   const itemsToAppend = objectResults.forEach(({ id, title, thumbnail }) => {
     const itemToAppend = createProductItemElement({ sku: id, name: title, image: thumbnail });
     items.appendChild(itemToAppend);        
