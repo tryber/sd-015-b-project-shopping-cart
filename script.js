@@ -79,10 +79,13 @@ function getApi() {
   .then((results) => createObjectProduct(results));
 }
 
-window.onload = () => {
-  getApi();
-
+function recoverCartData() {
   if (localStorage.getItem('list')) {
     cartItemsOl.innerHTML = localStorage.getItem('list');
   }
+}
+
+window.onload = () => {
+  getApi();
+  recoverCartData();
 };
