@@ -123,6 +123,21 @@ async function getRequest(url) {
     }));
 }
 
+function resetCart() {
+  const newList = document.createElement('ol');
+  const removeList = document.querySelector('#cartItems');
+  const cart = document.querySelector('.cart');
+
+  removeList.remove();
+  newList.classList.add('cart__items');
+  cart.append(newList);
+}
+
+function createButtonRemoveCart() {
+  const buttonRemoveCart = document.querySelector('.empty-cart');
+  buttonRemoveCart.addEventListener('click', resetCart);
+}
+
 function order() {
   getRequest(MLBurl)
     .then(() => addListenerButton())
@@ -132,4 +147,5 @@ function order() {
 window.onload = () => {
   if (recordedDataCart) restoreCartSave();
   order();
+  createButtonRemoveCart();
 };
