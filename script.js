@@ -92,6 +92,7 @@ async function searchIdInResult(element) {
 
 function addListenerButton() { 
   const items = document.querySelectorAll('.item');
+
   Object.keys(items).forEach((item) => {
     items[item].addEventListener('click', searchIdInResult);
   });
@@ -114,13 +115,19 @@ function getElementsItems(result) {
   sectionItems.append(itemElement);
 }
 
+function showLoading() {
+  document.querySelector('.loading').remove();
+  document.querySelector('.container').style.display = 'flex';
+}
+
 async function getRequest(url) {
   return fetch(url)
     .then((response) => response.json())
     .then((listSearch) => listSearch.results.forEach(({ id, title, thumbnail }) => {
       const objCartMod = { sku: id, name: title, image: thumbnail };
       getElementsItems(objCartMod); 
-    }));
+    }))
+    .then(() => showLoading());
 }
 
 function resetCart() {
