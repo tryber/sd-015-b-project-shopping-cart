@@ -90,9 +90,15 @@ const addButton = () => {
   removeButton.addEventListener('click', removeAll);
 };
 
+const removeLoading = () => {
+  const loadingHtml = document.querySelector('.loading');
+  loadingHtml.remove();
+};
+
 window.onload = () => {
   fetchComputer()
   .then(() => addCartItem())
-  .then(() => addButton());
+  .then(() => addButton())
+  .then(() => removeLoading());
   removeAll();
 };
