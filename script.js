@@ -1,4 +1,5 @@
 const cartItemsOl = document.querySelector('.cart__items');
+const totalPrice = document.querySelector('.total-price');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -22,20 +23,27 @@ function saveCartItems(key, keyValue) {
   localStorage.setItem(key, keyValue);
 }
 
+function totalPriceSum(price) {
+  totalPrice.innerText = Math.round((Number(totalPrice.innerText) + Number(price)) * 100) / 100;
+  saveCartItems('totalPrice', totalPrice.innerText);
+}
+
 function cartItemClickListener(event) {
+  totalPriceSum(`-${event.target.innerHTML.split('$')[1]}`);
   event.target.remove();
   saveCartItems('list', cartItemsOl.innerHTML);
+  // saveCartItems('totalPrice', totalPrice.innerText);
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
+  // li.addEventListener('click', cartItemClickListener);
   return li;
 }
 
-function addItemtoCart(item) {
+async function addItemtoCart(item) {
   fetch(`https://api.mercadolibre.com/items/${item}`)
   .then((response) => response.json())
   .then(({ id, title, price }) => {
@@ -46,7 +54,9 @@ function addItemtoCart(item) {
     };
     const cartList = document.querySelector('.cart__items');
     cartList.appendChild(createCartItemElement(itemInfo));
+    totalPriceSum(price);
     saveCartItems('list', cartItemsOl.innerHTML);
+    saveCartItems('totalPrice', totalPrice.innerText);
   });
 }
 
@@ -79,13 +89,13 @@ function getApi() {
   .then((results) => createObjectProduct(results));
 }
 
-function recoverCartData() {
-  if (localStorage.getItem('list')) {
-    cartItemsOl.innerHTML = localStorage.getItem('list');
-  }
-}
-
 window.onload = () => {
   getApi();
-  recoverCartData();
+
+  if (localStorage.getItem('list')) {
+      cartItemsOl.innerHTML = localStorage.getItem('list');
+      // console.log(localStorage.getItem('total'))
+      totalPriceSum(localStorage.getItem('totalPrice'));
+  }
+  console.log(localStorage);
 };
