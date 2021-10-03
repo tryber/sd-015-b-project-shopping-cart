@@ -1,4 +1,7 @@
-const classCartItems = '.cart__items';
+// O rquisito 5 foi feito com base no código: https://github.com/tryber/sd-015-b-project-shopping-cart/pull/83/files?authenticity_token=z8BLMoQ0T2%2BszD1MfwioX5PVc0TuMyvLq1Q4P3Xgp%2BVIuWY0wVQbLkxfz2cJozrlQoGjOVY9KbSogRrQ9bH20A%3D%3D&file-filters%5B%5D=.html&file-filters%5B%5D=.js&file-filters%5B%5D=.json#
+const classCartItems = document.querySelector('.cart__items');
+const totalPrice = document.querySelector('.total-price');
+const emptyCart = document.querySelector('.empty-cart');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -30,12 +33,34 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+function subtractPrice(index) {
+  const productStorage = JSON.parse(localStorage.getItem('Cart List'));
+  if (!productStorage) return;
+  const product = productStorage.find((_, i) => i === index);
+  const { price } = product; 
+  totalPrice.innerHTML = (Number(totalPrice.innerHTML) - price);
+  localStorage.setItem('totalPrice', JSON.stringify(totalPrice.innerHTML));
+}
+
 // Requisito 4 - Cria o array vazio caso não exita uma array já criado;
 const containLocalStorage = () => {
   if (!localStorage.getItem('Cart List')) {
     localStorage.setItem('Cart List', JSON.stringify([]));
   }
 };
+
+// Requisito 5
+function updatePrice(price) {
+  totalPrice.innerHTML = Number(totalPrice.innerHTML) + Number(price);
+}
+
+// requisito 5
+emptyCart.addEventListener('click', () => {
+  classCartItems.innerHTML = '';
+  containLocalStorage();
+  totalPrice.innerHTML = 0;
+  localStorage.setItem('totalPrice', JSON.stringify(0));
+});
 
 // Requisito 4 - recupera o array, converte em array novamente, insere as informações no array em forma de obj e adiciona as informações ao 'CarT List'; 
 const addTolocalStorage = (sku, name, salePrice) => {
@@ -48,16 +73,20 @@ const addTolocalStorage = (sku, name, salePrice) => {
 // Requisitos 3
 function cartItemClickListener(event) {
   // coloque seu código aqui
-  event.target.remove();
+  const el = event.target;
+  const itemIndex = Array.from(classCartItems.children).indexOf(el);
+
+  subtractPrice(itemIndex);
+  el.remove();
 }
 
 // Requisito 6
 const clearCart = () => {
   const removeListCart = document.querySelector('.empty-cart');
-  const listCartHTML = document.querySelector(classCartItems);
+  // const listCartHTML = document.querySelector(classCartItems);
   
   removeListCart.addEventListener('click', () => {
-    listCartHTML.innerHTML = '';
+    classCartItems.innerHTML = '';
   });
 };
 
@@ -72,9 +101,9 @@ function createCartItemElement({ sku, name, salePrice }) {
 // Requisito 4 - Recupera as informações dentro do local storage e apenda novamente na tela caso a pagina atualize;
 const requestLocalStorage = () => {
   const items = JSON.parse(localStorage.getItem('Cart List'));
-  const ol = document.querySelector(classCartItems);
+  // const ol = document.querySelector(classCartItems);
   items.forEach(({ id, title, price }) => {
-    ol.appendChild(createCartItemElement({ sku: id, name: title, salePrice: price }));
+    classCartItems.appendChild(createCartItemElement({ sku: id, name: title, salePrice: price }));
   });
 };
 
@@ -83,9 +112,10 @@ const addProductToCart = (idItem) => {
   fetch(`https://api.mercadolibre.com/items/${idItem}`)
     .then((response) => response.json())
     .then(({ id, title, price }) => {
-      const ol = document.querySelector(classCartItems);
-      ol.appendChild(createCartItemElement({ sku: id, name: title, salePrice: price }));
-      addTolocalStorage(id, title, price);    
+      // const ol = document.querySelector(classCartItems);
+      classCartItems.appendChild(createCartItemElement({ sku: id, name: title, salePrice: price }));
+      addTolocalStorage(id, title, price);  
+      updatePrice(price);  
     });
 };
 
