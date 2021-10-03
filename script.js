@@ -121,10 +121,7 @@ function savePriceToLocalStorage() {
 }
 
 function updatePrice({ price }) {
-  let total = 0;
-  if (totalPrice.innerHTML) total += Number(totalPrice.innerHTML);
-  total += price;
-  totalPrice.innerHTML = total.toFixed(0);
+  totalPrice.innerHTML = Number(totalPrice.innerHTML) + Number(price);
 }
 
 function loadPrice() {
