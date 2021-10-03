@@ -90,6 +90,11 @@ function createObjectProduct(dados) {
     const item = createProductItemElement(dado);
     itemDiv.appendChild(item);
   });
+  document.querySelector('.loading').remove();
+}
+
+function loadingMessage() {
+  document.body.appendChild(createCustomElement('p', 'loading', 'Loading...'));
 }
 
 function getApi() {
@@ -101,6 +106,7 @@ function getApi() {
 
 window.onload = () => {
   getApi();
+  loadingMessage();
   emptyCartEventListener();
   if (localStorage.getItem('list')) {
       cartItemsOl.innerHTML = localStorage.getItem('list');
