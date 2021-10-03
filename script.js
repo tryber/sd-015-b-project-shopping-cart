@@ -12,6 +12,22 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
+function getSkuFromProductItem(item) {
+  return item.querySelector('span.item__sku').innerText;
+}
+
+function calculator() {
+  const getItem = [...document.querySelectorAll('.cart__item')];
+   const result = getItem.map((value) => {
+     const splited = value.innerText.split('$').reverse()[0];
+     const test = parseFloat(splited, 10);
+     return test;
+   });
+   const reduceResult = result.reduce((accumulator, number) => accumulator + number, 0);
+   document.querySelector('.total-price').innerText = `${reduceResult}`;
+   return reduceResult;
+ }
+
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
@@ -24,18 +40,15 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
-/* function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-} */
-
 function savingList() {
   const cart = document.querySelector('.cart');
   localStorage.setItem('cartList', cart.innerHTML);
 }
 
 function cartItemClickListener(event) {
-event.target.remove();
+  event.target.remove();
   savingList();
+  calculator();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -47,10 +60,11 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 }
 
 function handleItem(item) {
-const cartItem = document.querySelector('.cart__items');
-const itemAdd = createCartItemElement(item);
-cartItem.appendChild(itemAdd);
-}
+  const cartItem = document.querySelector('.cart__items');
+  const itemAdd = createCartItemElement(item);
+  cartItem.appendChild(itemAdd);
+  calculator();
+  }
 
 function createItemSelector(event) {
   const product = event.target.parentElement;
@@ -71,6 +85,7 @@ const itemList = document.querySelector('.items');
 for (let i = 0; i < object.length; i += 1) {
   const createItems = createProductItemElement(object[i]);
   itemList.appendChild(createItems);
+  calculator();
 }
 }
 
@@ -84,7 +99,7 @@ for (let i = 0; i < object.length; i += 1) {
       loadingSign.remove();
     });
   }
-
+  
   function clearCart() {
     const cartItem = document.querySelector('.cart__items');
     cartItem.innerHTML = '';
