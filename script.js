@@ -61,13 +61,8 @@ function removeProductsFromLocalStorage(index) {
   if (!productStorage) return;
   // console.log(productStorage);
   const newStorage = [];
-  let bol = true;
   productStorage.forEach((item, i) => {
-    if (i === index && bol) {
-      bol = false;
-    } else {
-      newStorage.push(item);
-    }
+    if (i !== index) newStorage.push(item);
   });
   localStorage.setItem('userCart', JSON.stringify(newStorage));
 }
@@ -77,23 +72,23 @@ function subtractPrice(index) {
   if (!productStorage) return;
   const product = productStorage.find((_, i) => i === index);
   const { price } = product; 
-  totalPrice.innerHTML = (Number(totalPrice.innerHTML) - price);
+  totalPrice.innerHTML = (Number(totalPrice.innerHTML) - price).toFixed(0);
   localStorage.setItem('totalPrice', JSON.stringify(totalPrice.innerHTML));
 }
 
-function getProductIndexToRemove(cartArr) {
-  let index;
-  cartArr.forEach((product, i) => {
-    if (product.classList.contains('toRemove')) index = i;
-  });
-  return index;
-}
+// function getProductIndexToRemove(cartArr) {
+//   let index;
+//   cartArr.forEach((product, i) => {
+//     if (product.classList.contains('toRemove')) index = i;
+//   });
+//   return index;
+// }
 
 function cartItemClickListener(event) {
   const el = event.target;
-  el.classList.add('toRemove');
-  const cartArr = Array.from(userCart.children);
-  const productIndex = getProductIndexToRemove(cartArr);
+  const productIndex = Array.from(userCart.children).indexOf(el);
+  // const cartArr = Array.from(userCart.children);
+  // const productIndex = getProductIndexToRemove(cartArr);
   subtractPrice(productIndex);
   removeProductsFromLocalStorage(productIndex);
   el.remove();
@@ -129,7 +124,7 @@ function updatePrice({ price }) {
   let total = 0;
   if (totalPrice.innerHTML) total += Number(totalPrice.innerHTML);
   total += price;
-  totalPrice.innerHTML = total;
+  totalPrice.innerHTML = total.toFixed(0);
 }
 
 function loadPrice() {
@@ -165,6 +160,7 @@ function initializeStorage() {
     localStorage.setItem('userCart', JSON.stringify([]));
   }
 }
+// alteracao
 
 window.onload = () => { 
   createProducts();
