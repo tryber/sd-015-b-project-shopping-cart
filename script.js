@@ -72,7 +72,7 @@ function subtractPrice(index) {
   if (!productStorage) return;
   const product = productStorage.find((_, i) => i === index);
   const { price } = product; 
-  totalPrice.innerHTML = (Number(totalPrice.innerHTML) - price).toFixed(0);
+  totalPrice.innerHTML = (Number(totalPrice.innerHTML) - price);
   localStorage.setItem('totalPrice', JSON.stringify(totalPrice.innerHTML));
 }
 
