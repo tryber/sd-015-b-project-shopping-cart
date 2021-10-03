@@ -37,9 +37,14 @@ body {
   color: rgb(46, 193, 139);
 }
 
+.nav-container div {
+  transition: all 0.3s ease;
+}
+
 .nav-container div i {
   font-size: 2.8rem;
   color: rgb(46, 193, 139);
+  transition: all 0.3s ease;
 }
 
 .header-container div i {
@@ -58,6 +63,20 @@ body {
   border-radius: 8px;
   justify-content: center;
   align-items: center;
+  transition: all 0.3s ease;
+}
+
+.header-container .my-cart-icon .quantity {
+  position: absolute;
+  margin-left: 3rem;
+  margin-bottom: 2rem;
+  background-color: rgb(216, 24, 24);
+  color: rgb(243, 243, 243);
+  border-radius: 1rem;
+  width: 2rem;
+  text-align: center;
+  font-weight: 700;
+  font-size: 1.3rem;
 }
 
 .header-container .profile-icon:hover , .my-cart-icon:hover , .favorite-icon:hover {
@@ -195,23 +214,21 @@ body {
 .nav-container div i:hover {
   cursor: pointer;
   transform: scale(1.2);
-  transition: all 0.3s ease-out;
   color: rgb(54, 153, 117);
 }
 
 .nav-container .departments:hover , .highlights:hover , .releases:hover , .sale:hover {
   cursor: pointer;
   transform: scale(1.15);
-  transition: all 0.3s ease-out;
+  transition: all 0.3s ease;
   font-weight: 700;
 }
 
 .container {
   display: flex;
-  justify-content: space-around;
   font-size: 1.6rem;
   padding-top: 2rem;
-  padding-left: 11rem;
+  padding-left: 14rem;
 }
 
 .items {
@@ -233,11 +250,11 @@ body {
   padding: 0.5rem;
   margin: 1.5rem 0;
   width: 16.5rem;
+  transition: all 0.3s ease-out;
 }
 
 .item:hover {
   transform: scale(1.15);
-  transition: all 0.3s ease-out;
 }
 
 .item .item__sku {
@@ -270,6 +287,7 @@ body {
   cursor: pointer;
   margin: 1rem 0;
   padding: 0.5rem;
+  transition: all 0.3s ease;
 }
 
 .item .item__add:hover {
@@ -280,10 +298,58 @@ body {
   transform: translateY(4px);
 }
 
+hr {
+  border-color: rgb(46, 193, 139);
+  margin: 1rem 0;
+}
+
 .cart {
-  display: flex;
-  flex-basis: 28.5rem;
+  position: absolute;
+  display: none;
+  min-width: 28.5rem;
   flex-flow: column wrap;
+  background-color: rgb(233, 233, 233);
+  margin: 0.3rem 0 0 3.6rem;
+  padding: 1.4rem 1.5rem 1rem 1.2rem;
+  right: 4rem;
+  top: 7rem;
+  border-radius: 0.6rem;
+}
+
+.active-section {
+  display: flex;
+  min-height: 56rem;
+  animation-name: active-section;
+  animation-duration: 0.6s;
+  animation-direction: normal;
+  animation-timing-function: linear;
+}
+
+@keyframes active-section {
+  0% {
+    min-height: 0rem;
+    opacity: 0;
+  }
+
+  25% {
+    min-height: 14rem;
+    opacity: 0.25;
+  }
+
+  50% {
+    min-height: 28rem;
+    opacity: 0.5;
+  }
+
+  75% {
+    min-height: 42rem;
+    opacity: 0.75;
+  }
+
+  100% {
+    min-height: 56rem;
+    opacity: 1;
+  }
 }
 
 .cart .cart__title {
@@ -293,5 +359,33 @@ body {
 }
 
 .cart__items li {
+  font-size: 1.3rem;
   list-style: none;
+  text-align: justify;
+  width: 25rem;
+  height: 5rem;
+  margin: 0 0 1.5rem;
+  padding: 0 1rem;
+  background-color: rgb(242, 242, 242);
+  box-shadow: 0 2px 5px 2px rgba(153, 153, 153, 0.25);
+}
+
+.empty-cart {
+  background-color: rgb(168, 168, 168);
+  color: rgb(242, 242, 242);
+  font-size: 1.4rem;
+  border: 0;
+  border-radius: 1.1rem;
+  cursor: pointer;
+  margin: 1rem 0;
+  padding: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.empty-cart:hover {
+  background-color: rgb(139, 139, 139);
+}
+
+.empty-cart:active {
+  transform: translateY(4px);
 }

@@ -22,7 +22,10 @@
           <input type="text" class="input-search" placeholder="O QUÊ VOCÊ ESTÁ PROCURANDO?">
         </div>
         <div class="profile-icon"><i class="fas fa-user icon"></i></div>
-        <div class="my-cart-icon"><i class="fas fa-shopping-cart icon"></i></div>
+        <div class="my-cart-icon">
+          <i id="my-cart" class="fas fa-shopping-cart icon"></i>
+          <div class="quantity">0</div>
+        </div>
         <div class="favorite-icon"><i class="fas fa-heart icon"></i></div>
       </div>
     </header>
@@ -36,10 +39,11 @@
     <section class="container">
       <section class="items"></section>
       <section class="cart">
-        <span class="cart__title">Carrinho de compras</span>
-        <button class="empty-cart">Esvaziar carrinho</button>
+        <span class="cart__title">MEU CARRINHO</span>
+        <hr>
         <ol class="cart__items"></ol>
         <p id="total-value"><b>VALOR TOTAL: R$ </b><span class="total-price"></span></p>
+        <button class="empty-cart">ESVAZIAR CARRINHO</button>
       </section>
     </section>
   </body>
