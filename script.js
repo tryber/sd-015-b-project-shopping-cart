@@ -1,16 +1,29 @@
 const shoppingCart = document.querySelector('.cart__items');
+const totalPrice = document.querySelector('.total-price');
 
 function saveLocalStorage() {
   localStorage.setItem('cart_list', shoppingCart.innerHTML);
 }
 
+function sumProductPrices(price, operation) {
+  let total = 0;
+  if (totalPrice.innerText) total = parseFloat(totalPrice.innerText);
+  if (operation === 'sum') total += price;
+  if (operation === 'minus') total -= price;
+  totalPrice.innerText = total > 0 ? total : 0;
+  localStorage.setItem('total', total);
+}
+
 function cartItemClickListener(event) {
-  event.target.remove();
+  event.target.remove(event);
   saveLocalStorage();
+  const li = event.path[0];
+  sumProductPrices((li.innerText.split('PRICE: $').pop()), 'minus');
 }
 
 function loadLocalStorage() {
   shoppingCart.innerHTML = localStorage.getItem('cart_list');
+  totalPrice.innerText = localStorage.getItem('total');
   shoppingCart.childNodes.forEach((list) => {
     list.addEventListener('click', cartItemClickListener);
   });
@@ -64,6 +77,7 @@ async function addCartProduct(event) {
     const itemElement = createCartItemElement(itemSearch);
     const section = document.querySelector('.cart__items');
     section.appendChild(itemElement);
+    sumProductPrices(price, 'sum');
     saveLocalStorage();
   } catch (error) {
     console.log('Erro no async cart');
@@ -95,6 +109,7 @@ async function createProductList() {
 }
 
 function bttDeleteItems() {
+  document.querySelector('.total-price').innerText = 0;
   const cartList = document.querySelectorAll('.cart__item');
   cartList.forEach((list) => list.remove());
 }
@@ -103,10 +118,6 @@ function bttAddDeleteEvent() {
   const bttDelete = document.querySelector('.empty-cart');
   bttDelete.addEventListener('click', bttDeleteItems);
 }
-
-// function sumProductPrices() {
-
-// }
 
 window.onload = () => {
   createProductList();
