@@ -34,11 +34,41 @@ function sendCartToCloud() {
   localStorage.setItem('cart-items-ids', stringItems);
 }
 
+function getTotalItemValue(items) {
+  const tPrice = document.querySelector('.total-price');
+  let price = 0;
+  items.forEach((item) => {
+    const itemID = item.innerText.split(' ')[1];
+    fetch(`https://api.mercadolibre.com/items/${itemID}`)
+     .then((itemObject) => itemObject.json())
+     .then((itemPrice) => {
+       console.log(itemPrice.price);
+       price += itemPrice.price;
+     })
+     .then(() => {
+       tPrice.innerText = price;
+       console.log(`o total é ${price}`);
+      });
+  });  
+}
+
+function updatePrice(option) {
+  const tPrice = document.querySelector('.total-price');
+  const items = document.querySelectorAll('.cart__item');
+  if (items.length === 0) {
+    tPrice.innerText = 0;
+  } else {
+  getTotalItemValue(items);
+  }
+  sendCartToCloud();
+}
+
 function cartItemClickListener(event) {
   // coloque seu código aqui
   const li = event.target;
   li.parentElement.removeChild(li);
   sendCartToCloud();
+  updatePrice('remove');
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -58,6 +88,7 @@ async function addCart(sku) {
   const cartItems = test();
   cartItems.appendChild(cart);
   sendCartToCloud();
+  updatePrice();
 }
 
 const getCartCointainer = () => document.querySelector('.cart__items');
@@ -82,7 +113,6 @@ const loadCloudCart = () => {
       const filtredInfo = await filterInfoToSendToCart(productId);
       const cartItem = createCartItemElement(filtredInfo);
       cartContainer.append(cartItem);
-      // sumProductsPrices();
     });
   }
 };
@@ -121,6 +151,7 @@ async function getProducts() {
 function clearCart() {
   const cart = test();
   cart.innerHTML = '';
+  updatePrice();
 }
 
 // const clearButton = document.querySelector('.empty-cart');
@@ -132,3 +163,8 @@ window.onload = () => {
   clearButton.addEventListener('click', clearCart);
   loadCloudCart();
 };
+
+// REPOSITORIOS REFERENCIAS
+// Paulo Flora: https://github.com/tryber/sd-015-b-project-shopping-cart/tree/paulo-flora-shopping-cart-project
+// Rodrigo Lima: https://github.com/tryber/sd-015-b-project-shopping-cart/tree/rodrigo-lima-shopping-cart
+// Danielen Cestari: https://github.com/tryber/sd-015-b-project-shopping-cart/tree/danielencestari-shopping-cart
