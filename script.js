@@ -55,7 +55,7 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
-function getProducts() {
+async function getProducts() {
   const fet = fetch(urlAPI);
      fet
      .then((element) => element.json())
@@ -65,8 +65,12 @@ function getProducts() {
       item.appendChild(createProductItemElement({ sku: data.id, 
         name: data.title, 
         image: data.thumbnail }));
-     }));
-  }
+     }))
+     .then(() => {
+       const loading = document.querySelector('.loading');
+       loading.remove();
+     });
+}
 
 window.onload = () => { 
   getProducts();
