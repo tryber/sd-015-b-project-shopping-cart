@@ -94,12 +94,22 @@ async function createProductList() {
   }
 }
 
+function bttDeleteItems() {
+  const cartList = document.querySelectorAll('.cart__item');
+  cartList.forEach(list => list.remove());
+}
+
+function bttAddDeleteEvent() {
+  const bttDelete = document.querySelector('.empty-cart');
+  bttDelete.addEventListener('click', bttDeleteItems);
+}
+
 // function sumProductPrices() {
-//   const price = document.querySelector('.cart__item');
-//   console.log(price);
+
 // }
 
 window.onload = () => {
   createProductList();
   loadLocalStorage();
+  bttAddDeleteEvent();
 };
