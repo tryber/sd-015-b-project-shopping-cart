@@ -80,8 +80,12 @@ function getEventButton(p) {
 }
 
 const requestProductsApi = async () => {
-  const requestApiForItems = fetch('https://api.mercadolibre.com/sites/MLB/search?q=$computer');
-  requestApiForItems.then((element) => element.json())
+  const loader = document.createElement('div');
+  loader.className = 'loading';
+  loader.innerText = 'loading...';
+  document.querySelector('.container').appendChild(loader);
+  await fetch('https://api.mercadolibre.com/sites/MLB/search?q=$computer')
+  .then((element) => element.json())
   .then((element) => element.results)
   .then((element) => element.forEach((value) => {
   const responsePattern = { sku: value.id, name: value.title, image: value.thumbnail };
@@ -90,6 +94,7 @@ const requestProductsApi = async () => {
   const getButton = document.querySelectorAll('.item__add');
   getEventButton(getButton);
  }));
+  await document.querySelector('.container').removeChild(loader);
 };
 
 function clearAllList() {
