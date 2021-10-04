@@ -1,3 +1,11 @@
+function updateCartTotalPrice() {
+  const totalPrice = document.querySelector('.total-price');
+  const items = document.querySelectorAll('.cart__item');
+  const prices = Array.from(items).map((item) => parseFloat(item.innerText.split('$')
+    .pop(), 10)).reduce((acc, curr) => acc + curr, 0);
+  totalPrice.innerText = prices;
+}
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -33,6 +41,7 @@ function cartItemClickListener(event) {
   const getCartItems = document.querySelector('.cart__items');
   getCartItems.removeChild(targetEvent);
   localStorage.removeItem('carrinho', targetEvent);
+  updateCartTotalPrice();
 }
 
 const addItemsInLocalStorage = () => {
@@ -40,7 +49,7 @@ const addItemsInLocalStorage = () => {
   localStorage.setItem('carrinho', getSection);
 };
 
-function createCartItemElement({ sku, name, salePrice }) {
+async function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
@@ -48,6 +57,7 @@ function createCartItemElement({ sku, name, salePrice }) {
   const getCart = document.querySelector('.cart__items');
   getCart.appendChild(li);
   addItemsInLocalStorage();
+  updateCartTotalPrice();
   return li;
 }
 
@@ -71,6 +81,7 @@ function getProductsEvent(event) {
   fetch(url)
   .then((element) => element.json())
   .then((data) => createCartItemElement({ sku: data.id, name: data.title, salePrice: data.price }));
+  updateCartTotalPrice();
 }
 
 function getEventButton(p) {
@@ -102,6 +113,7 @@ function clearAllList() {
   botaoLimpar.addEventListener('click', function () {
     const carrinho = document.getElementById('cart__item');
     carrinho.innerHTML = '';
+    updateCartTotalPrice();
   });
 }
 
@@ -110,4 +122,5 @@ window.onload = () => {
   pullInLocalStorage();
   removeInLocalStorage();
   clearAllList();
+  updateCartTotalPrice();
 };
