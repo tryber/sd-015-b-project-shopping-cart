@@ -30,9 +30,41 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+const cartItem = () => {
+  const itemsCart = document.querySelectorAll('.cart__item');
+  return itemsCart;
+};
+
+const saveCartLocal = () => {
+  const save = JSON.stringify(document.querySelector('.cart__items').innerHTML);
+  localStorage.setItem('cart-list', save);
+};
+
+const priceCalculator = () => {
+  const getItem = [...document.querySelectorAll('.cart__item')];
+  const result = getItem.map((value) => {
+    const splited = value.innerText.split('$').reverse()[0];
+    const total = parseFloat(splited, 10);
+    return total;
+  });
+
+  const reduceResult = result.reduce((accumulator, number) => accumulator + number, 0);
+  document.querySelector('.total-price').innerText = `${reduceResult}`;
+  return reduceResult;
+};
+
 function cartItemClickListener(event) {
   event.target.remove();
+  priceCalculator();
+  saveCartLocal();
 }
+
+const getItemLocal = () => {
+  const foundList = JSON.parse(localStorage.getItem('cart-list'));
+  const selectOl = document.querySelector('ol');
+  selectOl.innerHTML = foundList;
+  selectOl.addEventListener('click', cartItemClickListener);
+};
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
@@ -67,6 +99,8 @@ const fetchId = (item) => {
     };
     const foundCartItems = document.querySelector('.cart__items');
     foundCartItems.appendChild(createCartItemElement(objDetails));
+    priceCalculator();
+    saveCartLocal();
   });
 };
 
@@ -75,19 +109,17 @@ const addCartItem = () => {
   allItems.forEach((item) => item.lastChild.addEventListener('click', () => fetchId(item)));
 };
 
-const cartItem = () => {
-  const itemsCart = document.querySelectorAll('.cart__item');
-  return itemsCart;
-};
-
 const removeAll = () => {
   const allCartItems = cartItem();
   allCartItems.forEach((li) => li.remove());
+  priceCalculator();
+  saveCartLocal();
 };
 
 const addButton = () => {
   const removeButton = document.querySelector('.empty-cart');
   removeButton.addEventListener('click', removeAll);
+  priceCalculator();
 };
 
 const removeLoading = () => {
@@ -97,8 +129,8 @@ const removeLoading = () => {
 
 window.onload = () => {
   fetchComputer()
-  .then(() => addCartItem())
   .then(() => addButton())
-  .then(() => removeLoading());
-  removeAll();
+  .then(() => removeLoading())
+  .then(() => addCartItem());
+  getItemLocal();
 };
