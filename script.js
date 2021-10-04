@@ -96,7 +96,7 @@ async function createProductList() {
 
 function bttDeleteItems() {
   const cartList = document.querySelectorAll('.cart__item');
-  cartList.forEach(list => list.remove());
+  cartList.forEach((list) => list.remove());
 }
 
 function bttAddDeleteEvent() {
