@@ -44,7 +44,7 @@ function updateCartTotalPrice() {
   const items = document.querySelectorAll('.cart__item');
   const prices = Array.from(items).map((item) => parseFloat(item.innerText.split('$')
     .pop(), 10)).reduce((acc, curr) => acc + curr, 0);
-  totalPrice.innerText = prices.toFixed(2);
+  totalPrice.innerText = prices;
 }
 
 function cartItemClickListener(event) {
