@@ -58,7 +58,7 @@ function getEventButton(p) {
   });
 }
 
-const requestProductsApi = async (url) => {
+const requestProductsApi = async () => {
   const requestApiForItems = fetch('https://api.mercadolibre.com/sites/MLB/search?q=$computer');
   requestApiForItems.then((element) => element.json())
   .then((element) => element.results)
