@@ -32,24 +32,41 @@ function cartItemClickListener(event) {
   // coloque seu código aqui
 }
 
-function createCartItemElement(sku, name, salePrice) {
+function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
+  const getCart = document.querySelector('.cart__items');
+  getCart.appendChild(li);
   return li;
 }
 
-const requestProductsApi = () => {
-    const requestApiForUrl = fetch('https://api.mercadolibre.com/sites/MLB/search?q=$computer');
-    requestApiForUrl.then((response) => response.json())
-    .then((response) => response.results)
-    .then((response) => response.forEach((value) => {
-      const getSectionItems = document.querySelector('.items');
-      getSectionItems
-      .appendChild(createProductItemElement({
-         sku: value.id, name: value.title, image: value.thumbnail }));
-    }));
+function getProductsEvent(event) {
+  const id = getSkuFromProductItem(event.target.parentNode);
+  const url = `https://api.mercadolibre.com/items/${id}`;
+  fetch(url)
+  .then((element) => element.json())
+  .then((data) => createCartItemElement({ sku: data.id, name: data.title, salePrice: data.price }));
+}
+
+function getEventButton(p) {
+  p.forEach((element) => {
+    element.addEventListener('click', getProductsEvent);
+  });
+}
+
+const requestProductsApi = async (url) => {
+  const requestApiForItems = fetch('https://api.mercadolibre.com/sites/MLB/search?q=$computer');
+  requestApiForItems.then((element) => element.json())
+  .then((element) => element.results)
+  .then((element) => element.forEach((value) => {
+  const responsePattern = { sku: value.id, name: value.title, image: value.thumbnail };
+  const item = document.querySelector('.items'); 
+  item.appendChild(createProductItemElement(responsePattern));
+  const getButton = document.querySelectorAll('.item__add');
+  getEventButton(getButton);
+ }));
 };
 
 window.onload = () => { 
