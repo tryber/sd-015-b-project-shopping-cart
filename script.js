@@ -18,10 +18,26 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+function sendCartToCloud() {
+  const cartIems = document.querySelectorAll('.cart__items li');
+  const infoItems = [];
+  cartIems.forEach(({ innerText }) => {
+    const divideByBar = innerText.split('|');
+    const [notTreatedId] = divideByBar;
+    const divideByColon = notTreatedId.split(':');
+    const treatedId = divideByColon[1].trim();
+    infoItems.push(treatedId);
+  });
+  const stringItems = JSON.stringify(infoItems);
+
+  localStorage.setItem('cart-items-ids', stringItems);
+}
+
 function cartItemClickListener(event) {
   // coloque seu código aqui
   const li = event.target;
   li.parentElement.removeChild(li);
+  sendCartToCloud();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -38,8 +54,37 @@ async function addCart(sku) {
   const name = results.title;
   const salePrice = results.price;
   const cart = createCartItemElement({ sku, name, salePrice });
+  // eslint-disable-next-line sonarjs/no-duplicate-string
   document.querySelector('.cart__items').appendChild(cart);
+  sendCartToCloud();
 }
+
+const getCartCointainer = () => document.querySelector('.cart__items');
+const getApiData = async (api, product) => {
+  const apiProduct = await fetch(api + product);
+  const response = await apiProduct.json();
+
+  return (response);
+};
+const filterInfoToSendToCart = async (textId) => {
+  const itemDetails = await getApiData('https://api.mercadolibre.com/items/', textId);
+  const { id, title, price } = itemDetails;
+  return { sku: id, name: title, salePrice: price };
+};
+const loadCloudCart = () => {
+  const stringCloudCart = localStorage.getItem('cart-items-ids');
+  if (stringCloudCart) {
+    const cartContainer = getCartCointainer();
+    const cloudCartIds = JSON.parse(stringCloudCart);
+    
+    cloudCartIds.forEach(async (productId) => {
+      const filtredInfo = await filterInfoToSendToCart(productId);
+      const cartItem = createCartItemElement(filtredInfo);
+      cartContainer.append(cartItem);
+      // sumProductsPrices();
+    });
+  }
+};
 
 function createProductItemElement({ sku, name, image }) {
   const section = document.createElement('section');
@@ -83,5 +128,6 @@ function clearCart() {
 window.onload = () => { 
   getProducts();
   const clearButton = document.querySelector('.empty-cart');
-clearButton.addEventListener('click', clearCart);
+  clearButton.addEventListener('click', clearCart);
+  loadCloudCart();
 };
