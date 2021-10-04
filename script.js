@@ -1,4 +1,5 @@
 const urlAPI = 'https://api.mercadolibre.com/sites/MLB/search?q=$computer';
+const test = () => document.querySelector('.cart__items');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -54,8 +55,8 @@ async function addCart(sku) {
   const name = results.title;
   const salePrice = results.price;
   const cart = createCartItemElement({ sku, name, salePrice });
-  // eslint-disable-next-line sonarjs/no-duplicate-string
-  document.querySelector('.cart__items').appendChild(cart);
+  const cartItems = test();
+  cartItems.appendChild(cart);
   sendCartToCloud();
 }
 
@@ -118,7 +119,7 @@ async function getProducts() {
 }
 
 function clearCart() {
-  const cart = document.querySelector('.cart__items');
+  const cart = test();
   cart.innerHTML = '';
 }
 
