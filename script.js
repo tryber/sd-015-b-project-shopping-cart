@@ -92,8 +92,17 @@ const requestProductsApi = async () => {
  }));
 };
 
+function clearAllList() {
+  const botaoLimpar = document.querySelector('.empty-cart');
+  botaoLimpar.addEventListener('click', function () {
+    const carrinho = document.getElementById('cart__item');
+    carrinho.innerHTML = '';
+  });
+}
+
 window.onload = () => { 
   requestProductsApi();
   pullInLocalStorage();
   removeInLocalStorage();
+  clearAllList();
 };
